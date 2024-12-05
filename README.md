@@ -6,11 +6,13 @@ A simple mod for PC version of Taiko no Tatsujin: Rhythm Festival.
 
 ## Features / 功能
 
-- Allow to treat one side hit as a big hit, which will behave as the arcade version. (Will be disabled when in online mode to avoid being detected as cheating)
-- Faster boot scene to quickly get into game.
+- [x] Allow to treat one side hit as a big hit, which will behave as the arcade version. (Will be disabled when in online mode to avoid being detected as cheating)
+- [x] Faster boot scene to quickly get into game. (Boot images will flash quickly, maybe not good to eyes)
+- [ ] Allow to use Keyboard-emulated Taiko Controller (TaikoCatz, Taiko Force, etc.) to select song and play.
 
-- 允许将单侧击打强制识别成大打，和街机行为一致（在线上模式下会被自动禁用以免被视为作弊）
-- 将启动画面速度加快，可以更快地进入游戏
+- [x] 允许将单侧击打强制识别成大打，和街机行为一致（在线上模式下会被自动禁用以免被视为作弊）
+- [x] 快速跳过启动页面，可以更快地进入游戏（启动的画面会一闪而过，可能对眼睛不太好）
+- [ ] 允许使用键盘模拟型的太鼓控制器（猫鼓、大力鼓等）来选择歌曲和游玩。
 
 ## Installation / 安装方式
 

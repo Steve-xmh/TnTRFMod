@@ -1,6 +1,8 @@
 ﻿using HarmonyLib;
 using Il2Cpp;
 using Il2CppScripts.OutGame.Boot;
+using Il2CppScripts.OutGame.Common;
+using Il2CppUtageExtensions;
 using MelonLoader;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -14,14 +16,12 @@ namespace TnTRFMod
         {
             base.OnInitializeMelon();
             LoggerInstance.Msg("TnTRFMod has started!");
+            MelonEvents.OnGUI.Subscribe(DrawGUI, 100);
         }
-
-        private static Rect addExpButton = new Rect(10, 10, 100, 50);
-        public static bool isOnlineMode = false;
 
         private void DrawGUI()
         {
-            // TODO
+            // TODO: 增加可配置信息
         }
 
         public override void OnUpdate()
@@ -32,31 +32,27 @@ namespace TnTRFMod
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
             base.OnSceneWasLoaded(buildIndex, sceneName);
-            // Il2Cpp.TaikoCorePlayer/SimpleInput
-            if (sceneName == "Boot")
-            {
-                //SceneManager.LoadScene("Title");
-            }
             if (sceneName == "MyRoom")
-            {
                 MelonEvents.OnGUI.Subscribe(DrawGUI, 100);
-            }
             else
-            {
                 MelonEvents.OnGUI.Unsubscribe(DrawGUI);
-            }
         }
     }
 
-    namespace SimpleInputPatch
+    namespace SimplePatches
     {
-
-        [HarmonyPatch(typeof(EnsoInput), "GetLastInputForCore", new Type[] { typeof(int) })]
-        public class GetLastInputForCorePatch
+        [HarmonyPatch]
+        internal class BetterBigHitPatch
         {
-            static void Postfix(EnsoInput __instance, ref UserInputType __result, int player)
+
+            [HarmonyPatch(typeof(EnsoInput))]
+            [HarmonyPatch(nameof(EnsoInput.GetLastInputForCore))]
+            [HarmonyPatch(MethodType.Normal)]
+            [HarmonyPostfix]
+            static void EnsoInput_GetLastInputForCore_Postfix(EnsoInput __instance, ref UserInputType __result, int player)
             {
-                if (!TnTRFMod.isOnlineMode)
+                // 在线模式下不对输入进行修改
+                if (__instance.ensoParam.networkGameMode == Il2CppScripts.EnsoGame.Network.NetworkGameMode.None)
                 {
                     switch (__result)
                     {
@@ -75,38 +71,48 @@ namespace TnTRFMod
             }
         }
 
-
-        [HarmonyPatch(typeof(EnsoPlayingParameter), "get_IsOnlineMode", new Type[] { })]
-        public class IsOnlineModePatch
+        [HarmonyPatch]
+        internal class SkipBootScreenPatch
         {
-            static void Postfix(EnsoPlayingParameter __instance, bool __result)
+            static private bool IsBootScene()
             {
-                if (TnTRFMod.isOnlineMode != __result)
-                {
-                    TnTRFMod.isOnlineMode = __result;
-                    if (__result)
-                    {
-                        MelonLogger.Msg($"识别到在线模式，强制大打已禁用");
-                        MelonLogger.Msg($"Detected online mode, force big hit patch has been disabled");
-                    }
-                    else
-                    {
-                        MelonLogger.Msg($"识别到非在线模式，强制大打已启用");
-                        MelonLogger.Msg($"Detected non-online mode, force big hit patch has been enabled");
-                    }
-                }
+                return SceneManager.GetActiveScene().name == "Boot";
             }
-        }
 
-
-        [HarmonyPatch(typeof(BootImage), "PlayAsync", new Type[] { typeof(float), typeof(bool) })]
-        public class ShortenBootImagePatch
-        {
-            static void Prefix(BootImage __instance, ref float duration, ref bool skippable)
+            [HarmonyPatch(typeof(BootImage))]
+            [HarmonyPatch(nameof(BootImage.PlayAsync))]
+            [HarmonyPatch(MethodType.Normal)]
+            [HarmonyPrefix]
+            static void BootImage_PlayAsync_Prefix(BootImage __instance, ref float duration, ref bool skippable)
             {
                 duration = 0f;
                 skippable = true;
-                MelonLogger.Msg("已强制缩短启动画面时间并强制允许跳过");
+            }
+
+            [HarmonyPatch(typeof(FadeCover))]
+            [HarmonyPatch(nameof(FadeCover.FadeOutAsync))]
+            [HarmonyPatch(MethodType.Normal)]
+            [HarmonyPrefix]
+            static void FadeCover_FadeOutAsync_Prefix(FadeCover __instance, ref Color color, ref float duration)
+            {
+                if (IsBootScene())
+                {
+                    __instance.gameObject.SetActive(false);
+                    duration = 0f;
+                }
+            }
+
+            [HarmonyPatch(typeof(FadeCover))]
+            [HarmonyPatch(nameof(FadeCover.FadeInAsync))]
+            [HarmonyPatch(MethodType.Normal)]
+            [HarmonyPrefix]
+            static void FadeCover_FadeInAsync_Prefix(FadeCover __instance, ref Color color, ref float duration)
+            {
+                if (IsBootScene())
+                {
+                    __instance.gameObject.SetActive(false);
+                    duration = 0f;
+                }
             }
         }
     }
