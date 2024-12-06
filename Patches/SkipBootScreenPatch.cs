@@ -1,0 +1,47 @@
+﻿using HarmonyLib;
+using Il2CppScripts.OutGame.Boot;
+using Il2CppScripts.OutGame.Common;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+namespace TnTRFMod.Patches;
+
+[HarmonyPatch]
+internal class SkipBootScreenPatch
+{
+    private static bool IsBootScene()
+    {
+        return SceneManager.GetActiveScene().name == "Boot";
+    }
+
+    [HarmonyPatch(typeof(BootImage))]
+    [HarmonyPatch(nameof(BootImage.PlayAsync))]
+    [HarmonyPatch(MethodType.Normal)]
+    [HarmonyPrefix]
+    private static void BootImage_PlayAsync_Prefix(BootImage __instance, ref float duration, ref bool skippable)
+    {
+        if (!TnTRFMod.Instance.enableSkipBootScreenPatch.Value) return;
+        duration = 0f;
+        skippable = true;
+    }
+
+    [HarmonyPatch(typeof(FadeCover))]
+    [HarmonyPatch(nameof(FadeCover.FadeOutAsync))]
+    [HarmonyPatch(MethodType.Normal)]
+    [HarmonyPrefix]
+    private static void FadeCover_FadeOutAsync_Prefix(FadeCover __instance, ref Color color, ref float duration)
+    {
+        if (!TnTRFMod.Instance.enableSkipBootScreenPatch.Value) return;
+        if (IsBootScene()) duration = 0f;
+    }
+
+    [HarmonyPatch(typeof(FadeCover))]
+    [HarmonyPatch(nameof(FadeCover.FadeInAsync))]
+    [HarmonyPatch(MethodType.Normal)]
+    [HarmonyPrefix]
+    private static void FadeCover_FadeInAsync_Prefix(FadeCover __instance, ref Color color, ref float duration)
+    {
+        if (!TnTRFMod.Instance.enableSkipBootScreenPatch.Value) return;
+        if (IsBootScene()) duration = 0f;
+    }
+}
