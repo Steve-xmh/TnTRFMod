@@ -1,25 +1,26 @@
 ﻿using Il2Cpp;
 using MelonLoader;
+using TnTRFMod.Ui.Scenes;
+using TnTRFMod.Ui.Widgets;
 using UnityEngine;
 
 namespace TnTRFMod;
 
 public class TnTRFMod : MelonMod
 {
-    private static TnTRFMod? instance;
-
     private ControllerManager? _controllerManager;
     public MelonPreferences_Entry<Vector3> donChanRotation;
     public MelonPreferences_Entry<bool> enableBetterBigHitPatch;
     public MelonPreferences_Entry<bool> enableRotatingDonChanPatch;
     public MelonPreferences_Entry<bool> enableSkipBootScreenPatch;
     public MelonPreferences_Category modSettingsCategory;
-    public static TnTRFMod Instance => instance!;
+    private string sceneName = "";
+    public static TnTRFMod Instance { get; private set; }
 
     public override void OnInitializeMelon()
     {
         base.OnInitializeMelon();
-        instance = this;
+        Instance = this;
         LoggerInstance.Msg("TnTRFMod has started!");
 
         modSettingsCategory = MelonPreferences.CreateCategory("TnTRFMod");
@@ -42,6 +43,12 @@ public class TnTRFMod : MelonMod
             "EnableRotatingDonChanPatch",
             "Whether to enable a rotating don-chan model patch."
         );
+        donChanRotation = modSettingsCategory.CreateEntry(
+            "DonChanRotation",
+            new Vector3(0, 0, 0),
+            "DonChanRotation",
+            "The rotation speed and angle of the don-chan model."
+        );
 
         modSettingsCategory.LoadFromFile();
     }
@@ -54,7 +61,6 @@ public class TnTRFMod : MelonMod
 
     private void DrawGUI()
     {
-        // TODO: 增加可配置信息
     }
 
     private ControllerManager getControllerManager()
@@ -67,21 +73,33 @@ public class TnTRFMod : MelonMod
     public override void OnUpdate()
     {
         base.OnUpdate();
-        ControllerManager.GetKeyboard(out var keyboard);
 
         if (enableRotatingDonChanPatch.Value)
         {
             var rot = donChanRotation.Value;
+            var objects = Resources.FindObjectsOfTypeAll<GameObject>().Where(obj => obj.name == "DonModels");
+            foreach (var obj in objects)
+            {
+                var donModels = obj.transform;
+                donModels.Rotate(rot * Time.deltaTime);
+            }
         }
+
+        if (sceneName == "DressUp") DressUpModScene.OnUpdate();
     }
 
     public override void OnSceneWasLoaded(int buildIndex, string sceneName)
     {
         base.OnSceneWasLoaded(buildIndex, sceneName);
+        this.sceneName = sceneName;
 
-        if (sceneName == "MyRoom") // TODO: 增加可配置的信息
-            MelonEvents.OnGUI.Subscribe(DrawGUI, 100);
-        else
-            MelonEvents.OnGUI.Unsubscribe(DrawGUI);
+        if (sceneName == "DressUp") DressUpModScene.Setup();
+
+        if (sceneName == "Title")
+            _ = new TextUi
+            {
+                Text = $"TnTRFMod v{Info.Version}",
+                Position = new Vector2(32f, 32f)
+            };
     }
 }
