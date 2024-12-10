@@ -54,7 +54,7 @@ public class DressUpModScene
     public static void OnUnload()
     {
         var donModel = DonModel.GetInstance(0);
-        donModel._rootModels.transform.rotation = Quaternion.identity;
+        donModel._rootModels.transform.rotation = Quaternion.Euler(0, 180, 0);
     }
 
     private struct DonModelAnimationEntry

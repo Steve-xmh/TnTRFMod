@@ -72,8 +72,6 @@ public class TnTRFMod : MelonMod
 
     public override void OnUpdate()
     {
-        base.OnUpdate();
-
         if (enableRotatingDonChanPatch.Value)
         {
             var rot = donChanRotation.Value;
@@ -90,7 +88,6 @@ public class TnTRFMod : MelonMod
 
     public override void OnSceneWasLoaded(int buildIndex, string sceneName)
     {
-        base.OnSceneWasLoaded(buildIndex, sceneName);
         this.sceneName = sceneName;
 
         if (sceneName == "DressUp") DressUpModScene.Setup();
@@ -101,5 +98,10 @@ public class TnTRFMod : MelonMod
                 Text = $"TnTRFMod v{Info.Version}",
                 Position = new Vector2(32f, 32f)
             };
+    }
+
+    public override void OnSceneWasUnloaded(int buildIndex, string sceneName)
+    {
+        if (sceneName == "DressUp") DressUpModScene.OnUnload();
     }
 }
