@@ -8,7 +8,7 @@ public class DressUpModScene
 {
     public static void Setup()
     {
-        _ = new TextUi
+        var switchAnimationBtn = new ButtonUi
         {
             Text = "切换动画",
             Position = new Vector2(32f, 32f)
@@ -16,19 +16,22 @@ public class DressUpModScene
         var scroll = new ScrollContainerUi
         {
             Position = new Vector2(32f, 64f),
-            Size = new Vector2(256f, 512f)
+            Size = new Vector2(512f, 300f),
+            Visible = false
         };
+        switchAnimationBtn.AddListener(() => { scroll.Visible = !scroll.Visible; });
         foreach (var entry in DonModelAnimationEntry.DonModelAnimationEnties)
         {
             var button = new ButtonUi
             {
                 Position = new Vector2(0, 0),
-                Size = new Vector2(256f, 32f)
+                Size = new Vector2(256f, 32f),
+                Text = entry.Name
             };
-            button.Text = entry.Name;
             button.AddListener(() =>
             {
                 var donModel = DonModel.GetInstance(0);
+                donModel.PlayAnimation(DonModelAnimationDefine.Animations.Normal);
                 donModel.PlayAnimation(entry.Animation);
             });
             scroll.AddChild(button);
@@ -108,7 +111,7 @@ public class DressUpModScene
             new("Ninja_Item", DonModelAnimationDefine.Animations.Ninja_Item),
             new("Ninja_Damage", DonModelAnimationDefine.Animations.Ninja_Damage),
             new("Ninja_Damage02", DonModelAnimationDefine.Animations.Ninja_Damage02),
-            new("Ninja_Normal", DonModelAnimationDefine.Animations.Ninja_Normal),
+            new("Ninja_Normal", DonModelAnimationDefine.Animations.Ninja_Normal)
         ];
 
         public DonModelAnimationEntry(string name, DonModelAnimationDefine.Animations animation)

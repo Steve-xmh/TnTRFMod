@@ -6,16 +6,17 @@ using UnityEngine;
 
 namespace TnTRFMod;
 
-public class TnTRFMod : MelonMod
+public class TnTrfMod : MelonMod
 {
     private ControllerManager? _controllerManager;
     public MelonPreferences_Entry<Vector3> donChanRotation;
     public MelonPreferences_Entry<bool> enableBetterBigHitPatch;
+    public MelonPreferences_Entry<bool> enableCustomDressAnimationMod;
     public MelonPreferences_Entry<bool> enableRotatingDonChanPatch;
     public MelonPreferences_Entry<bool> enableSkipBootScreenPatch;
     public MelonPreferences_Category modSettingsCategory;
     private string sceneName = "";
-    public static TnTRFMod Instance { get; private set; }
+    public static TnTrfMod Instance { get; private set; }
 
     public override void OnInitializeMelon()
     {
@@ -49,6 +50,12 @@ public class TnTRFMod : MelonMod
             "DonChanRotation",
             "The rotation speed and angle of the don-chan model."
         );
+        enableCustomDressAnimationMod = modSettingsCategory.CreateEntry(
+            "EnableCustomDressAnimation",
+            false,
+            "EnableCustomDressAnimation",
+            "Enable a simple gui that can switch preview animation of don-chan when in dressing page."
+        );
 
         modSettingsCategory.LoadFromFile();
     }
@@ -75,7 +82,8 @@ public class TnTRFMod : MelonMod
         if (enableRotatingDonChanPatch.Value)
         {
             var rot = donChanRotation.Value;
-            var objects = Resources.FindObjectsOfTypeAll<GameObject>().Where(obj => obj.name == "DonModels");
+            var objects = UnityEngine.Resources.FindObjectsOfTypeAll<GameObject>()
+                .Where(obj => obj.name == "DonModels");
             foreach (var obj in objects)
             {
                 var donModels = obj.transform;
@@ -90,7 +98,8 @@ public class TnTRFMod : MelonMod
     {
         this.sceneName = sceneName;
 
-        if (sceneName == "DressUp") DressUpModScene.Setup();
+        if (enableCustomDressAnimationMod.Value && sceneName == "DressUp")
+            DressUpModScene.Setup();
 
         if (sceneName == "Title")
             _ = new TextUi

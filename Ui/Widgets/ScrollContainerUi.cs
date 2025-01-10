@@ -14,6 +14,7 @@ public class ScrollContainerUi : BaseUi
         _scrollRect = _go.AddComponent<ScrollRect>();
         _scrollRect.horizontal = false;
         _scrollRect.vertical = true;
+        _scrollRect.scrollSensitivity = 32;
 
         _viewport = new GameObject("Viewport");
         _viewport.transform.SetParent(_go.transform);
@@ -39,7 +40,7 @@ public class ScrollContainerUi : BaseUi
         containerRect.pivot = new Vector2(0.5f, 0.5f);
         _scrollRect.content = containerRect;
         var layoutGroup = _container.AddComponent<VerticalLayoutGroup>();
-        layoutGroup.childControlWidth = false;
+        layoutGroup.childControlWidth = true;
         layoutGroup.childControlHeight = false;
         layoutGroup.childForceExpandWidth = false;
         layoutGroup.childForceExpandHeight = false;

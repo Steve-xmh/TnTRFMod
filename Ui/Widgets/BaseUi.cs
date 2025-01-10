@@ -1,14 +1,30 @@
-﻿using UnityEngine;
+﻿using Il2Cpp;
+using MelonLoader;
+using UnityEngine;
 
 namespace TnTRFMod.Ui.Widgets;
 
 public class BaseUi
 {
+    protected static Texture2D baseUiTexture;
+    protected static Sprite baseUiSprite;
+
     internal readonly GameObject _go;
     internal readonly RectTransform _transform;
 
     protected BaseUi()
     {
+        if (baseUiTexture == null)
+        {
+            baseUiTexture = new Texture2D(16, 16, TextureFormat.RGBA32, false);
+            baseUiTexture.LoadImage(Resources.UiBase);
+            baseUiTexture.filterMode = FilterMode.Point;
+            baseUiSprite = Sprite.Create(baseUiTexture, new Rect(0, 0, baseUiTexture.width, baseUiTexture.height),
+                new Vector2(0.5f, 0.5f), 1f, 0,
+                SpriteMeshType.Tight, new Vector4(4f, 4f, 4f, 4f));
+            baseUiSprite.name = "BaseUiSprite";
+        }
+
         _go = new GameObject("BaseUi");
         _transform = _go.AddComponent<RectTransform>();
         _transform.parent = Common.GetDrawCanvas();
@@ -16,6 +32,16 @@ public class BaseUi
         _go.layer = LayerMask.NameToLayer("UI");
         _transform.transform.position =
             new Vector3(_transform.transform.position.x, _transform.transform.position.y, 90f);
+
+        // _go.OnMouseEnterAsObservable().Subscribe(DelegateSupport.ConvertDelegate<Il2CppSystem.Action<Unit>>((Unit _) =>
+        // {
+        //     DisableGameInput();
+        // }));
+        //
+        // _go.OnMouseExitAsObservable().Subscribe(DelegateSupport.ConvertDelegate<Il2CppSystem.Action<Unit>>((Unit _) =>
+        // {
+        //     EnableGameInput();
+        // }));
     }
 
     public Vector2 Position
@@ -35,6 +61,12 @@ public class BaseUi
         set => _transform.sizeDelta = value;
     }
 
+    public bool Visible
+    {
+        get => _go.activeSelf;
+        set => _go.SetActive(value);
+    }
+
     public void AddChild(GameObject child)
     {
         child.transform.SetParent(_transform);
@@ -43,5 +75,39 @@ public class BaseUi
     public void AddChild(BaseUi child)
     {
         child._transform.SetParent(_transform);
+    }
+
+    private class TempDisableInputComponent : MonoBehaviour
+    {
+        private static int _inputDisableCount;
+
+        private void OnMouseEnter()
+        {
+            DisableGameInput();
+        }
+
+        private void OnMouseExit()
+        {
+            EnableGameInput();
+        }
+
+        private static void DisableGameInput()
+        {
+            if (_inputDisableCount == 0)
+            {
+                Common.GetControllerManager().SetActiveSafe(false);
+                MelonLogger.Msg("Temporarily disabled original game input");
+            }
+
+            _inputDisableCount++;
+        }
+
+        private static void EnableGameInput()
+        {
+            _inputDisableCount = Math.Max(0, _inputDisableCount - 1);
+            if (_inputDisableCount != 0) return;
+            Common.GetControllerManager().SetActiveSafe(true);
+            MelonLogger.Msg("Re-enabled original game input");
+        }
     }
 }

@@ -20,7 +20,7 @@ internal class SkipBootScreenPatch
     [HarmonyPrefix]
     private static void BootImage_PlayAsync_Prefix(BootImage __instance, ref float duration, ref bool skippable)
     {
-        if (!TnTRFMod.Instance.enableSkipBootScreenPatch.Value) return;
+        if (!TnTrfMod.Instance.enableSkipBootScreenPatch.Value) return;
         duration = 0f;
         skippable = true;
     }
@@ -31,7 +31,7 @@ internal class SkipBootScreenPatch
     [HarmonyPrefix]
     private static void FadeCover_FadeOutAsync_Prefix(FadeCover __instance, ref Color color, ref float duration)
     {
-        if (!TnTRFMod.Instance.enableSkipBootScreenPatch.Value) return;
+        if (!TnTrfMod.Instance.enableSkipBootScreenPatch.Value) return;
         if (IsBootScene()) duration = 0f;
     }
 
@@ -41,7 +41,7 @@ internal class SkipBootScreenPatch
     [HarmonyPrefix]
     private static void FadeCover_FadeInAsync_Prefix(FadeCover __instance, ref Color color, ref float duration)
     {
-        if (!TnTRFMod.Instance.enableSkipBootScreenPatch.Value) return;
+        if (!TnTrfMod.Instance.enableSkipBootScreenPatch.Value) return;
         if (IsBootScene()) duration = 0f;
     }
 }

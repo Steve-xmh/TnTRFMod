@@ -11,6 +11,7 @@ public class Common
     public const int ScreenHeight = 1080;
     private static FontTMPManager _fontMgr;
     private static GameObject _drawCanvas;
+    private static ControllerManager _controllerManager;
 
     public static Transform GetDrawCanvas()
     {
@@ -28,6 +29,7 @@ public class Common
         scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
         _drawCanvas.AddComponent<GraphicRaycaster>();
         _drawCanvas.layer = LayerMask.NameToLayer("UI");
+
         return _drawCanvas.transform;
     }
 
@@ -36,5 +38,12 @@ public class Common
         if (_fontMgr != null) return _fontMgr;
         _fontMgr = GameObject.Find("FontTMPManager")!.GetComponent<FontTMPManager>();
         return _fontMgr!;
+    }
+
+    public static ControllerManager GetControllerManager()
+    {
+        if (_controllerManager != null) return _controllerManager;
+        _controllerManager = GameObject.Find("ControllerManager")!.GetComponent<ControllerManager>();
+        return _controllerManager!;
     }
 }

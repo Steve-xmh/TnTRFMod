@@ -23,9 +23,13 @@ Install [MelonLoader](https://github.com/LavaGang/MelonLoader) into your game, t
 the [release page](https://github.com/Steve-xmh/TnTRFMod/releases/latest) and put it in the `Mods` folder under the game
 directory and start the game.
 
+You can access `UserData/TnTRFMod.cfg` to configure the mod features.
+
 为你的游戏安装好 [MelonLoader](https://github.com/LavaGang/MelonLoader)
 ，然后从[发行页面](https://github.com/Steve-xmh/TnTRFMod/releases/latest)中下载本模组并放入游戏目录下的 `Mods`
 文件夹后启动游戏即可。
+
+你可以通过访问 `UserData/TnTRFMod.cfg` 来配置模组的功能。
 
 ## Disclaimer / 免责声明
 

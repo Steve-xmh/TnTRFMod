@@ -15,7 +15,7 @@ internal class BetterBigHitPatch
         ref TaikoCoreTypes.UserInputType __result,
         int player)
     {
-        if (!TnTRFMod.Instance.enableBetterBigHitPatch.Value) return;
+        if (!TnTrfMod.Instance.enableBetterBigHitPatch.Value) return;
         // 在线模式下不对输入进行修改
         if (__instance.ensoParam.networkGameMode != NetworkGameMode.None) return;
         switch (__result)

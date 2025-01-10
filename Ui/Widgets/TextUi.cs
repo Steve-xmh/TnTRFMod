@@ -40,4 +40,10 @@ public class TextUi : BaseUi
         get => _uitext.faceColor;
         set => _uitext.SetFaceColor(ref value);
     }
+
+    public TextAlignmentOptions Alignment
+    {
+        get => _uitext.tmpro.alignment;
+        set => _uitext.tmpro.alignment = value;
+    }
 }

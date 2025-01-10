@@ -8,12 +8,19 @@ namespace TnTRFMod.Ui.Widgets;
 public class ButtonUi : BaseUi
 {
     private readonly Button _button;
+    private readonly Image _image;
     private readonly TextUi _label;
 
     public ButtonUi()
     {
         _transform.parent = Common.GetDrawCanvas();
         _transform.pivot = new Vector2(0, 1);
+
+        _image = _go.AddComponent<Image>();
+        _image.sprite = baseUiSprite;
+        _image.type = Image.Type.Sliced;
+        _image.pixelsPerUnitMultiplier = 100;
+
         _button = _go.AddComponent<Button>();
 
         Size = new Vector2(160, 30);
@@ -26,7 +33,8 @@ public class ButtonUi : BaseUi
             //     anchorMin = new Vector2(0, 0),
             //     anchorMax = new Vector2(1, 1),
             //     pivot = new Vector2(0.5f, 0.5f)
-            // }
+            // },
+            // Alignment = TextAlignmentOptions.Center
         };
         AddChild(_label);
     }
