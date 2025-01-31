@@ -1,8 +1,10 @@
 ﻿using Il2Cpp;
 using MelonLoader;
+using TnTRFMod.Patches;
 using TnTRFMod.Ui.Scenes;
 using TnTRFMod.Ui.Widgets;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace TnTRFMod;
 
@@ -12,6 +14,8 @@ public class TnTrfMod : MelonMod
     public MelonPreferences_Entry<Vector3> donChanRotation;
     public MelonPreferences_Entry<bool> enableBetterBigHitPatch;
     public MelonPreferences_Entry<bool> enableCustomDressAnimationMod;
+    public MelonPreferences_Entry<bool> enableNearestNeighborOnpuPatch;
+    public MelonPreferences_Entry<bool> enableNoShadowOnpuPatch;
     public MelonPreferences_Entry<bool> enableRotatingDonChanPatch;
     public MelonPreferences_Entry<bool> enableSkipBootScreenPatch;
     public MelonPreferences_Category modSettingsCategory;
@@ -56,6 +60,18 @@ public class TnTrfMod : MelonMod
             "EnableCustomDressAnimation",
             "Enable a simple gui that can switch preview animation of don-chan when in dressing page."
         );
+        enableNoShadowOnpuPatch = modSettingsCategory.CreateEntry(
+            "EnableNoShadowOnpuPatch",
+            true,
+            "EnableNoShadowOnpuPatch",
+            "Whether to enable No Shadow Onpu/Note Patch, this may reduce motion blur effect when notes are scrolling, but may also reduce the performance."
+        );
+        enableNearestNeighborOnpuPatch = modSettingsCategory.CreateEntry(
+            "EnableNearestNeighborOnpuPatch",
+            false,
+            "EnableNearestNeighborOnpuPatch",
+            "Whether to enable Nearest Neighbor Onpu/Note Patch, this may make the notes look more pixelated."
+        );
 
         modSettingsCategory.LoadFromFile();
     }
@@ -96,10 +112,21 @@ public class TnTrfMod : MelonMod
 
     public override void OnSceneWasLoaded(int buildIndex, string sceneName)
     {
+        try
+        {
+            modSettingsCategory.LoadFromFile();
+            LoggerInstance.Msg($"Config reloaded");
+        }
+        catch (Exception e)
+        {
+            LoggerInstance.Error(e);
+        }
+
         this.sceneName = sceneName;
 
         if (enableCustomDressAnimationMod.Value && sceneName == "DressUp")
             DressUpModScene.Setup();
+
 
         if (sceneName == "Title")
             _ = new TextUi
@@ -107,6 +134,16 @@ public class TnTrfMod : MelonMod
                 Text = $"TnTRFMod v{Info.Version}",
                 Position = new Vector2(32f, 32f)
             };
+        else if (sceneName == "Enzo")
+        {
+            NoShadowOnpuPatch.CheckOrInitializePatch();
+
+            // 将判定圈设置成最近邻居
+            if (!enableNearestNeighborOnpuPatch.Value) return;
+            var laneTarget = GameObject.Find("lane_target");
+            var laneImage = laneTarget.GetComponentInChildren<Image>();
+            laneImage.mainTexture.filterMode = FilterMode.Point;
+        }
     }
 
     public override void OnSceneWasUnloaded(int buildIndex, string sceneName)

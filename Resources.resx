@@ -131,4 +131,10 @@
         </value>
         <comment>Base Image source for GUI of TnTRFMod</comment>
     </data>
+    <data name="OnpuSpriteSet" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\OnpuSpriteSet.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+        <comment>Onpu Sprite Set without shadow for No Shadow Onpu Patch</comment>
+    </data>
 </root>
