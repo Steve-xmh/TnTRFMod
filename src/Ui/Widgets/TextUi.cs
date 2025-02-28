@@ -1,7 +1,7 @@
-﻿using Il2CppScripts.Common;
-using Il2CppTMPro;
-using Il2CppUtageExtensions;
+﻿using Scripts.Common;
+using TMPro;
 using UnityEngine;
+using UtageExtensions;
 
 namespace TnTRFMod.Ui.Widgets;
 

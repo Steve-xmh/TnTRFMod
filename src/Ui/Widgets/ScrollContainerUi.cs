@@ -67,12 +67,12 @@ public class ScrollContainerUi : BaseUi
         set => _transform.sizeDelta = value;
     }
 
-    public void AddChild(GameObject child)
+    public new void AddChild(GameObject child)
     {
         child.transform.SetParent(_container.transform);
     }
 
-    public void AddChild(BaseUi child)
+    public new void AddChild(BaseUi child)
     {
         child._transform.SetParent(_container.transform);
 

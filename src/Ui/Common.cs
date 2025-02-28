@@ -1,5 +1,4 @@
-﻿using Il2Cpp;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -10,27 +9,27 @@ public class Common
     public const int ScreenWidth = 1920;
     public const int ScreenHeight = 1080;
     private static FontTMPManager _fontMgr;
-    private static GameObject _drawCanvas;
+    private static GameObject _drawCanvasForScene;
     private static ControllerManager _controllerManager;
 
-    public static Transform GetDrawCanvas()
+    public static Transform GetDrawCanvasForScene()
     {
-        if (_drawCanvas != null && _drawCanvas.scene == SceneManager.GetActiveScene())
-            return _drawCanvas.transform;
+        if (_drawCanvasForScene != null && _drawCanvasForScene.scene == SceneManager.GetActiveScene())
+            return _drawCanvasForScene.transform;
 
-        _drawCanvas = GameObject.Find("CanvasForTnTRFMod");
-        if (_drawCanvas != null) return _drawCanvas.transform;
-        _drawCanvas = new GameObject("CanvasForTnTRFMod");
-        var canvas = _drawCanvas.AddComponent<Canvas>();
+        _drawCanvasForScene = GameObject.Find("CanvasForTnTRFMod");
+        if (_drawCanvasForScene != null) return _drawCanvasForScene.transform;
+        _drawCanvasForScene = new GameObject("CanvasForTnTRFMod");
+        var canvas = _drawCanvasForScene.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        var scaler = _drawCanvas.AddComponent<CanvasScaler>();
+        var scaler = _drawCanvasForScene.AddComponent<CanvasScaler>();
         scaler.referenceResolution = new Vector2(ScreenWidth, ScreenHeight);
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
-        _drawCanvas.AddComponent<GraphicRaycaster>();
-        _drawCanvas.layer = LayerMask.NameToLayer("UI");
+        _drawCanvasForScene.AddComponent<GraphicRaycaster>();
+        _drawCanvasForScene.layer = LayerMask.NameToLayer("UI");
 
-        return _drawCanvas.transform;
+        return _drawCanvasForScene.transform;
     }
 
     public static FontTMPManager GetFontManager()

@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
-using Il2CppScripts.OutGame.Boot;
-using Il2CppScripts.OutGame.Common;
+using Scripts.OutGame.Boot;
+using Scripts.OutGame.Common;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

@@ -1,12 +1,11 @@
-﻿using Il2Cpp;
-using TnTRFMod.Ui.Widgets;
+﻿using TnTRFMod.Ui.Widgets;
 using UnityEngine;
 
 namespace TnTRFMod.Ui.Scenes;
 
-public class DressUpModScene
+public class DressUpModScene : MonoBehaviour
 {
-    public static void Setup()
+    public DressUpModScene()
     {
         var switchAnimationBtn = new ButtonUi
         {
@@ -38,7 +37,7 @@ public class DressUpModScene
         }
     }
 
-    public static void OnUpdate()
+    private void Update()
     {
         ControllerManager.GetKeyboard(out var keyboard);
 
@@ -54,7 +53,7 @@ public class DressUpModScene
         }
     }
 
-    public static void OnUnload()
+    public void OnDestroy()
     {
         var donModel = DonModel.GetInstance(0);
         donModel._rootModels.transform.rotation = Quaternion.Euler(0, 180, 0);
@@ -114,7 +113,7 @@ public class DressUpModScene
             new("Ninja_Normal", DonModelAnimationDefine.Animations.Ninja_Normal)
         ];
 
-        public DonModelAnimationEntry(string name, DonModelAnimationDefine.Animations animation)
+        private DonModelAnimationEntry(string name, DonModelAnimationDefine.Animations animation)
         {
             Name = name;
             Animation = animation;

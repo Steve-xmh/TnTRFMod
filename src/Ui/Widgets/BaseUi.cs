@@ -1,6 +1,4 @@
-﻿using Il2Cpp;
-using MelonLoader;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace TnTRFMod.Ui.Widgets;
 
@@ -27,7 +25,7 @@ public class BaseUi
 
         _go = new GameObject("BaseUi");
         _transform = _go.AddComponent<RectTransform>();
-        _transform.parent = Common.GetDrawCanvas();
+        _transform.parent = Common.GetDrawCanvasForScene();
         _transform.pivot = new Vector2(0, 1);
         _go.layer = LayerMask.NameToLayer("UI");
         _transform.transform.position =
@@ -93,11 +91,7 @@ public class BaseUi
 
         private static void DisableGameInput()
         {
-            if (_inputDisableCount == 0)
-            {
-                Common.GetControllerManager().SetActiveSafe(false);
-                MelonLogger.Msg("Temporarily disabled original game input");
-            }
+            if (_inputDisableCount == 0) Common.GetControllerManager().SetActiveSafe(false);
 
             _inputDisableCount++;
         }
@@ -107,7 +101,6 @@ public class BaseUi
             _inputDisableCount = Math.Max(0, _inputDisableCount - 1);
             if (_inputDisableCount != 0) return;
             Common.GetControllerManager().SetActiveSafe(true);
-            MelonLogger.Msg("Re-enabled original game input");
         }
     }
 }

@@ -1,29 +1,61 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <ModName>TnTRFMod</ModName>
         <TargetFramework>net6.0</TargetFramework>
+        <AssemblyName>net.stevexmh.$(ModName)</AssemblyName>
+        <Product>TnTRFMod</Product>
+        <Version>0.3.0</Version>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <LangVersion>latest</LangVersion>
+        <RestoreAdditionalProjectSources>
+            https://api.nuget.org/v3/index.json;
+            https://nuget.bepinex.dev/v3/index.json;
+            https://nuget.samboy.dev/v3/index.json
+        </RestoreAdditionalProjectSources>
+        <RootNamespace>TnTRFMod</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>disable</Nullable>
-        <LangVersion>default</LangVersion>
+        <Authors>SteveXMH</Authors>
+        <Title>TnTRFMod</Title>
+        <AssemblyVersion>0.3.0</AssemblyVersion>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Target Name="UserFile" AfterTargets="PreBuildEvent">
+        <Copy
+                Condition="!Exists('.\$(MSBuildProjectDir)\$(ModName).csproj.user')"
+                SourceFiles="$(MSBuildProjectDir)src\Resources\Template.csproj.user"
+                DestinationFiles=".\$(MSBuildProjectDir)\$(ModName).csproj.user"/>
+        <Error
+                Condition="$(GameDir)==''"
+                Text="Set the GameDir variable in .csproj.user file to your Rhythm Festival executable directory."/>
+    </Target>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <PlatformTarget>x64</PlatformTarget>
         <DebugType>embedded</DebugType>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <PlatformTarget>x64</PlatformTarget>
         <DebugType>embedded</DebugType>
     </PropertyGroup>
 
     <ItemGroup>
-        <EmbeddedResource Update="Resources.resx">
+        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*"
+                          IncludeAssets="compile"/>
+        <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*"/>
+        <Reference Include="$(GameDir)\BepInEx\interop\*.dll" Private="false"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Update="src\Resources.resx">
             <Generator>ResXFileCodeGenerator</Generator>
             <LastGenOutput>Resources.Designer.cs</LastGenOutput>
         </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Update="Resources.Designer.cs">
+        <Compile Update="src\Resources.Designer.cs">
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
             <DependentUpon>Resources.resx</DependentUpon>
@@ -31,340 +63,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Reference Include="0Harmony">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\net6\0Harmony.dll</HintPath>
-        </Reference>
-        <Reference Include="Assembly-CSharp">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Assembly-CSharp.dll</HintPath>
-        </Reference>
-        <Reference Include="Assembly-CSharp-firstpass">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Assembly-CSharp-firstpass.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppBuildTimestampDisplay">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppBuildTimestampDisplay.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppBuildTimestampDisplay.Sample2">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppBuildTimestampDisplay.Sample2.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2Cppcom.rlabrecque.steamworks.net">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2Cppcom.rlabrecque.steamworks.net.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppDOTween">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppDOTween.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppGdkUtilities">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppGdkUtilities.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppInterop.Common">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\net6\Il2CppInterop.Common.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppInterop.Generator">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\net6\Il2CppInterop.Generator.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppInterop.HarmonySupport">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\net6\Il2CppInterop.HarmonySupport.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppInterop.Runtime">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\net6\Il2CppInterop.Runtime.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppMessagePack">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppMessagePack.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppMessagePack.Annotations">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppMessagePack.Annotations.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppMicrosoft.NET.StringTools">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppMicrosoft.NET.StringTools.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppMono.Security">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppMono.Security.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2Cppmscorlib">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2Cppmscorlib.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppPlayFab">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppPlayFab.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppSimpleAnimationComponent">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppSimpleAnimationComponent.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppStompyRobot.SRDebugger">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppStompyRobot.SRDebugger.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppStompyRobot.SRF">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppStompyRobot.SRF.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppSystem">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppSystem.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppSystem.Configuration">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppSystem.Configuration.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppSystem.Core">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppSystem.Core.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppSystem.IO.Compression">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppSystem.IO.Compression.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppSystem.Numerics">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppSystem.Numerics.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppSystem.Runtime.CompilerServices.Unsafe">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppSystem.Runtime.CompilerServices.Unsafe.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppSystem.Runtime.Serialization">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppSystem.Runtime.Serialization.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppSystem.ServiceModel.Internals">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppSystem.ServiceModel.Internals.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppSystem.Xml">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppSystem.Xml.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppUniRx">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppUniRx.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppUniTask">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppUniTask.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppUniTask.Addressables">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppUniTask.Addressables.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppUniTask.DOTween">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppUniTask.DOTween.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppUniTask.Linq">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppUniTask.Linq.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppUniTask.TextMeshPro">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppUniTask.TextMeshPro.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2CppXGamingRuntime">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2CppXGamingRuntime.dll</HintPath>
-        </Reference>
-        <Reference Include="Il2Cpp__Generated">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Il2Cpp__Generated.dll</HintPath>
-        </Reference>
-        <Reference Include="MelonLoader">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\net6\MelonLoader.dll</HintPath>
-        </Reference>
-        <Reference Include="Unity.InputSystem">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Unity.InputSystem.dll</HintPath>
-        </Reference>
-        <Reference Include="Unity.TextMeshPro">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\Unity.TextMeshPro.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.AccessibilityModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.AccessibilityModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.AIModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.AIModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.AndroidJNIModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.AndroidJNIModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.AnimationModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.AnimationModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.ARModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.ARModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.AssetBundleModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.AssetBundleModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.AudioModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.AudioModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.ClothModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.ClothModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.ClusterInputModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.ClusterInputModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.ClusterRendererModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.ClusterRendererModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.ContentLoadModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.ContentLoadModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.CoreModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.CoreModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.CrashReportingModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.CrashReportingModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.DirectorModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.DirectorModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.DSPGraphModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.DSPGraphModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.GameCenterModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.GameCenterModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.GIModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.GIModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.GridModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.GridModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.HotReloadModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.HotReloadModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.ImageConversionModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.ImageConversionModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.IMGUIModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.IMGUIModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.InputLegacyModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.InputLegacyModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.InputModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.InputModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.JSONSerializeModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.JSONSerializeModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.LocalizationModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.LocalizationModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.NVIDIAModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.NVIDIAModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.ParticleSystemModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.ParticleSystemModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.PerformanceReportingModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.PerformanceReportingModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.Physics2DModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.Physics2DModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.PhysicsModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.PhysicsModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.ProfilerModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.ProfilerModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.PropertiesModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.PropertiesModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.ScreenCaptureModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.ScreenCaptureModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.SharedInternalsModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.SharedInternalsModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.SpriteMaskModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.SpriteMaskModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.SpriteShapeModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.SpriteShapeModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.StreamingModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.StreamingModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.SubstanceModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.SubstanceModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.SubsystemsModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.SubsystemsModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.TerrainModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.TerrainModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.TerrainPhysicsModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.TerrainPhysicsModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.TextCoreFontEngineModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.TextCoreFontEngineModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.TextCoreTextEngineModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.TextCoreTextEngineModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.TextRenderingModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.TextRenderingModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.TilemapModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.TilemapModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.TLSModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.TLSModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.UI">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.UI.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.UIElementsModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.UIElementsModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.UIModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.UIModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.UmbraModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.UmbraModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.UnityAnalyticsCommonModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.UnityAnalyticsCommonModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.UnityAnalyticsModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.UnityAnalyticsModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.UnityConnectModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.UnityConnectModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.UnityCurlModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.UnityCurlModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.UnityTestProtocolModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.UnityTestProtocolModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.UnityWebRequestAssetBundleModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.UnityWebRequestAudioModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.UnityWebRequestModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.UnityWebRequestModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.UnityWebRequestTextureModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.UnityWebRequestWWWModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.VehiclesModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.VehiclesModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.VFXModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.VFXModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.VideoModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.VideoModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.VirtualTexturingModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.VirtualTexturingModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.VRModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.VRModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.WindModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.WindModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.XRModule">
-            <HintPath>F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\MelonLoader\Il2CppAssemblies\UnityEngine.XRModule.dll</HintPath>
-        </Reference>
+        <Content Include="src\Resources\Template.csproj.user"/>
     </ItemGroup>
 
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Exec Command="copy &quot;$(OutDir)/$(AssemblyName).dll&quot; &quot;F:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\Mods&quot;"/>
+    <Target Name="PostBuildCopy" AfterTargets="PostBuildEvent" Condition="$(CopyOutputFiles) == true">
+        <Copy SourceFiles="$(TargetDir)$(AssemblyName).dll" DestinationFolder="$(GameDir)\BepInEx\plugins\$(AssemblyName)"/>
     </Target>
-
 </Project>

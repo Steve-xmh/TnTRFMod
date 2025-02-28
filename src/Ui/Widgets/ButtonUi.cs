@@ -13,7 +13,7 @@ public class ButtonUi : BaseUi
 
     public ButtonUi()
     {
-        _transform.parent = Common.GetDrawCanvas();
+        _transform.parent = Common.GetDrawCanvasForScene();
         _transform.pivot = new Vector2(0, 1);
 
         _image = _go.AddComponent<Image>();
@@ -39,7 +39,7 @@ public class ButtonUi : BaseUi
         AddChild(_label);
     }
 
-    public Vector2 Position
+    public new Vector2 Position
     {
         get
         {
@@ -50,7 +50,7 @@ public class ButtonUi : BaseUi
             new Vector2(value.x - Common.ScreenWidth / 2f, Common.ScreenHeight / 2f - value.y);
     }
 
-    public Vector2 Size
+    public new Vector2 Size
     {
         get => _transform.sizeDelta;
         set => _transform.sizeDelta = value;

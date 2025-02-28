@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
-using Il2Cpp;
-using Il2CppScripts.EnsoGame.Network;
+using Scripts.EnsoGame.Network;
 
 namespace TnTRFMod.Patches;
 

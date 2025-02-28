@@ -1,7 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using HarmonyLib;
-using Il2Cpp;
-using Il2CppScripts.OutGame.SongSelect;
+using Scripts.OutGame.SongSelect;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,7 +9,7 @@ namespace TnTRFMod.Patches;
 // [HarmonyPatch]
 public class MapKeyForTataconPatch
 {
-    private static UiSongScroller? getUiSongScroller()
+    private static UiSongScroller getUiSongScroller()
     {
         var go = GameObject.Find("UiSongScroller");
         if (go == null) return null;
