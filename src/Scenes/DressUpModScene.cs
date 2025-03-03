@@ -2,7 +2,7 @@
 using TnTRFMod.Ui.Widgets;
 using UnityEngine;
 
-namespace TnTRFMod.Ui.Scenes;
+namespace TnTRFMod.Scenes;
 
 public class DressUpModScene : IScene
 {
@@ -10,6 +10,7 @@ public class DressUpModScene : IScene
 
     public void Start()
     {
+        if (!TnTrfMod.Instance.enableCustomDressAnimationMod.Value) return;
         var switchAnimationBtn = new ButtonUi
         {
             Text = "切换动画",
@@ -49,6 +50,7 @@ public class DressUpModScene : IScene
 
     public void Update()
     {
+        if (!TnTrfMod.Instance.enableCustomDressAnimationMod.Value) return;
         ControllerManager.GetKeyboard(out var keyboard);
 
         if (keyboard.yKey.isPressed)
@@ -65,6 +67,7 @@ public class DressUpModScene : IScene
 
     public void Destroy()
     {
+        if (!TnTrfMod.Instance.enableCustomDressAnimationMod.Value) return;
         var donModel = DonModel.GetInstance(0);
         donModel._rootModels.transform.rotation = Quaternion.Euler(0, 180, 0);
     }

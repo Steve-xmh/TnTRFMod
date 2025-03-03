@@ -1,6 +1,6 @@
 using TnTRFMod.Patches;
 
-namespace TnTRFMod.Ui.Scenes;
+namespace TnTRFMod.Scenes;
 
 public class EnsoScene : IScene
 {

@@ -1,4 +1,4 @@
-namespace TnTRFMod.Ui.Scenes;
+namespace TnTRFMod.Scenes;
 
 public interface IScene
 {

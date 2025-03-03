@@ -18,16 +18,12 @@
         <Authors>SteveXMH</Authors>
         <Title>TnTRFMod</Title>
         <AssemblyVersion>0.3.0</AssemblyVersion>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     </PropertyGroup>
 
     <Target Name="UserFile" AfterTargets="PreBuildEvent">
-        <Copy
-                Condition="!Exists('.\$(MSBuildProjectDir)\$(ModName).csproj.user')"
-                SourceFiles="$(MSBuildProjectDir)src\Resources\Template.csproj.user"
-                DestinationFiles=".\$(MSBuildProjectDir)\$(ModName).csproj.user"/>
-        <Error
-                Condition="$(GameDir)==''"
-                Text="Set the GameDir variable in .csproj.user file to your Rhythm Festival executable directory."/>
+        <Copy Condition="!Exists('.\$(MSBuildProjectDir)\$(ModName).csproj.user')" SourceFiles="$(MSBuildProjectDir)src\Resources\Template.csproj.user" DestinationFiles=".\$(MSBuildProjectDir)\$(ModName).csproj.user"/>
+        <Error Condition="$(GameDir)==''" Text="Set the GameDir variable in .csproj.user file to your Rhythm Festival executable directory."/>
     </Target>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -41,9 +37,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*"
-                          IncludeAssets="compile"/>
+        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile"/>
         <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*"/>
+        <PackageReference Include="NAudio.Wasapi" Version="2.2.1" IncludeAssets="all"/>
         <Reference Include="$(GameDir)\BepInEx\interop\*.dll" Private="false"/>
     </ItemGroup>
 

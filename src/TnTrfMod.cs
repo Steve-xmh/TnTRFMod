@@ -1,12 +1,15 @@
 ﻿using System.Collections;
+using System.Text;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
+using BepInEx.Unity.IL2CPP.Utils.Collections;
 using HarmonyLib;
 using Il2CppInterop.Runtime;
 using TnTRFMod.Patches;
-using TnTRFMod.Ui.Scenes;
+using TnTRFMod.Scenes;
+using TnTRFMod.Utils;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -22,12 +25,17 @@ public class TnTrfMod : BasePlugin
     private readonly Hashtable _scenes = new();
     private Harmony _harmony;
 
+    private MinimumLatencyAudioClient _minimumLatencyAudioClient;
+
+    private Updater _updater;
+
     public ConfigEntry<bool> enableBetterBigHitPatch;
     public ConfigEntry<bool> enableBufferedInputPatch;
     public ConfigEntry<bool> enableCustomDressAnimationMod;
     public ConfigEntry<bool> enableNearestNeighborOnpuPatch;
     public ConfigEntry<bool> enableNoShadowOnpuPatch;
-    public ConfigEntry<bool> enableRotatingDonChanPatch;
+    public ConfigEntry<bool> enableAutoDownloadSubscriptionSongs;
+    public ConfigEntry<bool> enableMinimumLatencyAudioClient;
     public ConfigEntry<bool> enableSkipBootScreenPatch;
     public ConfigEntry<bool> enableSkipRewardPatch;
     public ConfigEntry<uint> maxBufferedInputCount;
@@ -38,6 +46,7 @@ public class TnTrfMod : BasePlugin
 
     public override void Load()
     {
+        Console.OutputEncoding = Encoding.Unicode;
         Instance = this;
         Log = base.Log;
         Log.LogInfo($"TnTRFMod has loaded!");
@@ -51,6 +60,8 @@ public class TnTrfMod : BasePlugin
             "Whether to enable Skip Reward Dialog Patch.");
         enableBufferedInputPatch = Config.Bind("General", "EnableBufferedInputPatch", true,
             "Whether to enable Buffered Input Patch.");
+        enableMinimumLatencyAudioClient = Config.Bind("General", "EnableMinimumLatencyAudioClient", true,
+            "Whether to enable Minimum Latency Audio Client, which can reduce the audio latency if possible.");
         // 默认禁用的功能
         enableNearestNeighborOnpuPatch = Config.Bind("General", "EnableNearestNeighborOnpuPatch", false,
             "Whether to enable Nearest Neighbor Onpu/Note Patch, this may make the notes look more pixelated.");
@@ -58,6 +69,8 @@ public class TnTrfMod : BasePlugin
             "Whether to enable No Shadow Onpu/Note Patch, this may reduce motion blur effect when notes are scrolling, but may also reduce the performance.");
         enableCustomDressAnimationMod = Config.Bind("General", "EnableCustomDressAnimationMod", false,
             "Enable a simple gui that can switch preview animation of don-chan when in dressing page.");
+        enableAutoDownloadSubscriptionSongs = Config.Bind("General", "EnableAutoDownloadSubscriptionSongs", false,
+            "Enable auto download subscription songs. (NOT FULLY TESTED)");
 
         maxBufferedInputCount = Config.Bind("BufferedInput", "MaxBufferedInputCount", 30u,
             "The maximum count of the buffered key input per side.");
@@ -71,7 +84,32 @@ public class TnTrfMod : BasePlugin
         RegisterScene<DressUpModScene>();
         RegisterScene<TitleScene>();
         RegisterScene<EnsoScene>();
-        AddComponent<Updater>();
+        RegisterScene<BootScene>();
+        _updater = AddComponent<Updater>();
+
+        _minimumLatencyAudioClient = new MinimumLatencyAudioClient();
+        _minimumLatencyAudioClient.Start();
+    }
+
+    public override bool Unload()
+    {
+        _minimumLatencyAudioClient.Stop();
+        return false;
+    }
+
+    public void StartCoroutine(IEnumerator routine)
+    {
+        _updater.StartCoroutine(routine.WrapToIl2Cpp());
+    }
+
+    public void StartCoroutine(IEnumerable routine)
+    {
+        _updater.StartCoroutine(routine.WrapToIl2Cpp().GetEnumerator());
+    }
+
+    public void StartCoroutine(Il2CppSystem.Collections.IEnumerator routine)
+    {
+        _updater.StartCoroutine(routine);
     }
 
     private void SetupHarmony()
@@ -115,7 +153,7 @@ public class TnTrfMod : BasePlugin
 
     private void OnSceneWasUnloaded(Scene scene)
     {
-        Log.LogInfo($"OnSceneWasLoaded {sceneName}");
+        Log.LogInfo($"OnSceneWasUnloaded {sceneName}");
 
         if (sceneName != null && _scenes[sceneName] is IScene customScene) customScene.Destroy();
     }

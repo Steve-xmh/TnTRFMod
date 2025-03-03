@@ -25,7 +25,7 @@ public class BaseUi
 
         _go = new GameObject("BaseUi");
         _transform = _go.AddComponent<RectTransform>();
-        _transform.parent = Common.GetDrawCanvasForScene();
+        _transform.SetParent(Common.GetDrawCanvasForScene());
         _transform.pivot = new Vector2(0, 1);
         _go.layer = LayerMask.NameToLayer("UI");
         _transform.transform.position =
