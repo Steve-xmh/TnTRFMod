@@ -13,6 +13,8 @@ internal class BufferedNoteInputPatch
     private static uint DonRInputCount;
     private static bool prevInput;
 
+    private static bool Disabled => !TnTrfMod.Instance.enableBufferedInputPatch.Value;
+
     public static void ResetCounts()
     {
         DonLInputCount = 0;
@@ -27,7 +29,7 @@ internal class BufferedNoteInputPatch
     [HarmonyPostfix]
     private static void Keyboard_OnTextInput_Postfix(Keyboard __instance, char character)
     {
-        if (TnTrfMod.Instance.sceneName != "Enso") return;
+        if (Disabled) return;
         var controllerManager = TaikoSingletonMonoBehaviour<ControllerManager>.Instance;
         if (controllerManager == null) return;
         if (!controllerManager.IsKeyOperationAvailable()) return;
@@ -51,7 +53,7 @@ internal class BufferedNoteInputPatch
     private static void EnsoInput_UpdateController_Postfix(EnsoInput __instance, int player,
         ref EnsoInput.EnsoInputFlag __result)
     {
-        if (TnTrfMod.Instance.sceneName != "Enso") return;
+        if (Disabled) return;
         var controllerManager = TaikoSingletonMonoBehaviour<ControllerManager>.Instance;
         if (controllerManager == null) return;
         if (!controllerManager.IsKeyOperationAvailable()) return;

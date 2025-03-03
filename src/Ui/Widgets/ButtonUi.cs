@@ -23,7 +23,7 @@ public class ButtonUi : BaseUi
 
         _button = _go.AddComponent<Button>();
 
-        Size = new Vector2(160, 30);
+        Size = new Vector2(160, 28 + 6);
 
         _label = new TextUi
         {

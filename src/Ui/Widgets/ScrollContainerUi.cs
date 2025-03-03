@@ -44,6 +44,7 @@ public class ScrollContainerUi : BaseUi
         layoutGroup.childControlHeight = false;
         layoutGroup.childForceExpandWidth = false;
         layoutGroup.childForceExpandHeight = false;
+        layoutGroup.padding = new RectOffset(4, 4, 4, 4);
 
         var fitter = _container.AddComponent<ContentSizeFitter>();
         fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;

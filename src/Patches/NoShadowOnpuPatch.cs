@@ -1,7 +1,6 @@
-﻿using System.Reflection;
+﻿using System.Text;
 using HarmonyLib;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace TnTRFMod.Patches;
 
@@ -23,6 +22,8 @@ internal class NoShadowOnpuPatch
 
     private static Sprite _spriteKatuDai01;
     private static Sprite _spriteKatuDai02;
+
+    private static HashSet<string> _loggedSets = [];
 
     public static void CheckOrInitializePatch()
     {
@@ -51,6 +52,21 @@ internal class NoShadowOnpuPatch
 
         _spriteKatuDai01 = CreateSprite("katu_dai_01_no_shadow", new Rect(2 + 2 * (172 + 2), bigNoteTop, 172, 172));
         _spriteKatuDai02 = CreateSprite("katu_dai_02_no_shadow", new Rect(2 + 3 * (172 + 2), bigNoteTop, 172, 172));
+
+        PrintIndices("OnpuNormal.indicesDon", OnpuNormal.indicesDon);
+        PrintIndices("OnpuNormal.indicesKatsu", OnpuNormal.indicesKatsu);
+        PrintIndices("OnpuNormal.indicesDaiDon", OnpuNormal.indicesDaiDon);
+        PrintIndices("OnpuNormal.indicesDaiKatsu", OnpuNormal.indicesDaiKatsu);
+    }
+
+    private static void PrintIndices(string name, int[] indices)
+    {
+        TnTrfMod.Log.LogMessage(name);
+        var builder = new StringBuilder();
+        builder.Append('[');
+        foreach (var index in indices) builder.Append(index).Append(", ");
+        builder.Append(']');
+        TnTrfMod.Log.LogMessage(builder.ToString());
     }
 
     private static Sprite CreateSprite(string name, Rect rect)
@@ -65,8 +81,6 @@ internal class NoShadowOnpuPatch
         sprite.name = name;
         return sprite;
     }
-
-    private static bool logged = false;
 
     // [HarmonyPatch(typeof(OnpuNormal))]
     // [HarmonyPatch(MethodType.Constructor)]
@@ -89,25 +103,27 @@ internal class NoShadowOnpuPatch
     [HarmonyPatch([typeof(AnimationData), typeof(float)])]
     [HarmonyPatch(MethodType.Normal)]
     [HarmonyPrefix]
-    private static void SpriteAnimation_ChangeAnimation_Postfix(SpriteAnimation __instance, ref AnimationData data,
+    private static void SpriteAnimation_ChangeAnimation_Prefix(SpriteAnimation __instance, ref AnimationData data,
         ref float time)
     {
         if (!TnTrfMod.Instance.enableNoShadowOnpuPatch.Value) return;
         CheckOrInitializePatch();
-        if (!logged)
-        {
-            TnTrfMod.Log.LogMessage("OnpuNormal.indicesDon");
-            TnTrfMod.Log.LogMessage(OnpuNormal.indicesDon);
-            TnTrfMod.Log.LogMessage("OnpuNormal.indicesKatsu");
-            TnTrfMod.Log.LogMessage(OnpuNormal.indicesKatsu);
-            TnTrfMod.Log.LogMessage("OnpuNormal.indicesDaiDon");
-            TnTrfMod.Log.LogMessage(OnpuNormal.indicesDaiDon);
-            TnTrfMod.Log.LogMessage("OnpuNormal.indicesDaiKatsu");
-            TnTrfMod.Log.LogMessage(OnpuNormal.indicesDaiKatsu);
-            
-            logged = true;
-        }
-        
+
+        // if (_loggedSets.Contains(__instance.spriteAnimationData.name)) return;
+        // _loggedSets.Add(__instance.spriteAnimationData.name);
+        //
+        // TnTrfMod.Log.LogMessage("SpriteAnimation.spriteAnimationData");
+        // TnTrfMod.Log.LogMessage($"  name: {__instance.spriteAnimationData.name}");
+        // foreach (var animData in __instance.spriteAnimationData.list)
+        // {
+        //     TnTrfMod.Log.LogMessage($"  sprite: {animData.name}");
+        //     foreach (var spriteData in animData.spriteList)
+        //     {
+        //         TnTrfMod.Log.LogMessage($"    name: {spriteData.spriteName}");
+        //         TnTrfMod.Log.LogMessage($"    sprite.GetHashCode: {spriteData.sprite.GetHashCode()}");
+        //     }
+        // }
+
         // new OnpuBase().ChangeAnimationOnState(TaikoCoreTypes.OnpuTypes.Do, TaikoCoreTypes.OnpuStateTypes.Active);
         // OnpuNormal.indicesDon
 
@@ -116,22 +132,22 @@ internal class NoShadowOnpuPatch
         //     var tex = sprite.sprite.texture;
         //     if (collectedTexSets.Contains(tex)) continue;
         //     texSets.Add(tex);
-            // collectedTexSets.Add(tex);
-            // var textureData = sprite.sprite.texture.EncodeToPNG();
-            // sprite.sprite = sprite.sprite.name switch
-            // {
-            //     "don_01" => _spriteDon01,
-            //     "don_02" => _spriteDon02,
-            //     "don_03" => _spriteDon03,
-            //     "katu_01" => _spriteKatu01,
-            //     "katu_02" => _spriteKatu02,
-            //     "katu_03" => _spriteKatu03,
-            //     "don_dai_01" => _spriteDonDai01,
-            //     "don_dai_02" => _spriteDonDai02,
-            //     "katu_dai_01" => _spriteKatuDai01,
-            //     "katu_dai_02" => _spriteKatuDai02,
-            //     _ => sprite.sprite
-            // };
+        // collectedTexSets.Add(tex);
+        // var textureData = sprite.sprite.texture.EncodeToPNG();
+        // sprite.sprite = sprite.sprite.name switch
+        // {
+        //     "don_01" => _spriteDon01,
+        //     "don_02" => _spriteDon02,
+        //     "don_03" => _spriteDon03,
+        //     "katu_01" => _spriteKatu01,
+        //     "katu_02" => _spriteKatu02,
+        //     "katu_03" => _spriteKatu03,
+        //     "don_dai_01" => _spriteDonDai01,
+        //     "don_dai_02" => _spriteDonDai02,
+        //     "katu_dai_01" => _spriteKatuDai01,
+        //     "katu_dai_02" => _spriteKatuDai02,
+        //     _ => sprite.sprite
+        // };
         // }
 
         // foreach (var tex in texSets)

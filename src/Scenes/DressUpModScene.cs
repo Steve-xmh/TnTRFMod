@@ -1,11 +1,14 @@
-﻿using TnTRFMod.Ui.Widgets;
+﻿using TMPro;
+using TnTRFMod.Ui.Widgets;
 using UnityEngine;
 
 namespace TnTRFMod.Ui.Scenes;
 
-public class DressUpModScene : MonoBehaviour
+public class DressUpModScene : IScene
 {
-    public DressUpModScene()
+    public string SceneName => "DressUp";
+
+    public void Start()
     {
         var switchAnimationBtn = new ButtonUi
         {
@@ -35,9 +38,16 @@ public class DressUpModScene : MonoBehaviour
             });
             scroll.AddChild(button);
         }
+
+        _ = new TextUi
+        {
+            Text = "自定义动画功能已启用，按下 T/Y 键可旋转小咚",
+            Position = new Vector2(1920 - 256, 32),
+            Alignment = TextAlignmentOptions.Right
+        };
     }
 
-    private void Update()
+    public void Update()
     {
         ControllerManager.GetKeyboard(out var keyboard);
 
@@ -53,7 +63,7 @@ public class DressUpModScene : MonoBehaviour
         }
     }
 
-    public void OnDestroy()
+    public void Destroy()
     {
         var donModel = DonModel.GetInstance(0);
         donModel._rootModels.transform.rotation = Quaternion.Euler(0, 180, 0);

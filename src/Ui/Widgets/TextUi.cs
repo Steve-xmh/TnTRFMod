@@ -16,17 +16,21 @@ public class TextUi : BaseUi
         _textTMP.enableWordWrapping = false;
         var fontMgr = Common.GetFontManager();
         var fontType = fontMgr.GetFontTypeBySystemLanguage();
-        var fontAsset = fontMgr.GetDefaultFontAsset(fontType);
+        var fontAsset = fontMgr.GetDescriptionFontAsset(fontType);
+        // var fontMaterial = fontMgr.GetDescriptionFontMaterial(fontType, DataConst.DescriptionFontMaterialType.OutlineWhite);
         _textTMP.font = fontAsset;
+        // _textTMP.material = fontMaterial;
         _uitext = _go.AddComponent<UiText>();
         _uitext.tmpro = _textTMP;
         var color = Color.white;
         _uitext.SetFaceColor(ref color);
         color = Color.black;
         _uitext.SetOutlineColor(ref color);
-        _uitext.outlineWidth = 0.2f;
-        _uitext.tmpro.fontSize = 24;
-        _transform.SetHeight(24f);
+        _uitext.faceDilate = 0.25f;
+        _uitext.outlineWidth = 0.25f;
+        _uitext.tmpro.fontSize = 28;
+        _uitext.SetCharacterSpacing(6f);
+        _transform.SetHeight(28f);
     }
 
     public string Text

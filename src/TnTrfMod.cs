@@ -1,4 +1,5 @@
-﻿using BepInEx;
+﻿using System.Collections;
+using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
@@ -6,7 +7,6 @@ using HarmonyLib;
 using Il2CppInterop.Runtime;
 using TnTRFMod.Patches;
 using TnTRFMod.Ui.Scenes;
-using TnTRFMod.Ui.Widgets;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -18,6 +18,8 @@ namespace TnTRFMod;
 public class TnTrfMod : BasePlugin
 {
     internal new static ManualLogSource Log;
+
+    private readonly Hashtable _scenes = new();
     private Harmony _harmony;
 
     public ConfigEntry<bool> enableBetterBigHitPatch;
@@ -40,28 +42,36 @@ public class TnTrfMod : BasePlugin
         Log = base.Log;
         Log.LogInfo($"TnTRFMod has loaded!");
 
+        // 默认启用的功能
         enableBetterBigHitPatch = Config.Bind("General", "EnableBetterBigHitPatch", true,
             "Whether to enable better Big Hit Patch, which will treat one side hit as a big hit.");
         enableSkipBootScreenPatch = Config.Bind("General", "EnableSkipBootScreenPatch", true,
             "Whether to enable Skip Boot Screen Patch.");
         enableSkipRewardPatch = Config.Bind("General", "EnableSkipRewardPatch", true,
             "Whether to enable Skip Reward Dialog Patch.");
-        enableNearestNeighborOnpuPatch = Config.Bind("General", "EnableNearestNeighborOnpuPatch", true,
+        enableBufferedInputPatch = Config.Bind("General", "EnableBufferedInputPatch", true,
+            "Whether to enable Buffered Input Patch.");
+        // 默认禁用的功能
+        enableNearestNeighborOnpuPatch = Config.Bind("General", "EnableNearestNeighborOnpuPatch", false,
             "Whether to enable Nearest Neighbor Onpu/Note Patch, this may make the notes look more pixelated.");
         enableNoShadowOnpuPatch = Config.Bind("General", "EnableNoShadowOnpuPatch", false,
             "Whether to enable No Shadow Onpu/Note Patch, this may reduce motion blur effect when notes are scrolling, but may also reduce the performance.");
         enableCustomDressAnimationMod = Config.Bind("General", "EnableCustomDressAnimationMod", false,
             "Enable a simple gui that can switch preview animation of don-chan when in dressing page.");
-        enableBufferedInputPatch = Config.Bind("General", "EnableBufferedInputPatch", false,
-            "Whether to enable Buffered Input Patch.");
 
         maxBufferedInputCount = Config.Bind("BufferedInput", "MaxBufferedInputCount", 30u,
             "The maximum count of the buffered key input per side.");
 
         SceneManager.sceneLoaded +=
             DelegateSupport.ConvertDelegate<UnityAction<Scene, LoadSceneMode>>(OnSceneWasLoaded);
+        SceneManager.sceneUnloaded +=
+            DelegateSupport.ConvertDelegate<UnityAction<Scene>>(OnSceneWasUnloaded);
 
         SetupHarmony();
+        RegisterScene<DressUpModScene>();
+        RegisterScene<TitleScene>();
+        RegisterScene<EnsoScene>();
+        AddComponent<Updater>();
     }
 
     private void SetupHarmony()
@@ -69,6 +79,8 @@ public class TnTrfMod : BasePlugin
         _harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
 
         var result = true;
+
+        // _harmony.PatchAll();
 
         result &= PatchClass<BetterBigHitPatch>(enableBetterBigHitPatch);
         result &= PatchClass<SkipBootScreenPatch>(enableSkipBootScreenPatch);
@@ -88,39 +100,32 @@ public class TnTrfMod : BasePlugin
         }
     }
 
+    private void OnUpdate()
+    {
+        if (sceneName != null && _scenes[sceneName] is IScene customScene) customScene.Update();
+    }
+
     private void OnSceneWasLoaded(Scene scene, LoadSceneMode mode)
     {
         sceneName = scene.name;
         Log.LogInfo($"OnSceneWasLoaded {sceneName}");
 
-        switch (sceneName)
-        {
-            case "Title":
-                _ = new TextUi
-                {
-                    Text = $"TnTRFMod v{MyPluginInfo.PLUGIN_VERSION} (BepInEx)",
-                    Position = new Vector2(32f, 32f)
-                };
-                break;
-            case "DressUp":
-            {
-                if (enableCustomDressAnimationMod.Value)
-                {
-                    var modScene = new GameObject("DressUpModScene");
-                    modScene.AddComponent<DressUpModScene>();
-                }
+        if (sceneName != null && _scenes[sceneName] is IScene customScene) customScene.Start();
+    }
 
-                break;
-            }
-            case "Enso":
-            {
-                NoShadowOnpuPatch.CheckOrInitializePatch();
-                BufferedNoteInputPatch.ResetCounts();
+    private void OnSceneWasUnloaded(Scene scene)
+    {
+        Log.LogInfo($"OnSceneWasLoaded {sceneName}");
 
-                if (enableNearestNeighborOnpuPatch.Value) NearestNeighborOnpuPatch.PatchLaneTarget();
-                break;
-            }
-        }
+        if (sceneName != null && _scenes[sceneName] is IScene customScene) customScene.Destroy();
+    }
+
+    private void RegisterScene<S>()
+        where S : IScene, new()
+    {
+        Log.LogInfo($"Registering Scene {typeof(S).Name}");
+        var s = new S();
+        _scenes[s.SceneName] = s;
     }
 
     private bool PatchClass<T>(ConfigEntry<bool> configEntry)
@@ -138,6 +143,14 @@ public class TnTrfMod : BasePlugin
             Log.LogError($"Patch \"{typeof(T).Name}\" failed to inject:");
             Log.LogError(ex.Message);
             return false;
+        }
+    }
+
+    private class Updater : MonoBehaviour
+    {
+        private void Update()
+        {
+            Instance.OnUpdate();
         }
     }
 }
