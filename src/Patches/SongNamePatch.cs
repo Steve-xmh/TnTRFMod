@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
-using MethodType = HarmonyLib.MethodType;
 
 namespace TnTRFMod.Patches;
 

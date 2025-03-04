@@ -28,24 +28,28 @@ public static class UTask
     public static IEnumerator Await<T>(this UniTask<T> uniTask, Action<T> onResult = null,
         Action<System.Exception> onException = null)
     {
+        var result = default(T);
+        Exception ex = null;
         var co = uniTask.ToCoroutine(
             DelegateSupport.ConvertDelegate<Il2CppSystem.Action<T>>(
-                (T result) => { onResult?.Invoke(result); }
+                (T r) => { result = r; }
             ),
             DelegateSupport.ConvertDelegate<Il2CppSystem.Action<Exception>>(
-                (Exception exception) =>
-                {
-                    if (onException == null)
-
-                        TnTrfMod.Log.LogError($"Failed to execute UniTask: {exception}");
-
-                    else
-
-                        onException.Invoke(new System.Exception(exception.Message));
-                }
+                (Exception exception) => { ex = exception; }
             )
         );
 
         yield return co;
+        if (ex != null)
+        {
+            if (onException == null)
+                TnTrfMod.Log.LogError($"Failed to execute UniTask: {ex}");
+            else
+                onException.Invoke(new System.Exception(ex.Message));
+        }
+        else
+        {
+            onResult?.Invoke(result);
+        }
     }
 }

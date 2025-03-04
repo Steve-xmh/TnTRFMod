@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace TnTRFMod.Ui.Widgets;
 
@@ -63,6 +64,17 @@ public class BaseUi
     {
         get => _go.activeSelf;
         set => _go.SetActive(value);
+    }
+
+    public void Dispose()
+    {
+        _go.transform.SetParent(null);
+        Object.Destroy(_go);
+    }
+
+    public void MoveToNoDestroyCanvas()
+    {
+        _transform.SetParent(Common.GetDrawCanvasNoDestroyForScene());
     }
 
     public void AddChild(GameObject child)

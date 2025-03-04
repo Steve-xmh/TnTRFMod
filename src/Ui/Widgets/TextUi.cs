@@ -45,9 +45,15 @@ public class TextUi : BaseUi
         set => _uitext.SetFaceColor(ref value);
     }
 
+    public float FontSize
+    {
+        get => _textTMP.fontSize;
+        set => _textTMP.fontSize = value;
+    }
+
     public TextAlignmentOptions Alignment
     {
-        get => _uitext.tmpro.alignment;
-        set => _uitext.tmpro.alignment = value;
+        get => _textTMP.alignment;
+        set => _textTMP.alignment = value;
     }
 }

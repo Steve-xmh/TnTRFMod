@@ -28,14 +28,14 @@ public class TnTrfMod : BasePlugin
     private MinimumLatencyAudioClient _minimumLatencyAudioClient;
 
     private Updater _updater;
+    public ConfigEntry<bool> enableAutoDownloadSubscriptionSongs;
 
     public ConfigEntry<bool> enableBetterBigHitPatch;
     public ConfigEntry<bool> enableBufferedInputPatch;
     public ConfigEntry<bool> enableCustomDressAnimationMod;
+    public ConfigEntry<bool> enableMinimumLatencyAudioClient;
     public ConfigEntry<bool> enableNearestNeighborOnpuPatch;
     public ConfigEntry<bool> enableNoShadowOnpuPatch;
-    public ConfigEntry<bool> enableAutoDownloadSubscriptionSongs;
-    public ConfigEntry<bool> enableMinimumLatencyAudioClient;
     public ConfigEntry<bool> enableSkipBootScreenPatch;
     public ConfigEntry<bool> enableSkipRewardPatch;
     public ConfigEntry<uint> maxBufferedInputCount;
@@ -46,10 +46,10 @@ public class TnTrfMod : BasePlugin
 
     public override void Load()
     {
-        Console.OutputEncoding = Encoding.Unicode;
+        Console.OutputEncoding = Encoding.UTF8;
         Instance = this;
         Log = base.Log;
-        Log.LogInfo($"TnTRFMod has loaded!");
+        Log.LogInfo("TnTRFMod has loaded!");
 
         // 默认启用的功能
         enableBetterBigHitPatch = Config.Bind("General", "EnableBetterBigHitPatch", true,
@@ -85,10 +85,19 @@ public class TnTrfMod : BasePlugin
         RegisterScene<TitleScene>();
         RegisterScene<EnsoScene>();
         RegisterScene<BootScene>();
+        RegisterScene<EnsoNetworkScene>();
         _updater = AddComponent<Updater>();
 
-        _minimumLatencyAudioClient = new MinimumLatencyAudioClient();
-        _minimumLatencyAudioClient.Start();
+        try
+        {
+            _minimumLatencyAudioClient = new MinimumLatencyAudioClient();
+            _minimumLatencyAudioClient.Start();
+        }
+        catch (Exception e)
+        {
+            Log.LogError("Failed to start MinimumLatencyAudioClient:");
+            Log.LogError(e);
+        }
     }
 
     public override bool Unload()
@@ -129,11 +138,11 @@ public class TnTrfMod : BasePlugin
 
         if (result)
         {
-            Log.LogInfo($"Successfully injected all configured patches!");
+            Log.LogInfo("Successfully injected all configured patches!");
         }
         else
         {
-            Log.LogError($"Due to some of the patches failed, reverting injected patches to ensure safety...");
+            Log.LogError("Due to some of the patches failed, reverting injected patches to ensure safety...");
             _harmony.UnpatchSelf();
         }
     }

@@ -1,4 +1,5 @@
-using NAudio.CoreAudioApi;
+using System.Runtime.InteropServices;
+using TnTRFMod.Utils.Wasapi;
 
 namespace TnTRFMod.Utils;
 
@@ -6,31 +7,75 @@ namespace TnTRFMod.Utils;
 
 public class MinimumLatencyAudioClient
 {
-    private MMDevice device;
+    private static Guid IID_IAudioClient = typeof(IAudioClient3).GUID;
+    private IAudioClient3 audioClient;
+    private IMMDevice device;
 
     public void Start()
     {
+        if (Environment.OSVersion.Version.Major < 10)
+        {
+            TnTrfMod.Log.LogError("MinimumLatencyAudioClient feature only works on Windows 10 or newer");
+            return;
+        }
+
         TnTrfMod.Log.LogInfo("Starting MinimumLatencyAudioClient");
-        var enumerator = new MMDeviceEnumerator();
-        device = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Console);
-        var audioClient = device.AudioClient;
+        // ReSharper disable once SuspiciousTypeConversion.Global
+        var realEnumerator = new MMDeviceEnumeratorComObject() as IMMDeviceEnumerator;
+
+        realEnumerator!.GetDefaultAudioEndpoint(0, 0, out device);
+        if (device == null)
+        {
+            TnTrfMod.Log.LogError("Failed to get default audio endpoint");
+            return;
+        }
+
+        device.Activate(ref IID_IAudioClient, ClsCtx.ALL, IntPtr.Zero,
+            out var audioClient3);
+        audioClient = audioClient3 as IAudioClient3;
+        if (audioClient == null)
+        {
+            TnTrfMod.Log.LogError("Failed to activate IAudioClient3");
+            return;
+        }
+
+        audioClient.GetMixFormat(out var waveFormatPtr);
+        var waveFormat = WaveFormat.MarshalFromPtr(waveFormatPtr);
+        var sampleRate = waveFormat.sampleRate;
+
+        TnTrfMod.Log.LogInfo($"MixFormat: {waveFormat}");
         TnTrfMod.Log.LogInfo("Device properties:");
-        TnTrfMod.Log.LogInfo($"      Name                 : {device.FriendlyName}");
-        TnTrfMod.Log.LogInfo($"      Sample rate          : {audioClient.MixFormat.SampleRate}hz");
-        TnTrfMod.Log.LogInfo($"      Buffer size (Min)    : {audioClient.MinimumDevicePeriod / 10000f}ms");
-        TnTrfMod.Log.LogInfo($"      Buffer size (Default): {audioClient.DefaultDevicePeriod / 10000f}ms");
-        audioClient.Initialize(AudioClientShareMode.Shared, AudioClientStreamFlags.None, 100000,
-            0, audioClient.MixFormat, Guid.Empty);
+        TnTrfMod.Log.LogInfo($"      Sample rate          : {sampleRate}hz");
+
+        audioClient.GetSharedModeEnginePeriod(
+            waveFormatPtr,
+            out var defaultPeriodInFrames,
+            out var fundamentalPeriodInFrames,
+            out var minPeriodInFrames,
+            out var maxPeriodInFrames
+        );
+
+        var minLatency = (float)minPeriodInFrames / sampleRate * 1000f;
+        var currentLatency = (float)defaultPeriodInFrames / sampleRate * 1000f;
+
+        TnTrfMod.Log.LogInfo(
+            $"      Buffer size (Min)    : {minLatency.ToString("F2")}ms");
+        TnTrfMod.Log.LogInfo(
+            $"      Buffer size (Default): {currentLatency.ToString("F2")}ms");
+        TnTrfMod.Log.LogInfo(
+            $"      Buffer size (Max)    : {((float)maxPeriodInFrames / sampleRate * 1000f).ToString("F2")}ms");
+
+        audioClient.InitializeSharedAudioStream(0, minPeriodInFrames, waveFormatPtr, IntPtr.Zero);
+        Marshal.FreeCoTaskMem(waveFormatPtr);
         audioClient.Start();
-        TnTrfMod.Log.LogInfo($"      Buffer size (Current): {audioClient.BufferSize}");
-        TnTrfMod.Log.LogInfo($"      Latency (Current)    : {audioClient.StreamLatency}ms");
-        TnTrfMod.Log.LogInfo("Started MinimumLatencyAudioClient");
+        TnTrfMod.Log.LogInfo($"Successfully reduced audio latency from {currentLatency}ms -> {minLatency}ms");
     }
 
     public void Stop()
     {
         TnTrfMod.Log.LogInfo("Stopping MinimumLatencyAudioClient");
-        device.AudioClient.Stop();
-        device.Dispose();
+        audioClient.Stop();
+        Marshal.ReleaseComObject(device);
+        Marshal.ReleaseComObject(audioClient);
     }
 }

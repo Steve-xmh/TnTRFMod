@@ -42,15 +42,19 @@ public class Common
         _drawCanvasForSceneNoDestroy = GameObject.Find("CanvasForTnTRFModNoDestroy");
         if (_drawCanvasForSceneNoDestroy != null) return _drawCanvasForSceneNoDestroy.transform;
         _drawCanvasForSceneNoDestroy = new GameObject("CanvasForTnTRFModNoDestroy");
+        Object.DontDestroyOnLoad(_drawCanvasForSceneNoDestroy);
+        _drawCanvasForSceneNoDestroy.hideFlags = HideFlags.HideAndDontSave;
+
         var canvas = _drawCanvasForSceneNoDestroy.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+
         var scaler = _drawCanvasForSceneNoDestroy.AddComponent<CanvasScaler>();
         scaler.referenceResolution = new Vector2(ScreenWidth, ScreenHeight);
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
         _drawCanvasForSceneNoDestroy.AddComponent<GraphicRaycaster>();
         _drawCanvasForSceneNoDestroy.layer = LayerMask.NameToLayer("UI");
-        Object.DontDestroyOnLoad(_drawCanvasForSceneNoDestroy);
+        _drawCanvasForSceneNoDestroy.SetActive(true);
 
         return _drawCanvasForSceneNoDestroy.transform;
     }
