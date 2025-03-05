@@ -1,8 +1,21 @@
+<div align="center">
+<img alt="Mod Logo" src="./src/Resources/ModLogo.png" >
+
+<br>
+
 # SteveXMH's TnTRF Mod
 
-A simple mod for PC version of Taiko no Tatsujin: Rhythm Festival.
+A mod aiming to improve experiences of PC version of Taiko no Tatsujin: Rhythm Festival.
 
-一个简易的 PC 版本的 太鼓之达人：咚咚雷音祭 的模组。
+一个针对 PC 版本的 太鼓之达人：咚咚雷音祭 的体验优化模组。
+
+</div>
+
+> [!WARNING]
+>
+> This mod is still unstable and under construction, use it at your own risk!
+>
+> 此模组仍在开发当中，仍不稳定，敬请留意！
 
 ## Features / 功能
 
@@ -15,7 +28,9 @@ A simple mod for PC version of Taiko no Tatsujin: Rhythm Festival.
 - Automatically download all songs when starting the game (and can automatically skip download if already have songs)
 - Allow to change texture filter of Onpu/Note to nearest neighbor.
 - Built-in REAL tool feature (force to reduce audio output buffer to reduce latency)
+- Reopen Steam invite friend overlay when in online room lobby. 
 - Remove shadows of Onpu/Note to reduce motion blur effect. **(Unstable)**
+- ...And More(?)
 
 ---
 
@@ -27,7 +42,9 @@ A simple mod for PC version of Taiko no Tatsujin: Rhythm Festival.
 - 支持自动在启动时全量下载歌曲（且可以自动识别已有歌曲并跳过下载）
 - 允许将音符纹理过滤设置成最近邻居。
 - 内置 REAL 工具功能（强制降低音频输出缓冲以降低延迟）
+- 支持在联机房间页面里重新打开 Steam 好友邀请页面
 - 移除音符的阴影以缓解拖影效果。**（不稳定）**
+- ……可能还有更多（？）
 
 ## Installation / 安装方式
 
@@ -69,9 +86,11 @@ You can access `UserData/net.stevexmh.TnTRFMod.cfg` to configure the mod feature
 
 ## Disclaimer / 免责声明
 
-This mod is not fully tested in multiplayer games. Even if it can disable some functions that are unfair to online game,
-it **CANNOT** ensure that they will not be considered as cheating tools. If you are worried about this, it is
-recommended to disable or delete this mod before playing online mode.
+This mod contains features that may be considered as a abuse feature (like downloading songs),
+and some of the features are not fully tested in multiplayer games.
+Even if it can disable some functions that are unfair to online game,
+it **CANNOT** ensure that they will not be considered as cheating tools.
+If you are worried about this, it is recommended to disable or delete this mod before playing online mode.
 
 本模组存在部分可能会被认为是滥用的功能（例如歌曲下载），且也有功能未在多人游戏中进行完整测试，即便可以自主禁用部分有失多人公平性的功能但
 **无法确保**

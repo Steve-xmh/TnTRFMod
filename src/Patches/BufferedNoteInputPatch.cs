@@ -49,6 +49,7 @@ internal class BufferedNoteInputPatch
 
     [HarmonyPatch(typeof(EnsoInput))]
     [HarmonyPatch(nameof(EnsoInput.UpdateController))]
+    [HarmonyPatch(MethodType.Normal)]
     [HarmonyPostfix]
     private static void EnsoInput_UpdateController_Postfix(EnsoInput __instance, int player,
         ref EnsoInput.EnsoInputFlag __result)
