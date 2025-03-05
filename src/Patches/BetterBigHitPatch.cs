@@ -1,5 +1,11 @@
 ﻿using HarmonyLib;
+#if BEPINEX
 using Scripts.EnsoGame.Network;
+#endif
+
+#if MELONLOADER
+using Il2CppScripts.EnsoGame.Network;
+#endif
 
 namespace TnTRFMod.Patches;
 

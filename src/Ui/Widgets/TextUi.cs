@@ -1,7 +1,15 @@
-﻿using Scripts.Common;
+﻿using UnityEngine;
+#if BEPINEX
+using Scripts.Common;
 using TMPro;
-using UnityEngine;
 using UtageExtensions;
+#endif
+
+#if MELONLOADER
+using Il2CppScripts.Common;
+using Il2CppTMPro;
+using Il2CppUtageExtensions;
+#endif
 
 namespace TnTRFMod.Ui.Widgets;
 

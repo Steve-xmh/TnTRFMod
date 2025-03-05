@@ -2,6 +2,8 @@
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+#if MELONLOADER
+#endif
 
 namespace TnTRFMod.Ui;
 

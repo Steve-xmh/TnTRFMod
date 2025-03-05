@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <Configuration Condition=" '$(Configuration)' == '' ">BepInEx</Configuration>
         <ModName>TnTRFMod</ModName>
         <TargetFramework>net6.0</TargetFramework>
         <AssemblyName>net.stevexmh.$(ModName)</AssemblyName>
@@ -18,30 +19,52 @@
         <Authors>SteveXMH</Authors>
         <Title>TnTRFMod</Title>
         <AssemblyVersion>0.3.0</AssemblyVersion>
+        <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    </PropertyGroup>
-
-    <Target Name="UserFile" AfterTargets="PreBuildEvent">
-        <Copy Condition="!Exists('.\$(MSBuildProjectDir)\$(ModName).csproj.user')" SourceFiles="$(MSBuildProjectDir)src\Resources\Template.csproj.user" DestinationFiles=".\$(MSBuildProjectDir)\$(ModName).csproj.user"/>
-        <Error Condition="$(GameDir)==''" Text="Set the GameDir variable in .csproj.user file to your Rhythm Festival executable directory."/>
-    </Target>
-
-    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <Configurations>BepInEx;MelonLoader</Configurations>
         <PlatformTarget>x64</PlatformTarget>
         <DebugType>embedded</DebugType>
         <Optimize>true</Optimize>
     </PropertyGroup>
 
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-        <PlatformTarget>x64</PlatformTarget>
-        <DebugType>embedded</DebugType>
-    </PropertyGroup>
+    <Target Name="UserFile" AfterTargets="PreBuildEvent">
+        <Copy Condition="!Exists('.\$(MSBuildProjectDir)\$(ModName).csproj.user')"
+              SourceFiles="$(MSBuildProjectDir)src\Resources\Template.csproj.user"
+              DestinationFiles=".\$(MSBuildProjectDir)\$(ModName).csproj.user"/>
+        <Error
+                Condition="$(GameDir)==''"
+                Text="Set the GameDir variable in $(ModName).csproj.user file to your Rhythm Festival executable directory."/>
+    </Target>
 
-    <ItemGroup>
-        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile"/>
-        <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*"/>
+    <!-- BepInEx -->
+    <ItemGroup Condition="'$(Configuration)' == 'BepInEx'">
+        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*"
+                          IncludeAssets="compile"/>
         <Reference Include="$(GameDir)\BepInEx\interop\*.dll" Private="false"/>
     </ItemGroup>
+    <PropertyGroup Condition="'$(Configuration)' == 'BepInEx'">
+        <DefineConstants>$(DefineConstants);BEPINEX</DefineConstants>
+    </PropertyGroup>
+    <Target Name="PostBuildCopyBepInEx" AfterTargets="PostBuildEvent"
+            Condition="$(CopyOutputFiles) == true And '$(Configuration)' == 'BepInEx'">
+        <Copy SourceFiles="$(TargetDir)$(AssemblyName).dll"
+              DestinationFolder="$(GameDir)\BepInEx\plugins\$(AssemblyName)"/>
+    </Target>
+
+    <!-- MelonLoader -->
+    <ItemGroup Condition="'$(Configuration)' == 'MelonLoader'">
+        <Reference Include="$(GameDir)\MelonLoader\net6\*.dll" Private="false"/>
+        <Reference Include="$(GameDir)\MelonLoader\Il2CppAssemblies\*.dll" Private="false"/>
+        <Using Include="Il2Cpp"/>
+    </ItemGroup>
+    <PropertyGroup Condition="'$(Configuration)' == 'MelonLoader'">
+        <DefineConstants>$(DefineConstants);MELONLOADER</DefineConstants>
+    </PropertyGroup>
+    <Target Name="PostBuildCopyMelonLoader" AfterTargets="PostBuildEvent"
+            Condition="$(CopyOutputFiles) == true And '$(Configuration)' == 'MelonLoader'">
+        <Copy SourceFiles="$(TargetDir)$(AssemblyName).dll"
+              DestinationFolder="$(GameDir)\Mods"/>
+    </Target>
 
     <ItemGroup>
         <EmbeddedResource Update="src\Resources.resx">
@@ -61,8 +84,4 @@
     <ItemGroup>
         <Content Include="src\Resources\Template.csproj.user"/>
     </ItemGroup>
-
-    <Target Name="PostBuildCopy" AfterTargets="PostBuildEvent" Condition="$(CopyOutputFiles) == true">
-        <Copy SourceFiles="$(TargetDir)$(AssemblyName).dll" DestinationFolder="$(GameDir)\BepInEx\plugins\$(AssemblyName)"/>
-    </Target>
 </Project>

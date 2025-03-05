@@ -15,18 +15,18 @@ public class MinimumLatencyAudioClient
     {
         if (Environment.OSVersion.Version.Major < 10)
         {
-            TnTrfMod.Log.LogError("MinimumLatencyAudioClient feature only works on Windows 10 or newer");
+            Logger.Error("MinimumLatencyAudioClient feature only works on Windows 10 or newer");
             return;
         }
 
-        TnTrfMod.Log.LogInfo("Starting MinimumLatencyAudioClient");
+        Logger.Info("Starting MinimumLatencyAudioClient");
         // ReSharper disable once SuspiciousTypeConversion.Global
         var realEnumerator = new MMDeviceEnumeratorComObject() as IMMDeviceEnumerator;
 
         realEnumerator!.GetDefaultAudioEndpoint(0, 0, out device);
         if (device == null)
         {
-            TnTrfMod.Log.LogError("Failed to get default audio endpoint");
+            Logger.Error("Failed to get default audio endpoint");
             return;
         }
 
@@ -35,7 +35,7 @@ public class MinimumLatencyAudioClient
         audioClient = audioClient3 as IAudioClient3;
         if (audioClient == null)
         {
-            TnTrfMod.Log.LogError("Failed to activate IAudioClient3");
+            Logger.Error("Failed to activate IAudioClient3");
             return;
         }
 
@@ -43,9 +43,9 @@ public class MinimumLatencyAudioClient
         var waveFormat = WaveFormat.MarshalFromPtr(waveFormatPtr);
         var sampleRate = waveFormat.sampleRate;
 
-        TnTrfMod.Log.LogInfo($"MixFormat: {waveFormat}");
-        TnTrfMod.Log.LogInfo("Device properties:");
-        TnTrfMod.Log.LogInfo($"      Sample rate          : {sampleRate}hz");
+        Logger.Info($"MixFormat: {waveFormat}");
+        Logger.Info("Device properties:");
+        Logger.Info($"      Sample rate          : {sampleRate}hz");
 
         audioClient.GetSharedModeEnginePeriod(
             waveFormatPtr,
@@ -58,24 +58,26 @@ public class MinimumLatencyAudioClient
         var minLatency = (float)minPeriodInFrames / sampleRate * 1000f;
         var currentLatency = (float)defaultPeriodInFrames / sampleRate * 1000f;
 
-        TnTrfMod.Log.LogInfo(
+        Logger.Info(
             $"      Buffer size (Min)    : {minLatency.ToString("F2")}ms");
-        TnTrfMod.Log.LogInfo(
+        Logger.Info(
             $"      Buffer size (Default): {currentLatency.ToString("F2")}ms");
-        TnTrfMod.Log.LogInfo(
+        Logger.Info(
             $"      Buffer size (Max)    : {((float)maxPeriodInFrames / sampleRate * 1000f).ToString("F2")}ms");
 
         audioClient.InitializeSharedAudioStream(0, minPeriodInFrames, waveFormatPtr, IntPtr.Zero);
         Marshal.FreeCoTaskMem(waveFormatPtr);
         audioClient.Start();
-        TnTrfMod.Log.LogInfo($"Successfully reduced audio latency from {currentLatency}ms -> {minLatency}ms");
+        Logger.Info($"Successfully reduced audio latency from {currentLatency}ms -> {minLatency}ms");
     }
 
     public void Stop()
     {
-        TnTrfMod.Log.LogInfo("Stopping MinimumLatencyAudioClient");
+        Logger.Info("Stopping MinimumLatencyAudioClient");
         audioClient.Stop();
+#if WINDOWS
         Marshal.ReleaseComObject(device);
         Marshal.ReleaseComObject(audioClient);
+#endif
     }
 }

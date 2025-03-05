@@ -1,5 +1,7 @@
 using System.Runtime.InteropServices;
 
+// ReSharper disable UnusedMember.Global
+
 namespace TnTRFMod.Utils.Wasapi;
 
 // 得益于 COM 接口继承和 .NET 类型互操作性的差异，我们不得不对 IAudioClient3 编写它的所有继承接口
@@ -8,45 +10,45 @@ namespace TnTRFMod.Utils.Wasapi;
 [ComImport]
 [Guid("7ED4EE07-8E67-4CD4-8C1A-2B7A5987AD42")]
 [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-internal interface IAudioClient3 : IAudioClient2
+internal interface IAudioClient3
 {
     #region IAudioClient
 
     [PreserveSig]
-    new int Initialize(AudioClientShareMode shareMode,
+    int Initialize(AudioClientShareMode shareMode,
         AudioClientStreamFlags streamFlags,
         long hnsBufferDuration, // REFERENCE_TIME
         long hnsPeriodicity, // REFERENCE_TIME
         [In] WaveFormat pFormat,
         [In] ref Guid audioSessionGuid);
 
-    new int GetBufferSize(out uint bufferSize);
+    int GetBufferSize(out uint bufferSize);
 
     [return: MarshalAs(UnmanagedType.I8)]
-    new long GetStreamLatency();
+    long GetStreamLatency();
 
-    new int GetCurrentPadding(out int currentPadding);
+    int GetCurrentPadding(out int currentPadding);
 
     [PreserveSig]
-    new int IsFormatSupported(
+    int IsFormatSupported(
         AudioClientShareMode shareMode,
         [In] WaveFormat pFormat,
         IntPtr closestMatchFormat); // or outIntPtr??
 
-    new int GetMixFormat(out IntPtr deviceFormatPointer);
+    int GetMixFormat(out IntPtr deviceFormatPointer);
 
-    new int GetDevicePeriod(out long defaultDevicePeriod, out long minimumDevicePeriod);
+    int GetDevicePeriod(out long defaultDevicePeriod, out long minimumDevicePeriod);
 
-    new int Start();
+    int Start();
 
-    new int Stop();
+    int Stop();
 
-    new int Reset();
+    int Reset();
 
-    new int SetEventHandle(IntPtr eventHandle);
+    int SetEventHandle(IntPtr eventHandle);
 
     [PreserveSig]
-    new int GetService([In] [MarshalAs(UnmanagedType.LPStruct)] Guid interfaceId,
+    int GetService([In] [MarshalAs(UnmanagedType.LPStruct)] Guid interfaceId,
         [Out] [MarshalAs(UnmanagedType.IUnknown)]
         out object interfacePointer);
 
@@ -54,11 +56,11 @@ internal interface IAudioClient3 : IAudioClient2
 
     #region IAudioClient2
 
-    new void IsOffloadCapable(AudioStreamCategory category, out bool pbOffloadCapable);
+    void IsOffloadCapable(AudioStreamCategory category, out bool pbOffloadCapable);
 
-    new void SetClientProperties([In] IntPtr pProperties);
+    void SetClientProperties([In] IntPtr pProperties);
 
-    new void GetBufferSizeLimits(IntPtr pFormat, bool bEventDriven,
+    void GetBufferSizeLimits(IntPtr pFormat, bool bEventDriven,
         out long phnsMinBufferDuration, out long phnsMaxBufferDuration);
 
     #endregion

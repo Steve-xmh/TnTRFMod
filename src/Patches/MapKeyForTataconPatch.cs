@@ -1,8 +1,14 @@
 ﻿using System.Runtime.InteropServices;
 using HarmonyLib;
-using Scripts.OutGame.SongSelect;
 using UnityEngine;
 using UnityEngine.InputSystem;
+#if BEPINEX
+using Scripts.OutGame.SongSelect;
+#endif
+
+#if MELONLOADER
+using Il2CppScripts.OutGame.SongSelect;
+#endif
 
 namespace TnTRFMod.Patches;
 

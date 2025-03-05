@@ -13,7 +13,7 @@ public class TitleScene : IScene
     {
         _ = new TextUi
         {
-            Text = $"TnTRFMod v{MyPluginInfo.PLUGIN_VERSION} (BepInEx)",
+            Text = $"{TnTrfMod.MOD_NAME} v{TnTrfMod.MOD_VERSION} ({TnTrfMod.MOD_LOADER})",
             Position = new Vector2(64f, 64f)
         };
 

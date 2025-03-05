@@ -37,6 +37,8 @@ A simple mod for PC version of Taiko no Tatsujin: Rhythm Festival.
 
 ### Manual Installation / 手动安装
 
+#### Use BepInEx / 使用 BepInEx
+
 Install [BepInEx](https://github.com/BepInEx/BepInEx) into your game, then download this mod from
 the [release page](https://github.com/Steve-xmh/TnTRFMod/releases/latest) and put it in the `BepInX/plugins` folder
 under the game
@@ -49,6 +51,21 @@ You can access `BepInEx/config/net.stevexmh.TnTRFMod.cfg` to configure the mod f
 文件夹后启动游戏即可。
 
 你可以通过访问 `BepInEx/config/net.stevexmh.TnTRFMod.cfg` 来配置模组的功能。
+
+#### Use MelonLoader / 使用 MelonLoader
+
+Install [MelonLoader](https://github.com/LavaGang/MelonLoader) into your game, then download this mod from
+the [release page](https://github.com/Steve-xmh/TnTRFMod/releases/latest) and put it in the `Mods` folder
+under the game
+directory and start the game.
+
+You can access `UserData/net.stevexmh.TnTRFMod.cfg` to configure the mod features.
+
+为你的游戏安装好 [MelonLoader](https://github.com/LavaGang/MelonLoader)
+，然后从[发行页面](https://github.com/Steve-xmh/TnTRFMod/releases/latest)中下载本模组并放入游戏目录下的 `Mods`
+文件夹后启动游戏即可。
+
+你可以通过访问 `UserData/net.stevexmh.TnTRFMod.cfg` 来配置模组的功能。
 
 ## Disclaimer / 免责声明
 

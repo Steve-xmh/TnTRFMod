@@ -31,16 +31,6 @@ public class BaseUi
         _go.layer = LayerMask.NameToLayer("UI");
         _transform.transform.position =
             new Vector3(_transform.transform.position.x, _transform.transform.position.y, 90f);
-
-        // _go.OnMouseEnterAsObservable().Subscribe(DelegateSupport.ConvertDelegate<Il2CppSystem.Action<Unit>>((Unit _) =>
-        // {
-        //     DisableGameInput();
-        // }));
-        //
-        // _go.OnMouseExitAsObservable().Subscribe(DelegateSupport.ConvertDelegate<Il2CppSystem.Action<Unit>>((Unit _) =>
-        // {
-        //     EnableGameInput();
-        // }));
     }
 
     public Vector2 Position

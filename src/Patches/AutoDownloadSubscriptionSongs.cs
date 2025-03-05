@@ -5,6 +5,7 @@ using TnTRFMod.Utils;
 using UnityEngine;
 using UnityEngine.Events;
 using CancellationTokenSource = Il2CppSystem.Threading.CancellationTokenSource;
+using Logger = TnTRFMod.Utils.Logger;
 
 namespace TnTRFMod.Patches;
 
@@ -52,16 +53,23 @@ public class AutoDownloadSubscriptionSongs
             yield break;
         }
 
-        TnTrfMod.Log.LogInfo(
+        if (res == null)
+        {
+            exception = new Exception("无法确认 Music Pass 订阅可用性，可能是网络错误");
+            yield return ShowException();
+            yield break;
+        }
+
+        Logger.Info(
             $"Subscription Status: {res.result}, {res.errorText}, {res.responseBody.subscription}, {res.responseBody.expiration_datetime}");
 
         var curTime = DateTime.Now;
         var expirationTime = DateTimeOffset.FromUnixTimeMilliseconds(res.responseBody.expiration_datetime).DateTime;
-        TnTrfMod.Log.LogInfo($"Subscription Current Time: {curTime}, Expiration Time: {expirationTime}");
+        Logger.Info($"Subscription Current Time: {curTime}, Expiration Time: {expirationTime}");
 
         if (curTime >= expirationTime)
         {
-            TnTrfMod.Log.LogWarning("Subscription is not valid now, skip downloading songs");
+            Logger.Warn("Subscription is not valid now, skip downloading songs");
             downloadText.Text = "Music Pass 订阅不可用或已过期";
             yield return WaitToHide();
             yield break;
@@ -69,7 +77,7 @@ public class AutoDownloadSubscriptionSongs
 
         downloadText.Text = "(2/4) Music Pass 订阅可用，正在检索歌曲列表";
 
-        TnTrfMod.Log.LogInfo("Subscription is still valid, start downloading songs");
+        Logger.Info("Subscription is still valid, start downloading songs");
         SubscriptionGateway.ResponseDataSonglistDetails songList = null;
         yield return SubscriptionUtility.DownloadSongListDetails().Await(result => { songList = result; }, onEx);
 
@@ -82,8 +90,8 @@ public class AutoDownloadSubscriptionSongs
             yield break;
         }
 
-        TnTrfMod.Log.LogInfo($"Fetched {songList.responseBody.ary_preview_song.Count} preview songs");
-        TnTrfMod.Log.LogInfo($"Fetched {songList.responseBody.ary_release_song.Count} released songs");
+        Logger.Info($"Fetched {songList.responseBody.ary_preview_song.Count} preview songs");
+        Logger.Info($"Fetched {songList.responseBody.ary_release_song.Count} released songs");
 
         var source = new CancellationTokenSource();
 
@@ -101,13 +109,13 @@ public class AutoDownloadSubscriptionSongs
             var progressText = $"(3/4) 正在下载 {availableSongPreviewUids.Count} 首歌曲预览";
             downloadText.Text = progressText;
 
-            TnTrfMod.Log.LogInfo($"Start downloading {availableSongPreviewUids.Count} song previews");
+            Logger.Info($"Start downloading {availableSongPreviewUids.Count} song previews");
             yield return SubscriptionUtility.DownloadPreviewFiles(
                 availableSongPreviewUids.ToArray(), source.Token,
                 DelegateSupport.ConvertDelegate<UnityAction<float>>(
                     (float result) =>
                     {
-                        TnTrfMod.Log.LogInfo($"Downloading song previews: {result * 100}%");
+                        Logger.Info($"Downloading song previews: {result * 100}%");
                         downloadText.Text = $"{progressText} ({result * 100}%)";
                     }
                 )).Await(null, onEx);
@@ -133,13 +141,13 @@ public class AutoDownloadSubscriptionSongs
             var progressText = $"(4/4) 正在下载 {availableSongFileUids.Count} 首歌曲文件";
             downloadText.Text = progressText;
 
-            TnTrfMod.Log.LogInfo($"Start downloading {availableSongFileUids.Count} song files");
+            Logger.Info($"Start downloading {availableSongFileUids.Count} song files");
             yield return SubscriptionUtility.DownloadSongFilesAsync(
                 availableSongFileUids.ToArray(), source.Token,
                 DelegateSupport.ConvertDelegate<UnityAction<float>>(
                     (float result) =>
                     {
-                        TnTrfMod.Log.LogInfo($"Downloading song files: {result * 100}%");
+                        Logger.Info($"Downloading song files: {result * 100}%");
                         downloadText.Text = $"{progressText} ({result * 100}%)";
                     }
                 )).Await(null, onEx);
@@ -153,7 +161,7 @@ public class AutoDownloadSubscriptionSongs
 
         // SubscriptionUtility.DownloadSongFile()
 
-        TnTrfMod.Log.LogInfo("Finished download song files!");
+        Logger.Info("Finished download song files!");
 
         downloadText.Text = "歌曲已下载完成！";
         yield return WaitToHide();

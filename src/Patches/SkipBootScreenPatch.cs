@@ -1,8 +1,15 @@
 ﻿using HarmonyLib;
-using Scripts.OutGame.Boot;
-using Scripts.OutGame.Common;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+#if BEPINEX
+using Scripts.OutGame.Boot;
+using Scripts.OutGame.Common;
+#endif
+
+#if MELONLOADER
+using Il2CppScripts.OutGame.Boot;
+using Il2CppScripts.OutGame.Common;
+#endif
 
 namespace TnTRFMod.Patches;
 

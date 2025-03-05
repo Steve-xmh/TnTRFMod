@@ -2,7 +2,7 @@ using TnTRFMod.Patches;
 
 namespace TnTRFMod.Scenes;
 
-public class EnsoNetworkScene: IScene
+public class EnsoNetworkScene : IScene
 {
     public string SceneName => "Enso";
 

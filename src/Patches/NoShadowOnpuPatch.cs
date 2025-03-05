@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using HarmonyLib;
 using UnityEngine;
+using Logger = TnTRFMod.Utils.Logger;
 
 namespace TnTRFMod.Patches;
 
@@ -61,12 +62,12 @@ internal class NoShadowOnpuPatch
 
     private static void PrintIndices(string name, int[] indices)
     {
-        TnTrfMod.Log.LogMessage(name);
+        Logger.Info(name);
         var builder = new StringBuilder();
         builder.Append('[');
         foreach (var index in indices) builder.Append(index).Append(", ");
         builder.Append(']');
-        TnTrfMod.Log.LogMessage(builder.ToString());
+        Logger.Info(builder.ToString());
     }
 
     private static Sprite CreateSprite(string name, Rect rect)
