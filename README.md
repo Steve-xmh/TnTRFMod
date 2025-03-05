@@ -33,7 +33,7 @@ A simple mod for PC version of Taiko no Tatsujin: Rhythm Festival.
 
 ### Use Taiko Mod Manager / 使用 Taiko Mod Manager 直接安装
 
- <a href="taikomodmanager:https://github.com/Steve-xmh/TnTRFMod"> <img src="https://github.com/Deathbloodjr/RF.ModTemplate/blob/main/Resources/InstallButton.png?raw=true" alt="点击此处直接安装 / Click here to directly install" width="256"/> </a>
+ <a href="https://shorturl.at/hHKUL"> <img src="https://github.com/Deathbloodjr/RF.ModTemplate/blob/main/Resources/InstallButton.png?raw=true" alt="点击此处直接安装 / Click here to directly install" width="256"/> </a>
 
 ### Manual Installation / 手动安装
 
