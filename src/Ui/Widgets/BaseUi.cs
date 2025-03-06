@@ -33,15 +33,21 @@ public class BaseUi
             new Vector3(_transform.transform.position.x, _transform.transform.position.y, 90f);
     }
 
+    private bool IsChildOfCanvas => _transform.parent == Common.GetDrawCanvasForScene() ||
+                                    _transform.parent == Common.GetDrawCanvasForScene();
+
     public Vector2 Position
     {
         get
         {
-            var pos = _transform.anchoredPosition;
-            return new Vector2(pos.x + Common.ScreenWidth / 2f, Common.ScreenHeight / 2f - pos.y);
+            var pos = _transform.localPosition;
+            return IsChildOfCanvas
+                ? new Vector2(pos.x + Common.ScreenWidth / 2f, Common.ScreenHeight / 2f - pos.y)
+                : new Vector2(pos.x, -pos.y);
         }
-        set => _transform.anchoredPosition =
-            new Vector2(value.x - Common.ScreenWidth / 2f, Common.ScreenHeight / 2f - value.y);
+        set => _transform.localPosition = IsChildOfCanvas
+            ? new Vector2(value.x - Common.ScreenWidth / 2f, Common.ScreenHeight / 2f - value.y)
+            : new Vector2(value.x, -value.y);
     }
 
     public Vector2 Size
@@ -50,10 +56,21 @@ public class BaseUi
         set => _transform.sizeDelta = value;
     }
 
+    public string Name
+    {
+        get => _go.name;
+        set => _go.name = value;
+    }
+
     public bool Visible
     {
         get => _go.activeSelf;
         set => _go.SetActive(value);
+    }
+
+    public void SetActive(bool active)
+    {
+        _go.SetActive(active);
     }
 
     public void Dispose()
@@ -65,6 +82,11 @@ public class BaseUi
     public void MoveToNoDestroyCanvas()
     {
         _transform.SetParent(Common.GetDrawCanvasNoDestroyForScene());
+    }
+
+    public void SetParent(GameObject parent)
+    {
+        _transform.SetParent(parent.transform);
     }
 
     public void AddChild(GameObject child)

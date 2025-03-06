@@ -4,7 +4,7 @@ namespace TnTRFMod.Scenes;
 
 public class EnsoNetworkScene : IScene
 {
-    public string SceneName => "Enso";
+    public string SceneName => "EnsoNetwork";
 
     public void Start()
     {

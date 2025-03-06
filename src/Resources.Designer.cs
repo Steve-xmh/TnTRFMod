@@ -62,9 +62,49 @@ namespace TnTRFMod {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] HitFuka {
+            get {
+                object obj = ResourceManager.GetObject("HitFuka", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] HitKa {
+            get {
+                object obj = ResourceManager.GetObject("HitKa", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] HitRyo {
+            get {
+                object obj = ResourceManager.GetObject("HitRyo", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] OnpuSpriteSet {
             get {
                 object obj = ResourceManager.GetObject("OnpuSpriteSet", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] TrainCounter {
+            get {
+                object obj = ResourceManager.GetObject("TrainCounter", resourceCulture);
                 return ((byte[])(obj));
             }
         }

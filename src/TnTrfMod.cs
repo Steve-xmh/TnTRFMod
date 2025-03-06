@@ -169,6 +169,7 @@ public class TnTrfMod
         result &= PatchClass<NearestNeighborOnpuPatch>(enableNearestNeighborOnpuPatch);
         result &= PatchClass<BufferedNoteInputPatch>(enableBufferedInputPatch);
         result &= PatchClass<ReopenInviteDialogPatch>();
+        result &= PatchClass<ShowJudgeOffsetPatch>();
 
         if (result)
         {
@@ -206,6 +207,13 @@ public class TnTrfMod
     {
         Logger.Info($"Registering Scene {typeof(S).Name}");
         var s = new S();
+        s.Init();
+        if (_scenes[s.SceneName] is IScene customScene)
+        {
+            Logger.Error($"Scene already registered by {customScene.GetType().Name}, skipping...");
+            return;
+        }
+
         _scenes[s.SceneName] = s;
     }
 

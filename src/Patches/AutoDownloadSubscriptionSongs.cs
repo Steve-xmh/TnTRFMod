@@ -98,12 +98,9 @@ public class AutoDownloadSubscriptionSongs
         var availableSongPreviewUids = new List<int>();
 
         foreach (var uid in songUids)
-        {
-            if (!PackedSongUtility.CheckPreviewFileExists(uid)) availableSongPreviewUids.Add(uid);
-
-            yield return null; // 因为 PackedSongUtility.CheckPreviewFileExists 会阻塞，所以需要 yield return null 确保流畅
-        }
-
+            if (!PackedSongUtility.CheckPreviewFileExists(uid))
+                availableSongPreviewUids.Add(uid);
+        // yield return null; // 因为 PackedSongUtility.CheckPreviewFileExists 会阻塞，所以需要 yield return null 确保流畅
         if (availableSongPreviewUids.Count > 0)
         {
             var progressText = $"(3/4) 正在下载 {availableSongPreviewUids.Count} 首歌曲预览";
@@ -130,12 +127,9 @@ public class AutoDownloadSubscriptionSongs
         var availableSongFileUids = new List<int>();
 
         foreach (var uid in songUids)
-        {
-            if (!PackedSongUtility.CheckSongFileExists(uid)) availableSongFileUids.Add(uid);
-
-            yield return null; // 因为 PackedSongUtility.CheckPreviewFileExists 会阻塞，所以需要 yield return null 确保流畅
-        }
-
+            if (!PackedSongUtility.CheckSongFileExists(uid))
+                availableSongFileUids.Add(uid);
+        // yield return null; // 因为 PackedSongUtility.CheckPreviewFileExists 会阻塞，所以需要 yield return null 确保流畅
         if (availableSongFileUids.Count > 0)
         {
             var progressText = $"(4/4) 正在下载 {availableSongFileUids.Count} 首歌曲文件";

@@ -90,9 +90,5 @@ internal class BufferedNoteInputPatch
             prevInput = true;
             __result = EnsoInput.EnsoInputFlag.KatsuR;
         }
-        else
-        {
-            __result = EnsoInput.EnsoInputFlag.None;
-        }
     }
 }

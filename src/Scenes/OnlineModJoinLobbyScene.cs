@@ -1,12 +1,10 @@
-using System.Diagnostics;
-using System.Text;
 using TnTRFMod.Patches;
 using TnTRFMod.Ui.Widgets;
 using UnityEngine;
-
 #if BEPINEX
 using Steamworks;
 #endif
+
 #if MELONLOADER
 using Il2CppSteamworks;
 #endif
@@ -23,7 +21,7 @@ public class OnlineModJoinLobbyScene : IScene
         {
             Text = "重新打开邀请页面",
             Position = new Vector2(64f, 128f),
-            Size = new Vector2(200f, 64f),
+            Size = new Vector2(200f, 64f)
         };
         reopenInviteBtn.AddListener(() =>
         {
@@ -31,7 +29,7 @@ public class OnlineModJoinLobbyScene : IScene
             if (id.HasValue) SteamFriends.ActivateGameOverlayInviteDialog(id.Value);
         });
     }
-    
+
     public void Destroy()
     {
         ReopenInviteDialogPatch.PrevId = null;

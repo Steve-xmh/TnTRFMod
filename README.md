@@ -28,7 +28,7 @@ A mod aiming to improve experiences of PC version of Taiko no Tatsujin: Rhythm F
 - Automatically download all songs when starting the game (and can automatically skip download if already have songs)
 - Allow to change texture filter of Onpu/Note to nearest neighbor.
 - Built-in REAL tool feature (force to reduce audio output buffer to reduce latency)
-- Reopen Steam invite friend overlay when in online room lobby. 
+- Reopen Steam invite friend overlay when in online room lobby.
 - Remove shadows of Onpu/Note to reduce motion blur effect. **(Unstable)**
 - ...And More(?)
 

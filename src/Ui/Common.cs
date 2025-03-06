@@ -26,6 +26,7 @@ public class Common
         _drawCanvasForScene = new GameObject("CanvasForTnTRFMod");
         var canvas = _drawCanvasForScene.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.sortingOrder = 5;
         var scaler = _drawCanvasForScene.AddComponent<CanvasScaler>();
         scaler.referenceResolution = new Vector2(ScreenWidth, ScreenHeight);
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;

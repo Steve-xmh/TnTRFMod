@@ -38,4 +38,29 @@
         </value>
         <comment>Onpu Sprite Set without shadow for No Shadow Onpu Patch</comment>
     </data>
+    <data name="TrainCounter" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\TrainCounter.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+        <comment>Training Counter UI Frame in enso game</comment>
+    </data>
+
+    <data name="HitRyo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\HitRyo.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+        <comment>Hit icon of good</comment>
+    </data>
+    <data name="HitKa" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\HitKa.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+        <comment>Hit icon of ok</comment>
+    </data>
+    <data name="HitFuka" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\HitFuka.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+        <comment>Hit icon of bad</comment>
+    </data>
 </root>
