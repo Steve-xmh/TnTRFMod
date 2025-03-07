@@ -12,30 +12,30 @@ public class ShowJudgeOffsetPatch
     public static int FuKaCount;
     public static int RendaCount;
 
-    // [HarmonyPatch(typeof(EnsoGameManager))]
-    // [HarmonyPatch(nameof(EnsoGameManager.ProcLoading))]
-    // [HarmonyPatch(MethodType.Normal)]
-    // [HarmonyPostfix]
-    // private static void EnsoGameManager_ProcLoading_Postfix(EnsoGameManager __instance)
-    // {
-    //     BufferedNoteInputPatch.ResetCounts();
-    //     RyoCount = 0;
-    //     KaCount = 0;
-    //     FuKaCount = 0;
-    //     RendaCount = 0;
-    //     LastHitTimeOffset = 0;
-    //
-    //     var results = __instance.ensoParam.GetFrameResults();
-    //     var i = 0;
-    //     foreach (var result in results.eachPlayer)
-    //     {
-    //         var ryoRange = result.GetJudgeRange(TaikoCoreTypes.OnpuTypes.Don, TaikoCoreTypes.HitResultTypes.Ryo);
-    //         var kaRange = result.GetJudgeRange(TaikoCoreTypes.OnpuTypes.Don, TaikoCoreTypes.HitResultTypes.Ka);
-    //         var fukaRange = result.GetJudgeRange(TaikoCoreTypes.OnpuTypes.Don, TaikoCoreTypes.HitResultTypes.Fuka);
-    //         // Logger.Info(
-    //         //     $"Player {++i} ryoRange {ryoRange}ms kaRange {kaRange}ms fukaRange {fukaRange}ms hitResultInfoMax {results.hitResultInfoMax} hitResultInfoNum {results.hitResultInfoNum}");
-    //     }
-    // }
+    [HarmonyPatch(typeof(EnsoGameManager))]
+    [HarmonyPatch(nameof(EnsoGameManager.ProcLoading))]
+    [HarmonyPatch(MethodType.Normal)]
+    [HarmonyPostfix]
+    private static void EnsoGameManager_ProcLoading_Postfix(EnsoGameManager __instance)
+    {
+        BufferedNoteInputPatch.ResetCounts();
+        RyoCount = 0;
+        KaCount = 0;
+        FuKaCount = 0;
+        RendaCount = 0;
+        LastHitTimeOffset = 0;
+    
+        // var results = __instance.ensoParam.GetFrameResults();
+        // var i = 0;
+        // foreach (var result in results.eachPlayer)
+        // {
+        //     var ryoRange = result.GetJudgeRange(TaikoCoreTypes.OnpuTypes.Don, TaikoCoreTypes.HitResultTypes.Ryo);
+        //     var kaRange = result.GetJudgeRange(TaikoCoreTypes.OnpuTypes.Don, TaikoCoreTypes.HitResultTypes.Ka);
+        //     var fukaRange = result.GetJudgeRange(TaikoCoreTypes.OnpuTypes.Don, TaikoCoreTypes.HitResultTypes.Fuka);
+        //     // Logger.Info(
+        //     //     $"Player {++i} ryoRange {ryoRange}ms kaRange {kaRange}ms fukaRange {fukaRange}ms hitResultInfoMax {results.hitResultInfoMax} hitResultInfoNum {results.hitResultInfoNum}");
+        // }
+    }
 
     // EnsoGameManager__ProcExecMain
     [HarmonyPatch(typeof(EnsoGameManager))]

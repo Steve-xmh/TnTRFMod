@@ -21,7 +21,8 @@ A mod aiming to improve experiences of PC version of Taiko no Tatsujin: Rhythm F
 
 - Allow to treat one side hit as a big hit, which will behave as the arcade version. (Will be disabled when in
   online mode to avoid being detected as cheating)
-- Buffered keyboard input, allow to avoid miss key in frame. (Currently not support joystick controller)
+- Buffered keyboard input, allow to avoid miss key in frame. (Currently not work with joystick controller)
+- Hit stats panel in enso game, similar to the past training mode panel, and can show the time difference of note hits.
 - Faster boot scene to quickly get into game.
 - Support to skip reward dialog when already max level and max coins.
 - Allow to control animation and preview angle of Don-chan model when in costume page.
@@ -35,7 +36,8 @@ A mod aiming to improve experiences of PC version of Taiko no Tatsujin: Rhythm F
 ---
 
 - 允许将单侧击打强制识别成大打，和街机行为一致（在线上模式下会被自动禁用以免被视为作弊）
-- 缓冲键盘输入，可以捕获任何时间下的输入而不吃音。（目前不支持手柄）
+- 缓冲键盘输入，可以捕获任何时间下的输入而不吃音。（目前对手柄不工作）
+- 在游戏中显示击打数据面板，和过去的特训模式类似的面板，同时可以显示音符击打的时间差距。
 - 快速跳过启动页面，可以更快地进入游戏。
 - 允许控制在装扮页面时的小咚的模型动画和预览角度。
 - 支持在已经满级满金币的情况下跳过奖励对话框。

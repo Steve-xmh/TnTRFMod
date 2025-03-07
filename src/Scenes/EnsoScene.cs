@@ -1,7 +1,14 @@
-using TMPro;
+
 using TnTRFMod.Patches;
 using TnTRFMod.Ui.Widgets;
 using UnityEngine;
+
+#if BEPINEX
+using TMPro;
+#endif
+#if MELONLOADER
+using Il2CppTMPro;
+#endif
 
 namespace TnTRFMod.Scenes;
 
@@ -34,6 +41,11 @@ public class EnsoScene : IScene
         BufferedNoteInputPatch.ResetCounts();
 
         if (TnTrfMod.Instance.enableNearestNeighborOnpuPatch.Value) NearestNeighborOnpuPatch.PatchLaneTarget();
+        if (TnTrfMod.Instance.enableHitStatsPanelPatch.Value) StartHitStatsPanel();
+    }
+
+    private void StartHitStatsPanel()
+    {
 
         trainCounterUi = new ImageUi(Resources.TrainCounter, 325, 280)
         {
@@ -167,6 +179,11 @@ public class EnsoScene : IScene
     }
 
     public void Update()
+    {
+        if (TnTrfMod.Instance.enableHitStatsPanelPatch.Value) UpdateHitStatsPanel();
+    }
+
+    private void UpdateHitStatsPanel()
     {
         var ryo = ShowJudgeOffsetPatch.RyoCount;
         var ka = ShowJudgeOffsetPatch.KaCount;

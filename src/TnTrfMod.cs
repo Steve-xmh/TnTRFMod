@@ -27,7 +27,7 @@ public class TnTrfMod
 {
     public const string MOD_NAME = "TnTRFMod";
     public const string MOD_AUTHOR = "SteveXMH";
-    public const string MOD_VERSION = "0.4.0";
+    public const string MOD_VERSION = "0.5.0";
 #if BEPINEX
     public const string MOD_LOADER = "BepInEx";
 #endif
@@ -50,6 +50,8 @@ public class TnTrfMod
     public ConfigEntry<bool> enableBufferedInputPatch;
     public ConfigEntry<bool> enableCustomDressAnimationMod;
     public ConfigEntry<bool> enableMinimumLatencyAudioClient;
+    public ConfigEntry<bool> enableOpenInviteFriendDialogButton;
+    public ConfigEntry<bool> enableHitStatsPanelPatch;
     public ConfigEntry<bool> enableNearestNeighborOnpuPatch;
     public ConfigEntry<bool> enableNoShadowOnpuPatch;
     public ConfigEntry<bool> enableSkipBootScreenPatch;
@@ -87,6 +89,10 @@ public class TnTrfMod
             "Enable a simple gui that can switch preview animation of don-chan when in dressing page.", false);
         enableAutoDownloadSubscriptionSongs = ConfigEntry.Register("General", "EnableAutoDownloadSubscriptionSongs",
             "Enable auto download subscription songs. (NOT FULLY TESTED)", false);
+        enableOpenInviteFriendDialogButton = ConfigEntry.Register("General", "EnableOpenInviteFriendDialogButton",
+            "Enable open invite friend dialog button when in online friend room lobby.", false);
+        enableHitStatsPanelPatch = ConfigEntry.Register("General", "EnableHitStatsPanelPatch",
+            "Enable hit stats panel during music game. (Known issue: only chinese label supported and will overlaps with pause panel.)", false);
 
         maxBufferedInputCount = ConfigEntry.Register("BufferedInput", "MaxBufferedInputCount",
             "The maximum count of the buffered key input per side.", 5u);
