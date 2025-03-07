@@ -23,7 +23,8 @@ public class TextUi : BaseUi
         _textTMP = _go.AddComponent<TextMeshProUGUI>();
         _textTMP.enableWordWrapping = false;
         _uitext = _go.AddComponent<UiText>();
-        TextColor = Color.white;
+        _uitext.tmpro = _textTMP;
+        Color = Color.white;
         if (useMainFont) UseMainFont();
         else UseDescriptionFont();
     }
@@ -37,29 +38,28 @@ public class TextUi : BaseUi
     public Color Color
     {
         get => _uitext.faceColor;
-        set => _uitext.SetFaceColor(ref value);
+        set
+        {
+            _uitext.SetFaceColor(ref value);
+            _uitext.Refresh();
+        }
     }
 
     public float FontSize
     {
-        get => _textTMP.fontSize;
+        get => _uitext.tmpro.fontSize;
         set
         {
             _transform.SetHeight(value);
-            _textTMP.fontSize = value;
+            _uitext.tmpro.fontSize = value;
+            _uitext.Refresh();
         }
     }
 
     public TextAlignmentOptions Alignment
     {
-        get => _textTMP.alignment;
-        set => _textTMP.alignment = value;
-    }
-
-    public Color TextColor
-    {
-        get => _uitext.faceColor;
-        set => _uitext.SetFaceColor(ref value);
+        get => _uitext.tmpro.alignment;
+        set => _uitext.tmpro.alignment = value;
     }
 
     private void UpdateText()
@@ -69,18 +69,21 @@ public class TextUi : BaseUi
         _uitext.faceDilate = 0.25f;
         _uitext.outlineWidth = 0.25f;
         _uitext.ApplyFont();
+        _uitext.Refresh();
     }
 
     private void UseMainFont()
     {
         var fontMgr = Common.GetFontManager();
         var fontType = fontMgr.GetFontTypeBySystemLanguage();
-        var fontAsset = fontMgr.GetDefaultFontAsset(fontType);
-        var fontMat = fontMgr.GetDefaultFontMaterial(fontType, DataConst.DefaultFontMaterialType.OutlineBlack);
-
-        _textTMP.font = fontAsset;
-        _textTMP.material = fontMat;
-        _uitext.tmpro = _textTMP;
+        // var fontAsset = fontMgr.GetDefaultFontAsset(fontType);
+        // var fontMat = fontMgr.GetDefaultFontMaterial(fontType, DataConst.DefaultFontMaterialType.OutlineBlack);
+        //
+        // _textTMP.font = fontAsset;
+        // _textTMP.material = fontMat;
+        // _uitext.tmpro = _textTMP;
+        _uitext.font = fontType;
+        _uitext.fontSetting = UiText.FontSetting.TaikoMain;
         _uitext.SetCharacterSpacing(2f);
         UpdateText();
     }
@@ -89,12 +92,11 @@ public class TextUi : BaseUi
     {
         var fontMgr = Common.GetFontManager();
         var fontType = fontMgr.GetFontTypeBySystemLanguage();
-        var fontAsset = fontMgr.GetDescriptionFontAsset(fontType);
-        var fontMat = fontMgr.GetDescriptionFontMaterial(fontType, DataConst.DescriptionFontMaterialType.OutlineBlack);
+        // var fontAsset = fontMgr.GetDescriptionFontAsset(fontType);
+        // var fontMat = fontMgr.GetDescriptionFontMaterial(fontType, DataConst.DescriptionFontMaterialType.OutlineBlack);
 
-        _textTMP.font = fontAsset;
-        _textTMP.material = fontMat;
-        _uitext.tmpro = _textTMP;
+        _uitext.font = fontType;
+        _uitext.fontSetting = UiText.FontSetting.Description;
         _uitext.SetCharacterSpacing(6f);
         UpdateText();
     }
