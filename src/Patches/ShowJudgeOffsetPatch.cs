@@ -1,5 +1,6 @@
 using HarmonyLib;
 using UnityEngine;
+using Logger = TnTRFMod.Utils.Logger;
 
 namespace TnTRFMod.Patches;
 
@@ -11,6 +12,10 @@ public class ShowJudgeOffsetPatch
     public static int KaCount;
     public static int FuKaCount;
     public static int RendaCount;
+
+    public static float RyoJudgeRange = float.Epsilon;
+    public static float KaJudgeRange = float.Epsilon;
+    public static float FukaJudgeRange = float.Epsilon;
 
     [HarmonyPatch(typeof(EnsoGameManager))]
     [HarmonyPatch(nameof(EnsoGameManager.ProcLoading))]
@@ -24,7 +29,7 @@ public class ShowJudgeOffsetPatch
         FuKaCount = 0;
         RendaCount = 0;
         LastHitTimeOffset = 0;
-    
+
         // var results = __instance.ensoParam.GetFrameResults();
         // var i = 0;
         // foreach (var result in results.eachPlayer)
@@ -45,12 +50,24 @@ public class ShowJudgeOffsetPatch
     private static void EnsoGameManager_ProcExecMain_Postfix(EnsoGameManager __instance)
     {
         var results = __instance.ensoParam.GetFrameResults();
-        foreach (var result in results.eachPlayer)
-            // var ryoRange = result.GetJudgeRange(TaikoCoreTypes.OnpuTypes.Don, TaikoCoreTypes.HitResultTypes.Ryo);
-            // var kaRange = result.GetJudgeRange(TaikoCoreTypes.OnpuTypes.Don, TaikoCoreTypes.HitResultTypes.Ka);
-            // var fukaRange = result.GetJudgeRange(TaikoCoreTypes.OnpuTypes.Don, TaikoCoreTypes.HitResultTypes.Fuka);
-            // Logger.Info($"donRange {ryoRange}ms kaRange {kaRange}ms fukaRange {fukaRange}ms hitResultInfoMax {results.hitResultInfoMax} hitResultInfoNum {results.hitResultInfoNum}");
-            // Logger.Info($"results.firstOnpu.state {results.firstOnpu.state}");
+
+        try
+        {
+            var eachPlayer = results.eachPlayer[0];
+            RyoJudgeRange = eachPlayer.GetJudgeRange(TaikoCoreTypes.OnpuTypes.Don, TaikoCoreTypes.HitResultTypes.Ryo);
+            KaJudgeRange = eachPlayer.GetJudgeRange(TaikoCoreTypes.OnpuTypes.Don, TaikoCoreTypes.HitResultTypes.Ka);
+            FukaJudgeRange = eachPlayer.GetJudgeRange(TaikoCoreTypes.OnpuTypes.Don, TaikoCoreTypes.HitResultTypes.Fuka);
+        }
+        catch (Exception e)
+        {
+            Logger.Warn("Failed to get judge range, fallback to hard/oni judge range");
+            RyoJudgeRange = 25.25002f;
+            KaJudgeRange = 75.075005f;
+            FukaJudgeRange = 108.441666f;
+        }
+
+        // Logger.Info($"donRange {ryoRange}ms kaRange {kaRange}ms fukaRange {fukaRange}ms hitResultInfoMax {results.hitResultInfoMax} hitResultInfoNum {results.hitResultInfoNum}");
+        // Logger.Info($"results.firstOnpu.state {results.firstOnpu.state}");
         foreach (var hit in results.hitResultInfo.Take(results.hitResultInfoNum))
         {
             var hitResult = (TaikoCoreTypes.HitResultTypes)hit.hitResult;

@@ -55,7 +55,7 @@ public class AutoDownloadSubscriptionSongs
 
         if (res == null)
         {
-            exception = new Exception("无法确认 Music Pass 订阅可用性，可能是网络错误");
+            exception = new Exception(I18n.Get("autoDownloadSub.errorOnCheck")); // "无法确认 Music Pass 订阅可用性，可能是网络错误"
             yield return ShowException();
             yield break;
         }
@@ -112,8 +112,9 @@ public class AutoDownloadSubscriptionSongs
                 DelegateSupport.ConvertDelegate<UnityAction<float>>(
                     (float result) =>
                     {
-                        Logger.Info($"Downloading song previews: {result * 100}%");
-                        downloadText.Text = $"{progressText} ({result * 100}%)";
+                        var prog = (result * 100).ToString("F1");
+                        Logger.Info($"Downloading song previews: {prog}%");
+                        downloadText.Text = $"{progressText} ({prog}%)";
                     }
                 )).Await(null, onEx);
 
@@ -141,8 +142,9 @@ public class AutoDownloadSubscriptionSongs
                 DelegateSupport.ConvertDelegate<UnityAction<float>>(
                     (float result) =>
                     {
-                        Logger.Info($"Downloading song files: {result * 100}%");
-                        downloadText.Text = $"{progressText} ({result * 100}%)";
+                        var prog = (result * 100).ToString("F1");
+                        Logger.Info($"Downloading song files: {prog}%");
+                        downloadText.Text = $"{progressText} ({prog}%)";
                     }
                 )).Await(null, onEx);
 

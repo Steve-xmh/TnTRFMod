@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Text;
 using Il2CppInterop.Runtime;
 using TnTRFMod.Config;
 using TnTRFMod.Patches;
@@ -65,8 +64,8 @@ public class TnTrfMod
     public void Load(HarmonyInstance harmony)
     {
         _harmony = harmony;
-        Console.OutputEncoding = Encoding.UTF8;
         Logger.Info("TnTRFMod has loaded!");
+        I18n.Load();
 
         // 默认启用的功能
         enableBetterBigHitPatch = ConfigEntry.Register("General", "EnableBetterBigHitPatch",
@@ -92,7 +91,8 @@ public class TnTrfMod
         enableOpenInviteFriendDialogButton = ConfigEntry.Register("General", "EnableOpenInviteFriendDialogButton",
             "Enable open invite friend dialog button when in online friend room lobby.", false);
         enableHitStatsPanelPatch = ConfigEntry.Register("General", "EnableHitStatsPanelPatch",
-            "Enable hit stats panel during music game. (Known issue: only chinese label supported and will overlaps with pause panel.)", false);
+            "Enable hit stats panel during music game. (Known issue: only chinese label supported and will overlaps with pause panel.)",
+            false);
 
         maxBufferedInputCount = ConfigEntry.Register("BufferedInput", "MaxBufferedInputCount",
             "The maximum count of the buffered key input per side.", 5u);

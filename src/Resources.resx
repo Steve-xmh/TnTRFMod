@@ -63,4 +63,10 @@
         </value>
         <comment>Hit icon of bad</comment>
     </data>
+    <data name="Locale" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\Locales.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+        <comment>Locale file</comment>
+    </data>
 </root>

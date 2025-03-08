@@ -1,9 +1,7 @@
 using HarmonyLib;
 using Il2CppInterop.Runtime;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using TnTRFMod.Utils;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
 using UnityEngine.InputSystem.LowLevel;
 
 namespace TnTRFMod.Patches;
@@ -54,7 +52,7 @@ internal class BufferedNoteInputPatch
             }
         }
     }
-    
+
     private static void OnTextInput(char character)
     {
         if (Disabled) return;
@@ -62,7 +60,7 @@ internal class BufferedNoteInputPatch
 
         // (InputSystem.FindControl("") as ButtonControl).isPressed;
         mgr.GetNormalAxis(ControllerManager.ControllerPlayerNo.All, ControllerManager.Buttons.A);
-    
+
         var donLKey = mgr.keyConfig[(int)ControllerManager.Taiko.DonL];
         var donRKey = mgr.keyConfig[(int)ControllerManager.Taiko.DonR];
         var katsuLKey = mgr.keyConfig[(int)ControllerManager.Taiko.KatsuL];
@@ -121,19 +119,19 @@ internal class BufferedNoteInputPatch
             Logger.Info($"Player {PlayerNo} DonL");
             DonL = Math.Clamp(DonL + 1, 0, MaxBufferedInputCount);
         }
-        
+
         public void InvokeDonR()
         {
             Logger.Info($"Player {PlayerNo} DonR");
             DonR = Math.Clamp(DonR + 1, 0, MaxBufferedInputCount);
         }
-        
+
         public void InvokeKatsuL()
         {
             Logger.Info($"Player {PlayerNo} KatsuL");
             KatsuL = Math.Clamp(KatsuL + 1, 0, MaxBufferedInputCount);
         }
-        
+
         public void InvokeKatsuR()
         {
             Logger.Info($"Player {PlayerNo} KatsuR");

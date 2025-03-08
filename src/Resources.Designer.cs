@@ -92,6 +92,16 @@ namespace TnTRFMod {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] Locale {
+            get {
+                object obj = ResourceManager.GetObject("Locale", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] OnpuSpriteSet {
             get {
                 object obj = ResourceManager.GetObject("OnpuSpriteSet", resourceCulture);

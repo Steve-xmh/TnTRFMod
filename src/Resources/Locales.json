@@ -1,0 +1,28 @@
+{
+  "zhs": {
+    "autoDownloadSub.stepOne": "自动下载歌曲已开启\n(1/4) 正在检索 Music Pass 订阅可用性",
+    "autoDownloadSub.stepTwo": "(2/4) Music Pass 订阅可用，正在检索歌曲列表",
+    "autoDownloadSub.stepThree": "(3/4) 正在下载 {0} 首歌曲预览",
+    "autoDownloadSub.stepFour": "(4/4) 正在下载 {0} 首歌曲文件",
+    "autoDownloadSub.finished": "歌曲已下载完成！",
+    "autoDownloadSub.notVaild": "Music Pass 订阅不可用或已过期。",
+    "autoDownloadSub.errorOnCheck": "无法确认 Music Pass 订阅可用性，可能是网络错误。",
+    "autoDownloadSub.otherError": "自动歌曲下载发生错误：\n{0}",
+    "autoDownloadSub.hideTip": "\n文字信息将在 5 秒后消失",
+    "hitStats.hitAspectLabel": "音符命中率",
+    "hitStats.rendaLabel": "连打"
+  },
+  "en": {
+    "autoDownloadSub.stepOne": "Auto download songs is enabled\n(1/4) Checking Music Pass subscription...",
+    "autoDownloadSub.stepTwo": "(2/4) Music Pass subscription is available, checking song list",
+    "autoDownloadSub.stepThree": "(3/4) Downloading {0} songs preview",
+    "autoDownloadSub.stepFour": "(4/4) Downloading {0} songs files",
+    "autoDownloadSub.finished": "Songs have been downloaded!",
+    "autoDownloadSub.notVaild": "Music Pass subscription is not available or expired.",
+    "autoDownloadSub.errorOnCheck": "Failed to confirm Music Pass subscription availability, probably due to network error.",
+    "autoDownloadSub.otherError": "An error occurred while auto downloading songs:\n{0}",
+    "autoDownloadSub.hideTip": "\nText message will disappear in 5 seconds",
+    "hitStats.hitAspectLabel": "Hit Aspect",
+    "hitStats.rendaLabel": "Renda"
+  }
+}

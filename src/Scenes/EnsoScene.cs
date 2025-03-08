@@ -1,11 +1,11 @@
-
 using TnTRFMod.Patches;
 using TnTRFMod.Ui.Widgets;
+using TnTRFMod.Utils;
 using UnityEngine;
-
 #if BEPINEX
 using TMPro;
 #endif
+
 #if MELONLOADER
 using Il2CppTMPro;
 #endif
@@ -44,9 +44,13 @@ public class EnsoScene : IScene
         if (TnTrfMod.Instance.enableHitStatsPanelPatch.Value) StartHitStatsPanel();
     }
 
+    public void Update()
+    {
+        if (TnTrfMod.Instance.enableHitStatsPanelPatch.Value) UpdateHitStatsPanel();
+    }
+
     private void StartHitStatsPanel()
     {
-
         trainCounterUi = new ImageUi(Resources.TrainCounter, 325, 280)
         {
             Position = new Vector2(37.5f, 577.5f),
@@ -55,7 +59,7 @@ public class EnsoScene : IScene
 
         var hitAspectLabel = new TextUi(true)
         {
-            Text = "音符命中率",
+            Text = I18n.Get("hitStats.hitAspectLabel"),
             FontSize = 50
         };
         trainCounterUi.AddChild(hitAspectLabel);
@@ -65,7 +69,7 @@ public class EnsoScene : IScene
 
         var rendaLabel = new TextUi(true)
         {
-            Text = "连打",
+            Text = I18n.Get("hitStats.rendaLabel"),
             FontSize = 40,
             Color = new Color32(255, 255, 35, 255)
         };
@@ -178,11 +182,6 @@ public class EnsoScene : IScene
         hitOffset.Position = new Vector2(470, -38);
     }
 
-    public void Update()
-    {
-        if (TnTrfMod.Instance.enableHitStatsPanelPatch.Value) UpdateHitStatsPanel();
-    }
-
     private void UpdateHitStatsPanel()
     {
         var ryo = ShowJudgeOffsetPatch.RyoCount;
@@ -196,12 +195,12 @@ public class EnsoScene : IScene
         kaCounter.Text = ka.ToString();
         fukaCounter.Text = fuka.ToString();
         hitOffset.Text = $"{time}ms";
-        hitOffset.Color = time switch
-        {
-            > 0 => Color.yellow,
-            < 0 => Color.red,
-            _ => Color.green
-        };
+        if (time > ShowJudgeOffsetPatch.RyoJudgeRange)
+            hitOffset.Color = new Color32(248, 72, 40, 255);
+        else if (time < -ShowJudgeOffsetPatch.RyoJudgeRange)
+            hitOffset.Color = new Color32(104, 192, 192, 255);
+        else
+            hitOffset.Color = new Color32(248, 184, 0, 255);
 
         if (total > 0)
         {
