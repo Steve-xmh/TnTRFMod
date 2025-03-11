@@ -19,10 +19,7 @@ public class TitleScene : IScene
 
         if (isAutoSongDownloaded) return;
         isAutoSongDownloaded = true;
-        TnTrfMod.Instance.StartCoroutine(new AutoDownloadSubscriptionSongs().StartAutoDownloadSubscriptionSongs());
-    }
 
-    public void Update()
-    {
+        _ = new AutoDownloadSubscriptionSongs().StartAutoDownloadSubscriptionSongsAsync();
     }
 }

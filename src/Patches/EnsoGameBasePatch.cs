@@ -5,7 +5,7 @@ using Logger = TnTRFMod.Utils.Logger;
 namespace TnTRFMod.Patches;
 
 [HarmonyPatch]
-public class ShowJudgeOffsetPatch
+public class EnsoGameBasePatch
 {
     public static float LastHitTimeOffset;
     public static int RyoCount;
@@ -17,29 +17,60 @@ public class ShowJudgeOffsetPatch
     public static float KaJudgeRange = float.Epsilon;
     public static float FukaJudgeRange = float.Epsilon;
 
+    public static event EventHandler<HitInfo> HitSimple;
+    public static event EventHandler HitRenda;
+    public static event EventHandler OnEnsoStart;
+    public static event EventHandler OnEnsoEnd;
+
     [HarmonyPatch(typeof(EnsoGameManager))]
     [HarmonyPatch(nameof(EnsoGameManager.ProcLoading))]
     [HarmonyPatch(MethodType.Normal)]
     [HarmonyPostfix]
     private static void EnsoGameManager_ProcLoading_Postfix(EnsoGameManager __instance)
     {
+        OnEnsoStart?.Invoke(null, EventArgs.Empty);
         BufferedNoteInputPatch.ResetCounts();
         RyoCount = 0;
         KaCount = 0;
         FuKaCount = 0;
         RendaCount = 0;
         LastHitTimeOffset = 0;
+    }
 
-        // var results = __instance.ensoParam.GetFrameResults();
-        // var i = 0;
-        // foreach (var result in results.eachPlayer)
-        // {
-        //     var ryoRange = result.GetJudgeRange(TaikoCoreTypes.OnpuTypes.Don, TaikoCoreTypes.HitResultTypes.Ryo);
-        //     var kaRange = result.GetJudgeRange(TaikoCoreTypes.OnpuTypes.Don, TaikoCoreTypes.HitResultTypes.Ka);
-        //     var fukaRange = result.GetJudgeRange(TaikoCoreTypes.OnpuTypes.Don, TaikoCoreTypes.HitResultTypes.Fuka);
-        //     // Logger.Info(
-        //     //     $"Player {++i} ryoRange {ryoRange}ms kaRange {kaRange}ms fukaRange {fukaRange}ms hitResultInfoMax {results.hitResultInfoMax} hitResultInfoNum {results.hitResultInfoNum}");
-        // }
+
+    private static void OnSimpleHit(TaikoCoreTypes.HitResultTypes hitResult, float onpuJustTime)
+    {
+        // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+        switch (hitResult)
+        {
+            case TaikoCoreTypes.HitResultTypes.Ryo:
+                RyoCount++;
+                LastHitTimeOffset = onpuJustTime;
+                break;
+            case TaikoCoreTypes.HitResultTypes.Ka:
+                KaCount++;
+                LastHitTimeOffset = onpuJustTime;
+                break;
+            case TaikoCoreTypes.HitResultTypes.Drop:
+                FuKaCount++;
+                break;
+            case TaikoCoreTypes.HitResultTypes.Fuka:
+                FuKaCount++;
+                LastHitTimeOffset = onpuJustTime;
+                break;
+        }
+
+        HitSimple?.Invoke(null, new HitInfo
+        {
+            OnpuJustTime = onpuJustTime,
+            HitResult = hitResult
+        });
+    }
+
+    private static void OnRendaHit()
+    {
+        RendaCount++;
+        HitRenda?.Invoke(null, EventArgs.Empty);
     }
 
     // EnsoGameManager__ProcExecMain
@@ -86,25 +117,8 @@ public class ShowJudgeOffsetPatch
                 case TaikoCoreTypes.OnpuTypes.WDon:
                 case TaikoCoreTypes.OnpuTypes.DaiDon:
                 case TaikoCoreTypes.OnpuTypes.DaiKatsu:
-                    switch (hitResult)
-                    {
-                        case TaikoCoreTypes.HitResultTypes.Ryo:
-                            RyoCount++;
-                            LastHitTimeOffset = hit.onpu.justTime - (float)__instance.totalTime;
-                            break;
-                        case TaikoCoreTypes.HitResultTypes.Ka:
-                            KaCount++;
-                            LastHitTimeOffset = hit.onpu.justTime - (float)__instance.totalTime;
-                            break;
-                        case TaikoCoreTypes.HitResultTypes.Drop:
-                            FuKaCount++;
-                            break;
-                        case TaikoCoreTypes.HitResultTypes.Fuka:
-                            FuKaCount++;
-                            LastHitTimeOffset = hit.onpu.justTime - (float)__instance.totalTime;
-                            break;
-                    }
-
+                    OnSimpleHit(hitResult,
+                        hit.onpu.justTime - (float)__instance.totalTime - (float)__instance.adjustTime);
                     break;
                 case TaikoCoreTypes.OnpuTypes.GekiRenda:
                 case TaikoCoreTypes.OnpuTypes.DaiRenda:
@@ -114,7 +128,7 @@ public class ShowJudgeOffsetPatch
                     {
                         case TaikoCoreTypes.HitResultTypes.Ryo:
                         case TaikoCoreTypes.HitResultTypes.Ka:
-                            RendaCount++;
+                            OnRendaHit();
                             break;
                     }
 
@@ -132,5 +146,11 @@ public class ShowJudgeOffsetPatch
     private static void EnsoGameManager_Update_Postfix(EnsoGameManager __instance)
     {
         if (__instance.state == EnsoGameManager.State.ToResult) GameObject.Find("TrainCounterSprite")?.SetActive(false);
+    }
+
+    public class HitInfo : EventArgs
+    {
+        public TaikoCoreTypes.HitResultTypes HitResult;
+        public float OnpuJustTime;
     }
 }

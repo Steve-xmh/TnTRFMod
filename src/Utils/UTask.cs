@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Runtime.CompilerServices;
 using Il2CppInterop.Runtime;
 using Exception = Il2CppSystem.Exception;
 
@@ -12,25 +13,41 @@ using Il2CppCysharp.Threading.Tasks;
 
 namespace TnTRFMod.Utils;
 
+public class UTask<T>(UniTask<T> uniTask)
+{
+    public static implicit operator UTask<T>(UniTask<T> uniTask)
+    {
+        return new UTask<T>(uniTask);
+    }
+
+    public Awaiter<T> GetAwaiter()
+    {
+        return new Awaiter<T>(uniTask.GetAwaiter());
+    }
+
+    public class Awaiter<UT>(UniTask<UT>.Awaiter uAwaiter) : INotifyCompletion
+    {
+        public bool IsCompleted => uAwaiter.IsCompleted;
+
+        public void OnCompleted(Action continuation)
+        {
+            uAwaiter.OnCompleted(continuation);
+        }
+
+        public UT GetResult()
+        {
+            return uAwaiter.GetResult();
+        }
+    }
+}
+
 public static class UTask
 {
-    // public static Task<T> ToTask<T>(this UniTask<T> uniTask)
-    // {
-    //     var tcs = new TaskCompletionSource<T>();
-    //
-    //     var co = uniTask.ToCoroutine(
-    //         DelegateSupport.ConvertDelegate<Il2CppSystem.Action<T>>(
-    //             (T result) => { tcs.SetResult(result); }
-    //         ),
-    //         DelegateSupport.ConvertDelegate<Il2CppSystem.Action<Exception>>(
-    //             (Exception result) => { tcs.SetException(new System.Exception(result.Message)); }
-    //         )
-    //     );
-    //
-    //     TnTrfMod.Instance.StartCoroutine(co);
-    //
-    //     return tcs.Task;
-    // }
+    public static UTask<T> ToTask<T>(this UniTask<T> uniTask)
+    {
+        return new UTask<T>(uniTask);
+    }
+
 
     public static IEnumerator Await<T>(this UniTask<T> uniTask, Action<T> onResult = null,
         Action<System.Exception> onException = null)

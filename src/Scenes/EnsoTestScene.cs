@@ -3,11 +3,11 @@ using TnTRFMod.Scenes.Enso;
 
 namespace TnTRFMod.Scenes;
 
-public class EnsoScene : IScene
+public class EnsoTestScene : IScene
 {
     private readonly HitStatusPanel HitStatusPanel = new();
 
-    public string SceneName => "Enso";
+    public string SceneName => "EnsoTest";
 
     public void Init()
     {

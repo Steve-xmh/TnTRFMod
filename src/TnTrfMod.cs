@@ -26,7 +26,7 @@ public class TnTrfMod
 {
     public const string MOD_NAME = "TnTRFMod";
     public const string MOD_AUTHOR = "SteveXMH";
-    public const string MOD_VERSION = "0.5.0";
+    public const string MOD_VERSION = "0.5.1";
 #if BEPINEX
     public const string MOD_LOADER = "BepInEx";
 #endif
@@ -126,6 +126,16 @@ public class TnTrfMod
         return false;
     }
 
+//     public void StartCoroutine(Task task)
+//     {
+// #if BEPINEX
+//         _updater.StartCoroutine();
+// #endif
+// #if MELONLOADER
+//         MelonCoroutines.Start(routine);
+// #endif
+//     }
+
     public void StartCoroutine(IEnumerator routine)
     {
 #if BEPINEX
@@ -174,8 +184,8 @@ public class TnTrfMod
         result &= PatchClass<NoShadowOnpuPatch>(enableNoShadowOnpuPatch);
         result &= PatchClass<NearestNeighborOnpuPatch>(enableNearestNeighborOnpuPatch);
         result &= PatchClass<BufferedNoteInputPatch>(enableBufferedInputPatch);
-        result &= PatchClass<ReopenInviteDialogPatch>();
-        result &= PatchClass<ShowJudgeOffsetPatch>();
+        result &= PatchClass<ReopenInviteDialogPatch>(enableOpenInviteFriendDialogButton);
+        result &= PatchClass<EnsoGameBasePatch>();
 
         if (result)
         {
@@ -245,6 +255,7 @@ public class TnTrfMod
         RegisterScene<DressUpModScene>();
         RegisterScene<TitleScene>();
         RegisterScene<EnsoScene>();
+        RegisterScene<EnsoTestScene>();
         RegisterScene<BootScene>();
         RegisterScene<EnsoNetworkScene>();
         RegisterScene<OnlineModJoinLobbyScene>();
