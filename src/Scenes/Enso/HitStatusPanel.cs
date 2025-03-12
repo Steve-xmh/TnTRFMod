@@ -14,11 +14,13 @@ namespace TnTRFMod.Scenes.Enso;
 
 public class HitStatusPanel
 {
+    private EnsoGameManager _ensoGameManager;
     private TextUi fukaAspect;
     private TextUi fukaCounter;
 
     private TextUi hitAspectValue;
     private TextUi hitOffset;
+
     private TextUi kaAspect;
     private TextUi kaCounter;
 
@@ -31,6 +33,8 @@ public class HitStatusPanel
 
     public void StartHitStatsPanel()
     {
+        _ensoGameManager = GameObject.Find("EnsoGameManager").GetComponent<EnsoGameManager>();
+
         trainCounterUi = new ImageUi(Resources.TrainCounter, 325, 280)
         {
             Position = new Vector2(37.5f, 577.5f),
@@ -164,6 +168,14 @@ public class HitStatusPanel
 
     public void UpdateHitStatsPanel()
     {
+        if (_ensoGameManager.ensoParam.IsPause || _ensoGameManager.state >= EnsoGameManager.State.ToResult)
+        {
+            trainCounterUi.SetActive(false);
+            return;
+        }
+
+        trainCounterUi.SetActive(true);
+
         var ryo = EnsoGameBasePatch.RyoCount;
         var ka = EnsoGameBasePatch.KaCount;
         var fuka = EnsoGameBasePatch.FuKaCount;

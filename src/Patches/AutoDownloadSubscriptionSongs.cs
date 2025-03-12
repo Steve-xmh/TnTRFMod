@@ -19,7 +19,7 @@ public class AutoDownloadSubscriptionSongs
 
         downloadText = new TextUi
         {
-            Text = "自动下载歌曲已开启\n(1/4) 正在检索 Music Pass 订阅可用性",
+            Text = I18n.Get("autoDownloadSub.stepOne"),
             Position = new Vector2(64f, 128f),
             FontSize = 24
         };
@@ -39,11 +39,11 @@ public class AutoDownloadSubscriptionSongs
             if (curTime >= expirationTime)
             {
                 Logger.Warn("Subscription is not valid now, skip downloading songs");
-                downloadText.Text = "Music Pass 订阅不可用或已过期";
+                downloadText.Text = I18n.Get("autoDownloadSub.notVaild");
             }
             else
             {
-                downloadText.Text = "(2/4) Music Pass 订阅可用，正在检索歌曲列表";
+                downloadText.Text = I18n.Get("autoDownloadSub.stepTwo");
 
                 Logger.Info("Subscription is still valid, start downloading songs");
 
@@ -62,7 +62,7 @@ public class AutoDownloadSubscriptionSongs
 
                 if (availableSongPreviewUids.Count > 0)
                 {
-                    var progressText = $"(3/4) 正在下载 {availableSongPreviewUids.Count} 首歌曲预览";
+                    var progressText = I18n.Get("autoDownloadSub.stepThree", availableSongPreviewUids.Count);
                     downloadText.Text = progressText;
 
                     Logger.Info($"Start downloading {availableSongPreviewUids.Count} song previews");
@@ -82,7 +82,23 @@ public class AutoDownloadSubscriptionSongs
 
                 if (availableSongFileUids.Count > 0)
                 {
-                    var progressText = $"(4/4) 正在下载 {availableSongFileUids.Count} 首歌曲文件";
+                    var songDataDetails = await SubscriptionUtility
+                        .DownloadSongDataDetails(availableSongFileUids.ToArray()).ToTask();
+                    foreach (var songDetail in songDataDetails.responseBody.ary_song_datail)
+                    {
+                        var info = songDetail.ToMusicInfo();
+                        Logger.Info($"Song Id: {info.Id}");
+                        Logger.Info($"  Song File Name: {info.SongFileName}");
+                        Logger.Info($"  Song name (JP): {info.SongNameJP}");
+                        Logger.Info($"  Song name (CN): {info.SongNameCN}");
+                        Logger.Info($"  Song name (EN): {info.SongNameEN}");
+                        Logger.Info($"  InPackage: {info.InPackage}");
+                        Logger.Info($"  DlcRegionList: {info.DlcRegionList}");
+                        Logger.Info($"  PlayableRegionList: {info.PlayableRegionList}");
+                        Logger.Info($"  SubscriptionRegionList: {info.SubscriptionRegionList}");
+                    }
+
+                    var progressText = I18n.Get("autoDownloadSub.stepFour", availableSongFileUids.Count);
                     downloadText.Text = progressText;
 
                     Logger.Info($"Start downloading {availableSongFileUids.Count} song files");
@@ -102,15 +118,15 @@ public class AutoDownloadSubscriptionSongs
 
                 Logger.Info("Finished download song files!");
 
-                downloadText.Text = "歌曲已下载完成！";
+                downloadText.Text = I18n.Get("autoDownloadSub.finished");
             }
         }
         catch (Exception ex)
         {
-            downloadText.Text = $"自动歌曲下载发生错误：\n{ex.Message}";
+            downloadText.Text = I18n.Get("autoDownloadSub.otherError", ex.ToString());
         }
 
-        downloadText.Text += "\n文字信息将在 5 秒后消失";
+        downloadText.Text += I18n.Get("autoDownloadSub.hideTip");
         await Task.Delay(5000);
         downloadText.Dispose();
         downloadText = null;

@@ -13,7 +13,7 @@ using Il2CppCysharp.Threading.Tasks;
 
 namespace TnTRFMod.Utils;
 
-public class UTask<T>(UniTask<T> uniTask)
+public readonly struct UTask<T>(UniTask<T> uniTask)
 {
     public static implicit operator UTask<T>(UniTask<T> uniTask)
     {
@@ -25,7 +25,7 @@ public class UTask<T>(UniTask<T> uniTask)
         return new Awaiter<T>(uniTask.GetAwaiter());
     }
 
-    public class Awaiter<UT>(UniTask<UT>.Awaiter uAwaiter) : INotifyCompletion
+    public readonly struct Awaiter<UT>(UniTask<UT>.Awaiter uAwaiter) : INotifyCompletion
     {
         public bool IsCompleted => uAwaiter.IsCompleted;
 

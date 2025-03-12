@@ -116,25 +116,25 @@ internal class BufferedNoteInputPatch
 
         public void InvokeDonL()
         {
-            Logger.Info($"Player {PlayerNo} DonL");
+            // Logger.Info($"Player {PlayerNo} DonL");
             DonL = Math.Clamp(DonL + 1, 0, MaxBufferedInputCount);
         }
 
         public void InvokeDonR()
         {
-            Logger.Info($"Player {PlayerNo} DonR");
+            // Logger.Info($"Player {PlayerNo} DonR");
             DonR = Math.Clamp(DonR + 1, 0, MaxBufferedInputCount);
         }
 
         public void InvokeKatsuL()
         {
-            Logger.Info($"Player {PlayerNo} KatsuL");
+            // Logger.Info($"Player {PlayerNo} KatsuL");
             KatsuL = Math.Clamp(KatsuL + 1, 0, MaxBufferedInputCount);
         }
 
         public void InvokeKatsuR()
         {
-            Logger.Info($"Player {PlayerNo} KatsuR");
+            // Logger.Info($"Player {PlayerNo} KatsuR");
             KatsuR = Math.Clamp(KatsuR + 1, 0, MaxBufferedInputCount);
         }
 

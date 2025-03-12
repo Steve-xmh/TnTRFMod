@@ -55,6 +55,7 @@ public class TnTrfMod
     public ConfigEntry<bool> enableNoShadowOnpuPatch;
     public ConfigEntry<bool> enableSkipBootScreenPatch;
     public ConfigEntry<bool> enableSkipRewardPatch;
+    public ConfigEntry<bool> enableLouderSongPatch;
     public ConfigEntry<uint> maxBufferedInputCount;
 
     public static TnTrfMod Instance { get; internal set; }
@@ -78,6 +79,8 @@ public class TnTrfMod
             "Whether to enable Buffered Input Patch.", true);
         enableMinimumLatencyAudioClient = ConfigEntry.Register("General", "EnableMinimumLatencyAudioClient",
             "Whether to enable Minimum Latency Audio Client, which can reduce the audio latency if possible.", true);
+        enableAutoDownloadSubscriptionSongs = ConfigEntry.Register("General", "EnableAutoDownloadSubscriptionSongs",
+            "Enable auto download subscription songs. (NOT FULLY TESTED)", true);
         // 默认禁用的功能
         enableNearestNeighborOnpuPatch = ConfigEntry.Register("General", "EnableNearestNeighborOnpuPatch",
             "Whether to enable Nearest Neighbor Onpu/Note Patch, this may make the notes look more pixelated.", false);
@@ -86,12 +89,13 @@ public class TnTrfMod
             false);
         enableCustomDressAnimationMod = ConfigEntry.Register("General", "EnableCustomDressAnimationMod",
             "Enable a simple gui that can switch preview animation of don-chan when in dressing page.", false);
-        enableAutoDownloadSubscriptionSongs = ConfigEntry.Register("General", "EnableAutoDownloadSubscriptionSongs",
-            "Enable auto download subscription songs. (NOT FULLY TESTED)", false);
         enableOpenInviteFriendDialogButton = ConfigEntry.Register("General", "EnableOpenInviteFriendDialogButton",
             "Enable open invite friend dialog button when in online friend room lobby.", false);
         enableHitStatsPanelPatch = ConfigEntry.Register("General", "EnableHitStatsPanelPatch",
-            "Enable hit stats panel during music game. (Known issue: only chinese label supported and will overlaps with pause panel.)",
+            "Enable hit stats panel during music game.",
+            false);
+        enableLouderSongPatch = ConfigEntry.Register("General", "EnableLouderSongPatch",
+            "Allow to play little louder song",
             false);
 
         maxBufferedInputCount = ConfigEntry.Register("BufferedInput", "MaxBufferedInputCount",
@@ -185,6 +189,7 @@ public class TnTrfMod
         result &= PatchClass<NearestNeighborOnpuPatch>(enableNearestNeighborOnpuPatch);
         result &= PatchClass<BufferedNoteInputPatch>(enableBufferedInputPatch);
         result &= PatchClass<ReopenInviteDialogPatch>(enableOpenInviteFriendDialogButton);
+        result &= PatchClass<ForcePlayMusicPatch>(enableLouderSongPatch);
         result &= PatchClass<EnsoGameBasePatch>();
 
         if (result)
