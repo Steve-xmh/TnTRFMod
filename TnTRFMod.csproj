@@ -49,6 +49,8 @@
             Condition="$(CopyOutputFiles) == true And '$(Configuration)' == 'BepInEx'">
         <Copy SourceFiles="$(TargetDir)$(AssemblyName).dll"
               DestinationFolder="$(GameDir)\BepInEx\plugins\$(AssemblyName)"/>
+        <Copy SourceFiles="$(TargetDir)$(AssemblyName).dll"
+              DestinationFiles="$(TargetDir)\$(AssemblyName).BepInEx.dll"/>
     </Target>
 
     <!-- MelonLoader -->
@@ -64,6 +66,8 @@
             Condition="$(CopyOutputFiles) == true And '$(Configuration)' == 'MelonLoader'">
         <Copy SourceFiles="$(TargetDir)$(AssemblyName).dll"
               DestinationFolder="$(GameDir)\Mods"/>
+        <Copy SourceFiles="$(TargetDir)$(AssemblyName).dll"
+              DestinationFiles="$(TargetDir)\$(AssemblyName).MelonLoader.dll"/>
     </Target>
 
     <ItemGroup>
