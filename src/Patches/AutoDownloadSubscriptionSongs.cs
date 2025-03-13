@@ -96,22 +96,26 @@ public class AutoDownloadSubscriptionSongs
                         Logger.Info($"  DlcRegionList: {info.DlcRegionList}");
                         Logger.Info($"  PlayableRegionList: {info.PlayableRegionList}");
                         Logger.Info($"  SubscriptionRegionList: {info.SubscriptionRegionList}");
+                        if (info.SubscriptionRegionList == "") availableSongFileUids.Remove(info.UniqueId);
                     }
 
-                    var progressText = I18n.Get("autoDownloadSub.stepFour", availableSongFileUids.Count);
-                    downloadText.Text = progressText;
+                    if (availableSongFileUids.Count > 0)
+                    {
+                        var progressText = I18n.Get("autoDownloadSub.stepFour", availableSongFileUids.Count);
+                        downloadText.Text = progressText;
 
-                    Logger.Info($"Start downloading {availableSongFileUids.Count} song files");
-                    await SubscriptionUtility.DownloadSongFilesAsync(
-                        availableSongFileUids.ToArray(), source.Token,
-                        DelegateSupport.ConvertDelegate<UnityAction<float>>(
-                            (float result) =>
-                            {
-                                var prog = (result * 100).ToString("F1");
-                                Logger.Info($"Downloading song files: {prog}%");
-                                downloadText.Text = $"{progressText} ({prog}%)";
-                            }
-                        )).ToTask();
+                        Logger.Info($"Start downloading {availableSongFileUids.Count} song files");
+                        await SubscriptionUtility.DownloadSongFilesAsync(
+                            availableSongFileUids.ToArray(), source.Token,
+                            DelegateSupport.ConvertDelegate<UnityAction<float>>(
+                                (float result) =>
+                                {
+                                    var prog = (result * 100).ToString("F1");
+                                    Logger.Info($"Downloading song files: {prog}%");
+                                    downloadText.Text = $"{progressText} ({prog}%)";
+                                }
+                            )).ToTask();
+                    }
                 }
 
                 // SubscriptionUtility.DownloadSongFile()
@@ -124,6 +128,7 @@ public class AutoDownloadSubscriptionSongs
         catch (Exception ex)
         {
             downloadText.Text = I18n.Get("autoDownloadSub.otherError", ex.ToString());
+            Logger.Error(ex.ToString());
         }
 
         downloadText.Text += I18n.Get("autoDownloadSub.hideTip");
