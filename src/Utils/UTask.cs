@@ -13,6 +13,34 @@ using Il2CppCysharp.Threading.Tasks;
 
 namespace TnTRFMod.Utils;
 
+public readonly struct UTask(UniTask uniTask)
+{
+    public static implicit operator UTask(UniTask uniTask)
+    {
+        return new UTask(uniTask);
+    }
+
+    public Awaiter GetAwaiter()
+    {
+        return new Awaiter(uniTask.GetAwaiter());
+    }
+
+    public readonly struct Awaiter(UniTask.Awaiter uAwaiter) : INotifyCompletion
+    {
+        public bool IsCompleted => uAwaiter.IsCompleted;
+
+        public void OnCompleted(Action continuation)
+        {
+            uAwaiter.OnCompleted(continuation);
+        }
+
+        public void GetResult()
+        {
+            uAwaiter.GetResult();
+        }
+    }
+}
+
 public readonly struct UTask<T>(UniTask<T> uniTask)
 {
     public static implicit operator UTask<T>(UniTask<T> uniTask)
@@ -41,11 +69,16 @@ public readonly struct UTask<T>(UniTask<T> uniTask)
     }
 }
 
-public static class UTask
+public static class UTaskExt
 {
     public static UTask<T> ToTask<T>(this UniTask<T> uniTask)
     {
         return new UTask<T>(uniTask);
+    }
+
+    public static UTask ToTask(this UniTask uniTask)
+    {
+        return new UTask(uniTask);
     }
 
 

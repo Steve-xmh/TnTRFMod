@@ -1,6 +1,5 @@
 using System.Buffers.Binary;
 using System.IO.Compression;
-using System.Net.Http.Json;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json.Nodes;
@@ -11,27 +10,34 @@ public class BilibiliLiveCommentCrawer(long roomId, string sessionData = "")
 {
     private const string UserAgent =
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36";
+
     private const string CIDInfoUrl = "https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo?id=";
-    private readonly HttpClient httpClient = new() { Timeout = TimeSpan.FromSeconds(5), DefaultRequestHeaders =
+
+    private readonly HttpClient httpClient = new()
     {
-        { "User-Agent", UserAgent },
-        { "Accept", "application/json, text/plain, */*" },
-        { "Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8" },
-        { "Referer", "https://live.bilibili.com/" },
-        { "Origin", "https://live.bilibili.com" }
-    }};
+        Timeout = TimeSpan.FromSeconds(5), DefaultRequestHeaders =
+        {
+            { "User-Agent", UserAgent },
+            { "Accept", "application/json, text/plain, */*" },
+            { "Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8" },
+            { "Referer", "https://live.bilibili.com/" },
+            { "Origin", "https://live.bilibili.com" }
+        }
+    };
+
     private readonly short protocolversion = 2;
+    private readonly long roomId = roomId;
     private string chatHost = "chat.bilibili.com";
     private int chatPort = 2243;
     private TcpClient client;
-    private bool connected = false;
     private CancellationTokenSource cts = new();
     private Stream netStream;
 
     private Task startTask;
-    private long roomId = roomId;
-    private long userId = 0;
     private string token = "";
+    private long userId;
+
+    public event EventHandler<DammakuMessage> OnDanmakuMessage;
 
     public async Task Start()
     {
@@ -58,7 +64,7 @@ public class BilibiliLiveCommentCrawer(long roomId, string sessionData = "")
                 await Task.Delay(30000, cts.Token);
             }
         }
-        catch (Exception e)
+        catch (Exception)
         {
             await Stop();
         }
@@ -77,17 +83,22 @@ public class BilibiliLiveCommentCrawer(long roomId, string sessionData = "")
         var url = CIDInfoUrl + roomId;
         if (!string.IsNullOrEmpty(sessionData))
         {
-            await Console.Out.WriteLineAsync($"已设置 SESSDATA 令牌，正在获取登录用户 ID");
+            await Console.Out.WriteLineAsync("已设置 SESSDATA 令牌，正在获取登录用户 ID");
             httpClient.DefaultRequestHeaders.Add("Cookie", $"SESSDATA={sessionData};");
             var navResText = await httpClient.GetStringAsync("https://api.bilibili.com/x/web-interface/nav");
             var navRes = JsonNode.Parse(navResText);
             userId = navRes["data"]["mid"].GetValue<long>();
             await Console.Out.WriteLineAsync($"登录用户 ID: {userId}");
         }
+        else
+        {
+            await Console.Out.WriteLineAsync("警告：未设置 SESSDATA 令牌，将以游客身份连接，无法获取完整弹幕发送者用户信息");
+        }
+
         var resText = await httpClient.GetStringAsync(url, cts.Token);
         var res = JsonNode.Parse(resText);
         token = res["data"]["token"].GetValue<string>();
-        
+
         foreach (var host in res["data"]["host_list"]?.AsArray()!)
         {
             chatHost = host["host"]!.GetValue<string>();
@@ -109,7 +120,7 @@ public class BilibiliLiveCommentCrawer(long roomId, string sessionData = "")
                 await Console.Out.WriteLineAsync("加入成功！正在接收弹幕信息");
 
                 await Task.WhenAll(heartbeatLoop, receiveMessageLoop);
-                break;
+                return;
             }
             catch (Exception e)
             {
@@ -154,7 +165,6 @@ public class BilibiliLiveCommentCrawer(long roomId, string sessionData = "")
                         _ = ProcessingBrotliMessage(bodyBuffer);
                         break;
                 }
-
             }
             catch (Exception e)
             {
@@ -212,12 +222,12 @@ public class BilibiliLiveCommentCrawer(long roomId, string sessionData = "")
         await using var deflateStream = new DeflateStream(input, CompressionMode.Decompress);
         await deflateStream.CopyToAsync(output, cts.Token);
         var outputBuf = output.ToArray();
-                        
+
         // await Console.Out.WriteLineAsync("接收到 Deflate 报文: " + decompressed);
 
         await ProcessingDecompressedMessage(outputBuf);
     }
-    
+
     private async Task ProcessingBrotliMessage(byte[] buffer)
     {
         using var output = new MemoryStream();
@@ -238,7 +248,7 @@ public class BilibiliLiveCommentCrawer(long roomId, string sessionData = "")
             var headerBuffer = new byte[16];
             await stream.ReadAllAsync(headerBuffer, cts.Token);
             var header = DanmakuProtocol.FromBuffer(headerBuffer);
-            
+
             if (header.PacketLength < 16)
             {
                 await Console.Out.WriteLineAsync("数据包长度小于16");
@@ -285,11 +295,17 @@ public class BilibiliLiveCommentCrawer(long roomId, string sessionData = "")
                     var uid = info[2][0].GetValue<long>();
                     var uname = info[2][1].GetValue<string>();
                     await Console.Out.WriteLineAsync($"接收到弹幕: {uname} ({uid}): {msg}");
-                    // TODO: 歌曲点歌功能
+                    OnDanmakuMessage?.Invoke(this, new DammakuMessage
+                    {
+                        SenderUid = (uint)uid,
+                        SenderName = uname,
+                        Message = msg
+                    });
                     break;
                 }
                 default:
                     // await Console.Out.WriteLineAsync("接收到未知指令报文: " + cmd);
+                    await Console.Out.WriteLineAsync($"接收到其他信息: {body}");
                     break;
             }
         }
@@ -319,7 +335,7 @@ public class BilibiliLiveCommentCrawer(long roomId, string sessionData = "")
     public static void Test()
     {
         var token = Environment.GetEnvironmentVariable("TOKEN");
-        var crawer = new BilibiliLiveCommentCrawer(274763, token);
+        var crawer = new BilibiliLiveCommentCrawer(1338349, token);
         crawer.StartAsync().Wait();
         Console.Out.WriteLine("运行结束");
     }
@@ -332,7 +348,7 @@ public class BilibiliLiveCommentCrawer(long roomId, string sessionData = "")
         public int Action;
         public int Parameter;
 
-        public enum  ProtocolVersion : short
+        public enum ProtocolVersion : short
         {
             Normal = 0,
             Heartbeat = 1,
@@ -352,17 +368,25 @@ public class BilibiliLiveCommentCrawer(long roomId, string sessionData = "")
                 Parameter = BinaryPrimitives.ReadInt32BigEndian(buffer.AsSpan(12, 4))
             };
         }
-        
+
         public override string ToString()
         {
-            return $"PacketLength: {PacketLength}, HeaderLength: {HeaderLength}, Version: {Version}, Action: {Action}, Parameter: {Parameter}";
+            return
+                $"PacketLength: {PacketLength}, HeaderLength: {HeaderLength}, Version: {Version}, Action: {Action}, Parameter: {Parameter}";
         }
+    }
+
+    public record struct DammakuMessage
+    {
+        public string Message;
+        public string SenderName;
+        public uint SenderUid;
     }
 }
 
 internal static class ReadAllStream
 {
-    public static async Task ReadAllAsync(this Stream stream, byte[] buffer,   CancellationToken token = default)
+    public static async Task ReadAllAsync(this Stream stream, byte[] buffer, CancellationToken token = default)
     {
         // await Console.Out.WriteLineAsync($"ReadAllAsync {buffer.Length} bytes");
         var offset = 0;

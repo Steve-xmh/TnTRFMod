@@ -18,6 +18,9 @@ public class EnsoScene : IScene
         NoShadowOnpuPatch.CheckOrInitializePatch();
         BufferedNoteInputPatch.ResetCounts();
 
+        LiveStreamSongSelectPanel.QueuedSongList.Remove(LiveStreamSongSelectPanel.QueuedSongList.Find(info =>
+            info.SongInfo.UniqueId == CommonObjects.Instance.MyDataManager.EnsoData.ensoSettings.musicUniqueId));
+
         if (TnTrfMod.Instance.enableNearestNeighborOnpuPatch.Value) NearestNeighborOnpuPatch.PatchLaneTarget();
         if (TnTrfMod.Instance.enableHitStatsPanelPatch.Value) HitStatusPanel.StartHitStatsPanel();
     }

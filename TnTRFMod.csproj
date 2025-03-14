@@ -6,7 +6,7 @@
         <TargetFramework>net6.0</TargetFramework>
         <AssemblyName>net.stevexmh.$(ModName)</AssemblyName>
         <Product>TnTRFMod</Product>
-        <Version>0.5.1</Version>
+        <Version>0.6.0</Version>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <LangVersion>latest</LangVersion>
         <RestoreAdditionalProjectSources>
@@ -18,7 +18,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Authors>SteveXMH</Authors>
         <Title>TnTRFMod</Title>
-        <AssemblyVersion>0.5.1</AssemblyVersion>
+        <AssemblyVersion>$(Version)</AssemblyVersion>
         <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
         <Configurations>BepInEx;MelonLoader</Configurations>

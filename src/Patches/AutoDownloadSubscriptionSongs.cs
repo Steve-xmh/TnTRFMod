@@ -87,15 +87,15 @@ public class AutoDownloadSubscriptionSongs
                     foreach (var songDetail in songDataDetails.responseBody.ary_song_datail)
                     {
                         var info = songDetail.ToMusicInfo();
-                        Logger.Info($"Song Id: {info.Id}");
-                        Logger.Info($"  Song File Name: {info.SongFileName}");
-                        Logger.Info($"  Song name (JP): {info.SongNameJP}");
-                        Logger.Info($"  Song name (CN): {info.SongNameCN}");
-                        Logger.Info($"  Song name (EN): {info.SongNameEN}");
-                        Logger.Info($"  InPackage: {info.InPackage}");
-                        Logger.Info($"  DlcRegionList: {info.DlcRegionList}");
-                        Logger.Info($"  PlayableRegionList: {info.PlayableRegionList}");
-                        Logger.Info($"  SubscriptionRegionList: {info.SubscriptionRegionList}");
+                        // Logger.Info($"Song Id: {info.Id}");
+                        // Logger.Info($"  Song File Name: {info.SongFileName}");
+                        // Logger.Info($"  Song name (JP): {info.SongNameJP}");
+                        // Logger.Info($"  Song name (CN): {info.SongNameCN}");
+                        // Logger.Info($"  Song name (EN): {info.SongNameEN}");
+                        // Logger.Info($"  InPackage: {info.InPackage}");
+                        // Logger.Info($"  DlcRegionList: {info.DlcRegionList}");
+                        // Logger.Info($"  PlayableRegionList: {info.PlayableRegionList}");
+                        // Logger.Info($"  SubscriptionRegionList: {info.SubscriptionRegionList}");
                         if (info.SubscriptionRegionList == "") availableSongFileUids.Remove(info.UniqueId);
                     }
 

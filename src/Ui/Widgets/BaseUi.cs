@@ -34,7 +34,7 @@ public class BaseUi
     }
 
     private bool IsChildOfCanvas => _transform.parent == Common.GetDrawCanvasForScene() ||
-                                    _transform.parent == Common.GetDrawCanvasForScene();
+                                    _transform.parent == Common.GetDrawCanvasNoDestroyForScene();
 
     public Vector2 Position
     {
@@ -81,22 +81,25 @@ public class BaseUi
 
     public void MoveToNoDestroyCanvas()
     {
-        _transform.SetParent(Common.GetDrawCanvasNoDestroyForScene());
+        var originalPos = Position;
+        _transform.SetParent(Common.GetDrawCanvasNoDestroyForScene(), true);
+        _transform.localScale = Vector3.one;
+        Position = originalPos;
     }
 
     public void SetParent(GameObject parent)
     {
-        _transform.SetParent(parent.transform);
+        _transform.SetParent(parent.transform, true);
     }
 
     public void AddChild(GameObject child)
     {
-        child.transform.SetParent(_transform);
+        child.transform.SetParent(_transform, true);
     }
 
     public void AddChild(BaseUi child)
     {
-        child._transform.SetParent(_transform);
+        child._transform.SetParent(_transform, true);
     }
 
     private class TempDisableInputComponent : MonoBehaviour

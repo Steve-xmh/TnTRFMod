@@ -3,6 +3,7 @@ using Il2CppInterop.Runtime;
 using TnTRFMod.Config;
 using TnTRFMod.Patches;
 using TnTRFMod.Scenes;
+using TnTRFMod.Ui;
 using TnTRFMod.Utils;
 using UnityEngine;
 using UnityEngine.Events;
@@ -26,7 +27,7 @@ public class TnTrfMod
 {
     public const string MOD_NAME = "TnTRFMod";
     public const string MOD_AUTHOR = "SteveXMH";
-    public const string MOD_VERSION = "0.5.1";
+    public const string MOD_VERSION = "0.6.0";
 #if BEPINEX
     public const string MOD_LOADER = "BepInEx";
 #endif
@@ -57,6 +58,11 @@ public class TnTrfMod
     public ConfigEntry<bool> enableSkipRewardPatch;
     public ConfigEntry<bool> enableLouderSongPatch;
     public ConfigEntry<uint> maxBufferedInputCount;
+
+    // 直播点歌功能
+    public ConfigEntry<bool> enableBilibiliLiveStreamSongRequest;
+    public ConfigEntry<uint> bilibiliLiveStreamSongRoomId;
+    public ConfigEntry<string> bilibiliLiveStreamSongToken;
 
     public static TnTrfMod Instance { get; internal set; }
 
@@ -97,6 +103,14 @@ public class TnTrfMod
         enableLouderSongPatch = ConfigEntry.Register("General", "EnableLouderSongPatch",
             "Allow to play little louder song",
             false);
+        // 直播点歌功能
+        enableBilibiliLiveStreamSongRequest = ConfigEntry.Register("BilibiliLiveStreamSongRequest", "Enable",
+            "Enable Bilibili Live Stream Song Request", false);
+        bilibiliLiveStreamSongRoomId = ConfigEntry.Register("BilibiliLiveStreamSongRequest", "RoomId",
+            "Bilibili Live Stream Room Id", 0u);
+        bilibiliLiveStreamSongToken = ConfigEntry.Register("BilibiliLiveStreamSongRequest", "Token",
+            "Bilibili Live Stream Token. Commonly as a Cookie called \"SESSDATA\". If you don't provide this, you won't be able to get accurate sender info.",
+            "");
 
         maxBufferedInputCount = ConfigEntry.Register("BufferedInput", "MaxBufferedInputCount",
             "The maximum count of the buffered key input per side.", 5u);
@@ -213,6 +227,8 @@ public class TnTrfMod
         sceneName = scene.name;
         Logger.Info($"OnSceneWasLoaded {sceneName}");
 
+        Common.Init();
+        Common.InitLocal();
         if (sceneName != null && _scenes[sceneName] is IScene customScene) customScene.Start();
     }
 
@@ -264,6 +280,7 @@ public class TnTrfMod
         RegisterScene<BootScene>();
         RegisterScene<EnsoNetworkScene>();
         RegisterScene<OnlineModJoinLobbyScene>();
+        RegisterScene<SongSelectScene>();
     }
 
     internal class Updater : MonoBehaviour

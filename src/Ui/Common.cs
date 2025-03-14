@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
@@ -13,35 +12,12 @@ public class Common
     private static GameObject _drawCanvasForScene;
     private static GameObject _drawCanvasForSceneNoDestroy;
     private static ControllerManager _controllerManager;
+    private static bool inited;
 
-    public static Transform GetDrawCanvasForScene()
+    public static void Init()
     {
-        if (_drawCanvasForScene != null && _drawCanvasForScene.scene == SceneManager.GetActiveScene())
-            return _drawCanvasForScene.transform;
-
-        _drawCanvasForScene = GameObject.Find("CanvasForTnTRFMod");
-        if (_drawCanvasForScene != null) return _drawCanvasForScene.transform;
-        _drawCanvasForScene = new GameObject("CanvasForTnTRFMod");
-        var canvas = _drawCanvasForScene.AddComponent<Canvas>();
-        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = 5;
-        var scaler = _drawCanvasForScene.AddComponent<CanvasScaler>();
-        scaler.referenceResolution = new Vector2(ScreenWidth, ScreenHeight);
-        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
-        _drawCanvasForScene.AddComponent<GraphicRaycaster>();
-        _drawCanvasForScene.layer = LayerMask.NameToLayer("UI");
-
-        return _drawCanvasForScene.transform;
-    }
-
-    public static Transform GetDrawCanvasNoDestroyForScene()
-    {
-        if (_drawCanvasForSceneNoDestroy != null && _drawCanvasForSceneNoDestroy.scene == SceneManager.GetActiveScene())
-            return _drawCanvasForSceneNoDestroy.transform;
-
-        _drawCanvasForSceneNoDestroy = GameObject.Find("CanvasForTnTRFModNoDestroy");
-        if (_drawCanvasForSceneNoDestroy != null) return _drawCanvasForSceneNoDestroy.transform;
+        if (inited) return;
+        inited = true;
         _drawCanvasForSceneNoDestroy = new GameObject("CanvasForTnTRFModNoDestroy");
         Object.DontDestroyOnLoad(_drawCanvasForSceneNoDestroy);
         _drawCanvasForSceneNoDestroy.hideFlags = HideFlags.HideAndDontSave;
@@ -56,8 +32,30 @@ public class Common
         _drawCanvasForSceneNoDestroy.AddComponent<GraphicRaycaster>();
         _drawCanvasForSceneNoDestroy.layer = LayerMask.NameToLayer("UI");
         _drawCanvasForSceneNoDestroy.SetActive(true);
+    }
 
-        return _drawCanvasForSceneNoDestroy.transform;
+    public static void InitLocal()
+    {
+        _drawCanvasForScene = new GameObject("CanvasForTnTRFMod");
+        var canvas = _drawCanvasForScene.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.sortingOrder = 5;
+        var scaler = _drawCanvasForScene.AddComponent<CanvasScaler>();
+        scaler.referenceResolution = new Vector2(ScreenWidth, ScreenHeight);
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
+        _drawCanvasForScene.AddComponent<GraphicRaycaster>();
+        _drawCanvasForScene.layer = LayerMask.NameToLayer("UI");
+    }
+
+    public static Transform GetDrawCanvasForScene()
+    {
+        return _drawCanvasForScene!.transform!;
+    }
+
+    public static Transform GetDrawCanvasNoDestroyForScene()
+    {
+        return _drawCanvasForSceneNoDestroy!.transform!;
     }
 
     public static FontTMPManager GetFontManager()
