@@ -191,6 +191,8 @@ public class HitStatusPanel
             hitOffset.Color = new Color32(248, 72, 40, 255);
         else if (time < -EnsoGameBasePatch.RyoJudgeRange)
             hitOffset.Color = new Color32(104, 192, 192, 255);
+        else if (time == 0)
+            hitOffset.Color = new Color32(109, 209, 111, 255);
         else
             hitOffset.Color = new Color32(248, 184, 0, 255);
 
