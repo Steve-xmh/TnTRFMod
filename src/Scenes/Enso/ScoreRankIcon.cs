@@ -1,0 +1,187 @@
+using System.Collections;
+using TnTRFMod.Ui.Widgets;
+using TnTRFMod.Utils.Fumen;
+using UnityEngine;
+using Logger = TnTRFMod.Utils.Logger;
+
+namespace TnTRFMod.Scenes.Enso;
+
+public class ScoreRankIcon
+{
+    private EnsoGameManager _ensoGameManager;
+
+    private PlayerStatus[] playerStatuses;
+
+    private Texture2D scoreRankSprites;
+
+    public void Init()
+    {
+        _ensoGameManager = GameObject.Find("EnsoGameManager").GetComponent<EnsoGameManager>();
+        playerStatuses = new PlayerStatus[_ensoGameManager.playerNum];
+        for (var i = 0; i < _ensoGameManager.playerNum; i++)
+            playerStatuses[i] = new PlayerStatus();
+    }
+
+    private void LoadScoreRankIcons()
+    {
+        var scoreRankImagePath = Path.Join(TnTrfMod.Dir, "ScoreRank.png");
+        byte[] scoreRankImageData;
+        if (File.Exists(scoreRankImagePath))
+        {
+            scoreRankImageData = File.ReadAllBytes(scoreRankImagePath);
+        }
+        else
+        {
+            Logger.Error($"{scoreRankImagePath} not found, will use builtin alternative.");
+            scoreRankImageData = Resources.ScoreRankIcons;
+        }
+
+        scoreRankSprites = ImageUi.LoadImage(scoreRankImageData);
+    }
+
+    public void Update()
+    {
+        if (!scoreRankSprites)
+        {
+            LoadScoreRankIcons();
+            if (!scoreRankSprites) return;
+        }
+
+        if (_ensoGameManager.fumenLoader.playerData == null ||
+            _ensoGameManager.fumenLoader.playerData.Count == 0) return;
+
+        var frameResult =
+            _ensoGameManager.ensoParam.GetFrameResults();
+        for (var i = 0; i < playerStatuses.Length; i++)
+        {
+            var score = frameResult.eachPlayer[i].score;
+            var playerStatus = playerStatuses[i];
+            if (playerStatus.fumenReader is null)
+                try
+                {
+                    var reader = ReadFumen(_ensoGameManager.fumenLoader.playerData[i]);
+                    playerStatus.fumenReader = reader;
+                    var maxScore = reader.CalculateMaxScore();
+                    Logger.Info($"Loaded Fumen score of Player {i + 1}: {maxScore}");
+                    playerStatus.levelInfos =
+                    [
+                        new LevelInfo
+                        {
+                            name = "粹（白）",
+                            score = maxScore * 5 / 10
+                        },
+                        new LevelInfo
+                        {
+                            name = "粹（铜）",
+                            score = maxScore * 6 / 10
+                        },
+                        new LevelInfo
+                        {
+                            name = "粹（银）",
+                            score = maxScore * 7 / 10
+                        },
+                        new LevelInfo
+                        {
+                            name = "雅（金）",
+                            score = maxScore * 8 / 10
+                        },
+                        new LevelInfo
+                        {
+                            name = "雅（粉）",
+                            score = maxScore * 9 / 10
+                        },
+                        new LevelInfo
+                        {
+                            name = "雅（紫）",
+                            score = maxScore * 95 / 100
+                        },
+                        new LevelInfo
+                        {
+                            name = "极",
+                            score = maxScore
+                        }
+                    ];
+                }
+                catch (FumenNoLoadedException)
+                {
+                    continue;
+                }
+
+            if (playerStatus.levelInfos.Length == 0) continue;
+            var nextLevel = playerStatus.nextLevel;
+            if (nextLevel >= playerStatus.levelInfos.Length) continue;
+            var nextLevelInfo = playerStatus.levelInfos[nextLevel];
+            if (nextLevelInfo.score > score) continue;
+            // ReSharper disable once Unity.PerformanceCriticalCodeInvocation
+            TnTrfMod.Instance.StartCoroutine(ShowScoreRank(nextLevel));
+            playerStatus.nextLevel += 1;
+        }
+    }
+
+    private static FumenReader ReadFumen(FumenLoader.PlayerData playerData)
+    {
+        var data = playerData.GetFumenDataAsBytes();
+        // var fumenName = Path.ChangeExtension(Path.GetFileName(playerData.fumenPath), ".bin");
+        // var fumenPath = Path.Combine(TnTrfMod.Dir, fumenName);
+        // File.WriteAllBytes(fumenPath, data);
+        return new FumenReader(data);
+    }
+
+    private IEnumerator ShowScoreRank(int level)
+    {
+        Logger.Info($"Showing score rank icon {level}");
+        var width = scoreRankSprites.width;
+        var heightPerIcon = scoreRankSprites.height / 7;
+        var iconSprite = Sprite.Create(scoreRankSprites,
+            new Rect(0.0f, (6 - level) * heightPerIcon, width, heightPerIcon),
+            new Vector2(0.5f, 0.5f), width / 140f);
+        var iconUi = new ImageUi(iconSprite);
+
+        var posX = 70;
+        var posY = 35;
+        iconUi.Image.color = Color.white.AlphaMultiplied(0f);
+        iconUi.Position = new Vector2(posX, posY);
+        iconUi.Size = new Vector2(210, 210);
+
+        // tween in 500ms
+        var time = 0f;
+        while (time < 0.2f)
+        {
+            iconUi.Position = new Vector2(posX, Math.Max(posY, posY + 20 * (1f - time / 0.2f)));
+            iconUi.Image.color = Color.white.AlphaMultiplied(time / 0.2f);
+            yield return null;
+            time += Time.deltaTime;
+        }
+
+        iconUi.Image.color = Color.white;
+        iconUi.Position = new Vector2(posX, posY);
+
+        yield return new WaitForSeconds(3);
+
+        time = 0f;
+        while (time < 0.2f)
+        {
+            iconUi.Position = new Vector2(posX, posY - 20 * (time / 0.2f));
+            iconUi.Image.color = Color.white.AlphaMultiplied(1f - time / 0.2f);
+            yield return null;
+            time += Time.deltaTime;
+        }
+        
+        iconUi.Image.color = Color.white.AlphaMultiplied(0f);
+        yield return null;
+        iconUi.Dispose();
+    }
+
+    private struct LevelInfo
+    {
+        public string name;
+        public int score;
+    }
+
+    private class PlayerStatus
+    {
+        public int nextLevel = 0;
+        public FumenReader fumenReader;
+        public LevelInfo[] levelInfos;
+    }
+}

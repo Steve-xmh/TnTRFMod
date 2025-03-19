@@ -1,11 +1,17 @@
 using System.Text;
 using System.Text.Json.Nodes;
-using Cysharp.Threading.Tasks;
-using TMPro;
 using TnTRFMod.Ui.Widgets;
 using TnTRFMod.Utils;
 using UnityEngine;
 using Logger = TnTRFMod.Utils.Logger;
+#if BEPINEX
+using Cysharp.Threading.Tasks;
+using TMPro;
+#elif MELONLOADER
+using Il2CppCysharp.Threading.Tasks;
+using Il2CppTMPro;
+#endif
+
 
 namespace TnTRFMod.Scenes.Enso;
 
@@ -78,7 +84,7 @@ public class LiveStreamSongSelectPanel
         AliasTable.Clear();
         try
         {
-            var aliasTableFile = Path.Combine(Application.dataPath, "../TnTRFMod/alias.json");
+            var aliasTableFile = Path.Combine(TnTrfMod.Dir, "alias.json");
             Logger.Info($"Loading alias table from {aliasTableFile}");
             if (!File.Exists(aliasTableFile)) return;
             var aliasTableData = await File.ReadAllTextAsync(aliasTableFile);

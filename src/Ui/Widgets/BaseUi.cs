@@ -76,6 +76,7 @@ public class BaseUi
     public void Dispose()
     {
         _go.transform.SetParent(null);
+        _go.SetActive(false);
         Object.Destroy(_go);
     }
 

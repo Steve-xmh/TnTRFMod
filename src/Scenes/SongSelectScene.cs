@@ -1,8 +1,13 @@
-using Scripts.OutGame.SongSelect;
 using TnTRFMod.Scenes.Enso;
 using TnTRFMod.Ui.Widgets;
 using UnityEngine;
 using UnityEngine.InputSystem;
+
+#if BEPINEX
+using Scripts.OutGame.SongSelect;
+#elif MELONLOADER
+using Il2CppScripts.OutGame.SongSelect;
+#endif
 
 namespace TnTRFMod.Scenes;
 

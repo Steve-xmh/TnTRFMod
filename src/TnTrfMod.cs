@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Runtime.InteropServices;
 using Il2CppInterop.Runtime;
 using TnTRFMod.Config;
 using TnTRFMod.Patches;
@@ -41,6 +42,8 @@ public class TnTrfMod
 
     private MinimumLatencyAudioClient _minimumLatencyAudioClient;
 
+    public static readonly string Dir = Path.Combine(Application.dataPath, "../TnTRFMod");
+
 #if BEPINEX
     internal Updater _updater;
 #endif
@@ -52,6 +55,7 @@ public class TnTrfMod
     public ConfigEntry<bool> enableMinimumLatencyAudioClient;
     public ConfigEntry<bool> enableOpenInviteFriendDialogButton;
     public ConfigEntry<bool> enableHitStatsPanelPatch;
+    public ConfigEntry<bool> enableScoreRankIcon;
     public ConfigEntry<bool> enableNearestNeighborOnpuPatch;
     public ConfigEntry<bool> enableNoShadowOnpuPatch;
     public ConfigEntry<bool> enableSkipBootScreenPatch;
@@ -68,11 +72,24 @@ public class TnTrfMod
 
     private string sceneName { get; set; }
 
+    // "H:\SteamLibrary\steamapps\common\Taiko no Tatsujin Rhythm Festival\Taiko no Tatsujin Rhythm Festival_Data\Plugins\x86_64\LibTaiko.dll"
+    [DllImport("Taiko no Tatsujin Rhythm Festival_Data/Plugins/x86_64/LibTaiko.dll", EntryPoint = "SetDebugLogFunc",
+        CallingConvention = CallingConvention.StdCall)]
+    private static extern void SetLibTaikoDebugLogFunc(OnLibTaikoLog func);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    private delegate void OnLibTaikoLog(IntPtr msgBuffer);
+
     public void Load(HarmonyInstance harmony)
     {
         _harmony = harmony;
         Logger.Info("TnTRFMod has loaded!");
         I18n.Load();
+        SetLibTaikoDebugLogFunc(buffer =>
+        {
+            var msg = Marshal.PtrToStringAnsi(buffer);
+            Console.Out.Write(msg);
+        });
 
         // 默认启用的功能
         enableBetterBigHitPatch = ConfigEntry.Register("General", "EnableBetterBigHitPatch",
@@ -102,6 +119,9 @@ public class TnTrfMod
             false);
         enableLouderSongPatch = ConfigEntry.Register("General", "EnableLouderSongPatch",
             "Allow to play little louder song",
+            false);
+        enableScoreRankIcon = ConfigEntry.Register("General", "EnableScoreRankIcon",
+            "Enable score rank icon during music game.",
             false);
         // 直播点歌功能
         enableBilibiliLiveStreamSongRequest = ConfigEntry.Register("BilibiliLiveStreamSongRequest", "Enable",
@@ -205,6 +225,7 @@ public class TnTrfMod
         result &= PatchClass<ReopenInviteDialogPatch>(enableOpenInviteFriendDialogButton);
         result &= PatchClass<ForcePlayMusicPatch>(enableLouderSongPatch);
         result &= PatchClass<EnsoGameBasePatch>();
+        result &= PatchClass<LibTaikoPatches>();
 
         if (result)
         {
@@ -217,7 +238,7 @@ public class TnTrfMod
         }
     }
 
-    internal void OnUpdate()
+    public void OnUpdate()
     {
         if (sceneName != null && _scenes[sceneName] is IScene customScene) customScene.Update();
     }

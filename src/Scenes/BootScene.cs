@@ -31,7 +31,7 @@ public class BootScene : IScene
 
     private static async Task DumpMusicNames()
     {
-        var outputPath = Path.Combine(Application.dataPath, "../SongIndices.csv");
+        var outputPath = Path.Combine(TnTrfMod.Dir, "SongIndices.csv");
         await using var writer = new StreamWriter(outputPath, false, Encoding.UTF8);
         // write bom utf-8
         await writer.WriteAsync('\uFEFF');

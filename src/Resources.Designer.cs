@@ -112,6 +112,16 @@ namespace TnTRFMod {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] ScoreRankIcons {
+            get {
+                object obj = ResourceManager.GetObject("ScoreRankIcons", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] TrainCounter {
             get {
                 object obj = ResourceManager.GetObject("TrainCounter", resourceCulture);

@@ -35,7 +35,7 @@ public class HitStatusPanel
     {
         _ensoGameManager = GameObject.Find("EnsoGameManager").GetComponent<EnsoGameManager>();
 
-        trainCounterUi = new ImageUi(Resources.TrainCounter, 325, 280)
+        trainCounterUi = new ImageUi(Resources.TrainCounter)
         {
             Position = new Vector2(37.5f, 577.5f),
             Name = "TrainCounterSprite"
@@ -62,13 +62,13 @@ public class HitStatusPanel
 
         const int LabelAlignX = 130;
 
-        var ryo = new ImageUi(Resources.HitRyo, 44, 53);
+        var ryo = new ImageUi(Resources.HitRyo);
         trainCounterUi.AddChild(ryo);
         ryo.Position = new Vector2(LabelAlignX - ryo.Size.x, 121);
-        var ka = new ImageUi(Resources.HitKa, 47, 51);
+        var ka = new ImageUi(Resources.HitKa);
         trainCounterUi.AddChild(ka);
         ka.Position = new Vector2(LabelAlignX - ka.Size.x, 179);
-        var fuka = new ImageUi(Resources.HitFuka, 86, 51);
+        var fuka = new ImageUi(Resources.HitFuka);
         trainCounterUi.AddChild(fuka);
         fuka.Position = new Vector2(LabelAlignX - fuka.Size.x, 236);
 
