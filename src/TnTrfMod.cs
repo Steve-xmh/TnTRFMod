@@ -238,7 +238,6 @@ public class TnTrfMod
         result &= PatchClass<NoShadowOnpuPatch>(enableNoShadowOnpuPatch);
         result &= PatchClass<NearestNeighborOnpuPatch>(enableNearestNeighborOnpuPatch);
         result &= PatchClass<BufferedNoteInputPatch>(enableBufferedInputPatch);
-        result &= PatchClass<ReopenInviteDialogPatch>(enableOpenInviteFriendDialogButton);
         result &= PatchClass<ForcePlayMusicPatch>(enableLouderSongPatch);
         result &= PatchClass<EnsoGameBasePatch>();
         result &= PatchClass<LibTaikoPatches>();

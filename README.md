@@ -30,6 +30,7 @@ A mod aiming to improve experiences of PC version of Taiko no Tatsujin: Rhythm F
 - Allow to change texture filter of Onpu/Note to nearest neighbor.
 - Built-in REAL tool feature (force to reduce audio output buffer to reduce latency)
 - Reopen Steam invite friend overlay when in online room lobby.
+- Nijiiro-like score rank icon & note text rail.
 - Remove shadows of Onpu/Note to reduce motion blur effect. **(Unstable)**
 - ...And More(?)
 
@@ -45,6 +46,7 @@ A mod aiming to improve experiences of PC version of Taiko no Tatsujin: Rhythm F
 - 允许将音符纹理过滤设置成最近邻居。
 - 内置 REAL 工具功能（强制降低音频输出缓冲以降低延迟）
 - 支持在联机房间页面里重新打开 Steam 好友邀请页面
+- 类似虹版街机的分数评级图标和音符文本轨道。
 - 移除音符的阴影以缓解拖影效果。**（不稳定）**
 - ……可能还有更多（？）
 

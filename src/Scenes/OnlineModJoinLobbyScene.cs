@@ -23,15 +23,15 @@ public class OnlineModJoinLobbyScene : IScene
             Position = new Vector2(64f, 128f),
             Size = new Vector2(200f, 64f)
         };
-        reopenInviteBtn.AddListener(() =>
-        {
-            var id = ReopenInviteDialogPatch.PrevId;
-            if (id.HasValue) SteamFriends.ActivateGameOverlayInviteDialog(id.Value);
-        });
+        // reopenInviteBtn.AddListener(() =>
+        // {
+        //     var id = ReopenInviteDialogPatch.PrevId;
+        //     if (id.HasValue) SteamFriends.ActivateGameOverlayInviteDialog(id.Value);
+        // });
     }
 
     public void Destroy()
     {
-        ReopenInviteDialogPatch.PrevId = null;
+        // ReopenInviteDialogPatch.PrevId = null;
     }
 }
