@@ -19,7 +19,6 @@ public class HitStatusPanel
     private TextUi fukaCounter;
 
     private TextUi hitAspectValue;
-    private TextUi hitOffset;
 
     private TextUi kaAspect;
     private TextUi kaCounter;
@@ -31,7 +30,7 @@ public class HitStatusPanel
     private TextUi ryoCounter;
     private ImageUi trainCounterUi;
 
-    public void StartHitStatsPanel()
+    public void Start()
     {
         _ensoGameManager = GameObject.Find("EnsoGameManager").GetComponent<EnsoGameManager>();
 
@@ -155,18 +154,9 @@ public class HitStatusPanel
         };
         trainCounterUi.AddChild(rendaCounter);
         rendaCounter.Position = new Vector2(CounterAlignX, 333);
-
-        hitOffset = new TextUi(true)
-        {
-            Text = "0ms",
-            FontSize = 48,
-            Alignment = TextAlignmentOptions.TopRight
-        };
-        trainCounterUi.AddChild(hitOffset);
-        hitOffset.Position = new Vector2(470, -38);
     }
 
-    public void UpdateHitStatsPanel()
+    public void Update()
     {
         if (_ensoGameManager.ensoParam.IsPause || _ensoGameManager.state >= EnsoGameManager.State.ToResult)
         {
@@ -179,22 +169,12 @@ public class HitStatusPanel
         var ryo = EnsoGameBasePatch.RyoCount;
         var ka = EnsoGameBasePatch.KaCount;
         var fuka = EnsoGameBasePatch.FuKaCount;
-        var time = (int)EnsoGameBasePatch.LastHitTimeOffset;
 
         var total = ryo + ka + fuka;
 
         ryoCounter.Text = ryo.ToString();
         kaCounter.Text = ka.ToString();
         fukaCounter.Text = fuka.ToString();
-        hitOffset.Text = $"{time}ms";
-        if (time > EnsoGameBasePatch.RyoJudgeRange)
-            hitOffset.Color = new Color32(248, 72, 40, 255);
-        else if (time < -EnsoGameBasePatch.RyoJudgeRange)
-            hitOffset.Color = new Color32(104, 192, 192, 255);
-        else if (time == 0)
-            hitOffset.Color = new Color32(109, 209, 111, 255);
-        else
-            hitOffset.Color = new Color32(248, 184, 0, 255);
 
         if (total > 0)
         {

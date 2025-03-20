@@ -8,6 +8,7 @@ namespace TnTRFMod.Scenes;
 
 public class EnsoScene : IScene
 {
+    private readonly HitOffsetTip HitOffsetTip = new();
     private readonly HitStatusPanel HitStatusPanel = new();
     private readonly ScoreRankIcon ScoreRankIcon = new();
 
@@ -22,7 +23,8 @@ public class EnsoScene : IScene
             info.SongInfo.UniqueId == CommonObjects.Instance.MyDataManager.EnsoData.ensoSettings.musicUniqueId));
 
         if (TnTrfMod.Instance.enableNearestNeighborOnpuPatch.Value) NearestNeighborOnpuPatch.PatchLaneTarget();
-        if (TnTrfMod.Instance.enableHitStatsPanelPatch.Value) HitStatusPanel.StartHitStatsPanel();
+        if (TnTrfMod.Instance.enableHitStatsPanelPatch.Value) HitStatusPanel.Start();
+        if (TnTrfMod.Instance.enableHitOffset.Value) HitOffsetTip.Start();
 
         if (TnTrfMod.Instance.enableScoreRankIcon.Value) ScoreRankIcon.Init();
         if (TnTrfMod.Instance.enableOnpuTextRail.Value) TnTrfMod.Instance.StartCoroutine(DrawOnpuTextRail());
@@ -30,8 +32,9 @@ public class EnsoScene : IScene
 
     public void Update()
     {
-        if (TnTrfMod.Instance.enableHitStatsPanelPatch.Value) HitStatusPanel.UpdateHitStatsPanel();
+        if (TnTrfMod.Instance.enableHitStatsPanelPatch.Value) HitStatusPanel.Update();
         if (TnTrfMod.Instance.enableScoreRankIcon.Value) ScoreRankIcon.Update();
+        if (TnTrfMod.Instance.enableHitOffset.Value) HitOffsetTip.Update();
     }
 
     private IEnumerator DrawOnpuTextRail()

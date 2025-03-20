@@ -55,6 +55,9 @@ public class TnTrfMod
     public ConfigEntry<bool> enableMinimumLatencyAudioClient;
     public ConfigEntry<bool> enableOpenInviteFriendDialogButton;
     public ConfigEntry<bool> enableHitStatsPanelPatch;
+    public ConfigEntry<bool> enableHitOffset;
+    public ConfigEntry<bool> hitOffsetInvertColor;
+    public ConfigEntry<float> hitOffsetRyoRange;
     public ConfigEntry<bool> enableScoreRankIcon;
     public ConfigEntry<bool> enableOnpuTextRail;
     public ConfigEntry<bool> enableNearestNeighborOnpuPatch;
@@ -126,6 +129,16 @@ public class TnTrfMod
         enableScoreRankIcon = ConfigEntry.Register("General", "EnableScoreRankIcon",
             "Enable score rank icon during music game.",
             false);
+        // 敲击时差功能
+        enableHitOffset = ConfigEntry.Register("HitOffset", "Enable",
+            "Enable hit offset during music game.",
+            false);
+        hitOffsetInvertColor = ConfigEntry.Register("HitOffset", "InvertColor",
+            "Invert color of fast/late hit offset text.",
+            false);
+        hitOffsetRyoRange = ConfigEntry.Register("HitOffset", "RyoRange",
+            "Define ryo judge range of note in positive milliseconds, set to -1f to follow difficulty of selected song course.",
+            -1f);
         // 直播点歌功能
         enableBilibiliLiveStreamSongRequest = ConfigEntry.Register("BilibiliLiveStreamSongRequest", "Enable",
             "Enable Bilibili Live Stream Song Request", false);

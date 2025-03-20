@@ -137,11 +137,12 @@ public class ScoreRankIcon
             new Vector2(0.5f, 0.5f), width / 140f);
         var iconUi = new ImageUi(iconSprite);
 
-        var posX = 70;
-        var posY = 35;
+        var posX = 180;
+        var posY = 145;
         iconUi.Image.color = Color.white.AlphaMultiplied(0f);
+        iconUi._transform.pivot = new Vector2(0.5f, 0.5f);
         iconUi.Position = new Vector2(posX, posY);
-        iconUi.Size = new Vector2(210, 210);
+        iconUi.Size = new Vector2(215, 215);
 
         // tween in 500ms
         var time = 0f;
@@ -157,20 +158,20 @@ public class ScoreRankIcon
         iconUi.Position = new Vector2(posX, posY);
         
         time = 0f;
-        while (time < 0.1f)
+        while (time < 0.05f)
         {
-            iconUi._transform.localScale = Vector3.one * (1f + time);
+            iconUi._transform.localScale = Vector3.one * (1.05f + time);
             yield return null;
             time += Time.deltaTime;
         }
         
-        iconUi._transform.localScale = Vector3.one * (1.1f);
+        iconUi._transform.localScale = Vector3.one * (1.05f);
         yield return null;
         
         time = 0f;
-        while (time < 0.1f)
+        while (time < 0.05f)
         {
-            iconUi._transform.localScale = Vector3.one * (1.1f - time);
+            iconUi._transform.localScale = Vector3.one * (1.05f - time);
             yield return null;
             time += Time.deltaTime;
         }
