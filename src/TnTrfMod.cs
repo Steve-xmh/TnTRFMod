@@ -56,6 +56,7 @@ public class TnTrfMod
     public ConfigEntry<bool> enableOpenInviteFriendDialogButton;
     public ConfigEntry<bool> enableHitStatsPanelPatch;
     public ConfigEntry<bool> enableScoreRankIcon;
+    public ConfigEntry<bool> enableOnpuTextRail;
     public ConfigEntry<bool> enableNearestNeighborOnpuPatch;
     public ConfigEntry<bool> enableNoShadowOnpuPatch;
     public ConfigEntry<bool> enableSkipBootScreenPatch;
@@ -104,6 +105,8 @@ public class TnTrfMod
             "Whether to enable Minimum Latency Audio Client, which can reduce the audio latency if possible.", true);
         enableAutoDownloadSubscriptionSongs = ConfigEntry.Register("General", "EnableAutoDownloadSubscriptionSongs",
             "Enable auto download subscription songs. (NOT FULLY TESTED)", true);
+        enableOnpuTextRail = ConfigEntry.Register("General", "EnableOnpuTextRail",
+            "Draw an nijiiro-like note text rail background.", true);
         // 默认禁用的功能
         enableNearestNeighborOnpuPatch = ConfigEntry.Register("General", "EnableNearestNeighborOnpuPatch",
             "Whether to enable Nearest Neighbor Onpu/Note Patch, this may make the notes look more pixelated.", false);

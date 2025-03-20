@@ -24,15 +24,14 @@ public class EnsoScene : IScene
         if (TnTrfMod.Instance.enableNearestNeighborOnpuPatch.Value) NearestNeighborOnpuPatch.PatchLaneTarget();
         if (TnTrfMod.Instance.enableHitStatsPanelPatch.Value) HitStatusPanel.StartHitStatsPanel();
 
-        ScoreRankIcon.Init();
-        TnTrfMod.Instance.StartCoroutine(DrawOnpuTextRail());
+        if (TnTrfMod.Instance.enableScoreRankIcon.Value) ScoreRankIcon.Init();
+        if (TnTrfMod.Instance.enableOnpuTextRail.Value) TnTrfMod.Instance.StartCoroutine(DrawOnpuTextRail());
     }
 
     public void Update()
     {
         if (TnTrfMod.Instance.enableHitStatsPanelPatch.Value) HitStatusPanel.UpdateHitStatsPanel();
-
-        ScoreRankIcon.Update();
+        if (TnTrfMod.Instance.enableScoreRankIcon.Value) ScoreRankIcon.Update();
     }
 
     private IEnumerator DrawOnpuTextRail()

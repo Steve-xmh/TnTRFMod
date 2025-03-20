@@ -155,6 +155,27 @@ public class ScoreRankIcon
 
         iconUi.Image.color = Color.white;
         iconUi.Position = new Vector2(posX, posY);
+        
+        time = 0f;
+        while (time < 0.1f)
+        {
+            iconUi._transform.localScale = Vector3.one * (1f + time);
+            yield return null;
+            time += Time.deltaTime;
+        }
+        
+        iconUi._transform.localScale = Vector3.one * (1.1f);
+        yield return null;
+        
+        time = 0f;
+        while (time < 0.1f)
+        {
+            iconUi._transform.localScale = Vector3.one * (1.1f - time);
+            yield return null;
+            time += Time.deltaTime;
+        }
+        
+        iconUi._transform.localScale = Vector3.one;
 
         yield return new WaitForSeconds(3);
 
