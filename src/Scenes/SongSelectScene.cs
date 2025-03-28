@@ -18,6 +18,7 @@ public class SongSelectScene : IScene
 
     public void Start()
     {
+        if (!TnTrfMod.Instance.enableBilibiliLiveStreamSongRequest.Value) return;
         liveStreamSongRequestStatus = new TextUi
         {
             FontSize = 20,
@@ -28,6 +29,7 @@ public class SongSelectScene : IScene
 
     public void Update()
     {
+        if (!TnTrfMod.Instance.enableBilibiliLiveStreamSongRequest.Value) return;
         if (Keyboard.current[Key.K].wasPressedThisFrame)
         {
             var sceneObj = GameObject.Find("SongSelectSceneObjects")

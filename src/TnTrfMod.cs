@@ -28,7 +28,7 @@ public class TnTrfMod
 {
     public const string MOD_NAME = "TnTRFMod";
     public const string MOD_AUTHOR = "SteveXMH";
-    public const string MOD_VERSION = "0.6.0";
+    public const string MOD_VERSION = "0.6.1";
 #if BEPINEX
     public const string MOD_LOADER = "BepInEx";
 #endif
