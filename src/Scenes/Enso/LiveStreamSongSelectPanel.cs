@@ -180,8 +180,8 @@ public class LiveStreamSongSelectPanel
     private static void AddSongToQueue(MusicDataInterface.MusicInfoAccesser songInfo,
         BilibiliLiveCommentCrawer.DammakuMessage dammakuMessage)
     {
-        if (QueuedSongList.Any(queuedSongInfo => queuedSongInfo.SongInfo.UniqueId == songInfo.UniqueId))
-            return;
+        // if (QueuedSongList.Any(queuedSongInfo => queuedSongInfo.SongInfo.UniqueId == songInfo.UniqueId))
+        //     return;
         if (SongRequestSet.Contains(songInfo.Id))
             return;
         SongRequestSet.Add(songInfo.Id);

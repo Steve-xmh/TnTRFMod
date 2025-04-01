@@ -15,8 +15,8 @@ namespace TnTRFMod.Ui.Widgets;
 
 public class TextUi : BaseUi
 {
-    private readonly TextMeshProUGUI _textTMP;
-    private readonly UiText _uitext;
+    protected readonly TextMeshProUGUI _textTMP;
+    protected readonly UiText _uitext;
 
     public TextUi(bool useMainFont = false)
     {

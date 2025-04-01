@@ -24,7 +24,7 @@ public class BaseUi
             baseUiSprite.name = "BaseUiSprite";
         }
 
-        _go = new GameObject("BaseUi");
+        _go = new GameObject(GetType().Name);
         _transform = _go.AddComponent<RectTransform>();
         _transform.SetParent(Common.GetDrawCanvasForScene());
         _transform.pivot = new Vector2(0, 1);

@@ -60,6 +60,7 @@ public class TnTrfMod
     public ConfigEntry<float> hitOffsetRyoRange;
     public ConfigEntry<bool> enableScoreRankIcon;
     public ConfigEntry<bool> enableOnpuTextRail;
+    public ConfigEntry<bool> enableMod;
     public ConfigEntry<bool> enableNearestNeighborOnpuPatch;
     public ConfigEntry<bool> enableNoShadowOnpuPatch;
     public ConfigEntry<bool> enableSkipBootScreenPatch;
@@ -84,17 +85,8 @@ public class TnTrfMod
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     private delegate void OnLibTaikoLog(IntPtr msgBuffer);
 
-    public void Load(HarmonyInstance harmony)
+    private void SetupConfigs()
     {
-        _harmony = harmony;
-        Logger.Info("TnTRFMod has loaded!");
-        I18n.Load();
-        SetLibTaikoDebugLogFunc(buffer =>
-        {
-            var msg = Marshal.PtrToStringAnsi(buffer);
-            Console.Out.Write(msg);
-        });
-
         // 默认启用的功能
         enableBetterBigHitPatch = ConfigEntry.Register("General", "EnableBetterBigHitPatch",
             "Whether to enable better Big Hit Patch, which will treat one side hit as a big hit.", true);
@@ -110,6 +102,8 @@ public class TnTrfMod
             "Enable auto download subscription songs. (NOT FULLY TESTED)", true);
         enableOnpuTextRail = ConfigEntry.Register("General", "EnableOnpuTextRail",
             "Draw an nijiiro-like note text rail background.", true);
+        enableMod = ConfigEntry.Register("General", "Enabled",
+            "Enables the mod.", true);
         // 默认禁用的功能
         enableNearestNeighborOnpuPatch = ConfigEntry.Register("General", "EnableNearestNeighborOnpuPatch",
             "Whether to enable Nearest Neighbor Onpu/Note Patch, this may make the notes look more pixelated.", false);
@@ -150,6 +144,25 @@ public class TnTrfMod
 
         maxBufferedInputCount = ConfigEntry.Register("BufferedInput", "MaxBufferedInputCount",
             "The maximum count of the buffered key input per side.", 5u);
+    }
+
+    public void Load(HarmonyInstance harmony)
+    {
+        SetupConfigs();
+        if (!enableMod.Value)
+        {
+            Logger.Warn("TnTRFMod has disabled!");
+            return;
+        }
+
+        _harmony = harmony;
+        Logger.Info("TnTRFMod has loaded!");
+        I18n.Load();
+        SetLibTaikoDebugLogFunc(buffer =>
+        {
+            var msg = Marshal.PtrToStringAnsi(buffer);
+            Console.Out.Write(msg);
+        });
 
         SceneManager.sceneLoaded +=
             DelegateSupport.ConvertDelegate<UnityAction<Scene, LoadSceneMode>>(OnSceneWasLoaded);

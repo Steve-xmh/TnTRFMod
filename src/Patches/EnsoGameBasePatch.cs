@@ -1,4 +1,5 @@
 using HarmonyLib;
+using UnityEngine;
 using Logger = TnTRFMod.Utils.Logger;
 
 namespace TnTRFMod.Patches;
@@ -32,6 +33,37 @@ public class EnsoGameBasePatch
         HitCount = 0;
         LastHitTimeOffset = 0;
         AverageHitTimeOffset = 0;
+    }
+
+    [HarmonyPatch(typeof(EnsoInput))]
+    [HarmonyPatch(nameof(EnsoInput.CheckAutoRenda))]
+    [HarmonyPatch(MethodType.Normal)]
+    [HarmonyPrefix]
+    private static bool EnsoInput_CheckAutoRenda_Prefix(EnsoInput __instance, ref bool __result, int player,
+        int rendaFrame)
+    {
+        const float AutoHitRate = 10f;
+        var playerInfo = __instance.playerInfo[player];
+        var autoRendaCount = playerInfo.autoRendaCount;
+        var rendaTime = rendaFrame * autoRendaCount * (1000f / Application.targetFrameRate);
+
+        var shouldHit = playerInfo.autoRendaWaitTimer >= rendaTime;
+        __result = shouldHit;
+        if (shouldHit)
+        {
+            playerInfo.autoRendaCount ++;
+        }
+
+        playerInfo.autoRendaWaitTimer += 1000f / AutoHitRate;
+        
+        // Logger.Info($"EnsoInput_CheckAutoRenda_Prefix \n" +
+        //             $"\tautoRendaCount {autoRendaCount}\n" +
+        //             $"\trendaTime {rendaTime}\n" +
+        //             $"\tautoRendaWaitTimer {playerInfo.autoRendaWaitTimer}\n" +
+        //             $"\tplayer {player}\n" +
+        //             $"\trendaFrame {rendaFrame}\n");
+
+        return false;
     }
 
 
