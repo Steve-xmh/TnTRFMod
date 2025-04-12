@@ -8,7 +8,7 @@
         <Product>TnTRFMod</Product>
         <Version>0.6.1</Version>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <LangVersion>latest</LangVersion>
+        <Nullable>annotations</Nullable>
         <RestoreAdditionalProjectSources>
             https://api.nuget.org/v3/index.json;
             https://nuget.bepinex.dev/v3/index.json;
@@ -25,6 +25,7 @@
         <PlatformTarget>x64</PlatformTarget>
         <DebugType>embedded</DebugType>
         <Optimize>true</Optimize>
+        <LangVersion>default</LangVersion>
     </PropertyGroup>
 
     <Target Name="UserFile" AfterTargets="PreBuildEvent">
@@ -44,6 +45,7 @@
     </PropertyGroup>
     <Target Name="PostBuildCopyBepInEx" AfterTargets="PostBuildEvent" Condition="$(CopyOutputFiles) == true And '$(Configuration)' == 'BepInEx'">
         <Copy SourceFiles="$(TargetDir)$(AssemblyName).dll" DestinationFiles="$(GameDir)\BepInEx\plugins\$(AssemblyName).BepInEx\$(AssemblyName).BepInEx.dll"/>
+        <Copy SourceFiles="$(TargetDir)MinHook.NET.dll" DestinationFolder="$(GameDir)\BepInEx\plugins\$(AssemblyName).BepInEx"/>
         <Copy SourceFiles="$(TargetDir)$(AssemblyName).dll" DestinationFiles="$(TargetDir)\$(AssemblyName).BepInEx.dll"/>
     </Target>
 
@@ -82,5 +84,9 @@
 
     <ItemGroup>
         <Content Include="src\Resources\Template.csproj.user"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MinHook.NET" Version="1.1.1"/>
     </ItemGroup>
 </Project>

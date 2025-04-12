@@ -14,7 +14,7 @@ public class ConfigEntry<T>
     private BepInEx.Configuration.ConfigEntry<T> inner;
 
     public static ConfigEntry<TT> Register<TT>(string section, string key, string description = "",
-        TT defaultValue = default)
+        TT defaultValue = default!)
     {
         return new ConfigEntry<TT>
         {

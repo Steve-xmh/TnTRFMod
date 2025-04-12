@@ -1,5 +1,12 @@
-using TMPro;
 using UnityEngine;
+
+#if BEPINEX
+using TMPro;
+#endif
+
+#if MELONLOADER
+using Il2CppTMPro;
+#endif
 
 namespace TnTRFMod.Ui.Widgets;
 

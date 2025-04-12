@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Runtime.CompilerServices;
 using Il2CppInterop.Runtime;
+using CancellationToken = Il2CppSystem.Threading.CancellationToken;
 using Exception = Il2CppSystem.Exception;
 
 #if BEPINEX
@@ -13,8 +14,15 @@ using Il2CppCysharp.Threading.Tasks;
 
 namespace TnTRFMod.Utils;
 
-public readonly struct UTask(UniTask uniTask)
+public readonly struct UTask
 {
+    private readonly UniTask uniTask;
+
+    public UTask(UniTask uniTask)
+    {
+        this.uniTask = uniTask;
+    }
+
     public static implicit operator UTask(UniTask uniTask)
     {
         return new UTask(uniTask);
@@ -25,8 +33,15 @@ public readonly struct UTask(UniTask uniTask)
         return new Awaiter(uniTask.GetAwaiter());
     }
 
-    public readonly struct Awaiter(UniTask.Awaiter uAwaiter) : INotifyCompletion
+    public readonly struct Awaiter : INotifyCompletion
     {
+        private readonly UniTask.Awaiter uAwaiter;
+
+        public Awaiter(UniTask.Awaiter uAwaiter)
+        {
+            this.uAwaiter = uAwaiter;
+        }
+
         public bool IsCompleted => uAwaiter.IsCompleted;
 
         public void OnCompleted(Action continuation)
@@ -41,8 +56,15 @@ public readonly struct UTask(UniTask uniTask)
     }
 }
 
-public readonly struct UTask<T>(UniTask<T> uniTask)
+public readonly struct UTask<T>
 {
+    private readonly UniTask<T> uniTask;
+
+    public UTask(UniTask<T> uniTask)
+    {
+        this.uniTask = uniTask;
+    }
+
     public static implicit operator UTask<T>(UniTask<T> uniTask)
     {
         return new UTask<T>(uniTask);
@@ -53,8 +75,15 @@ public readonly struct UTask<T>(UniTask<T> uniTask)
         return new Awaiter<T>(uniTask.GetAwaiter());
     }
 
-    public readonly struct Awaiter<UT>(UniTask<UT>.Awaiter uAwaiter) : INotifyCompletion
+    public readonly struct Awaiter<UT> : INotifyCompletion
     {
+        private readonly UniTask<UT>.Awaiter uAwaiter;
+
+        public Awaiter(UniTask<UT>.Awaiter awaiter)
+        {
+            uAwaiter = awaiter;
+        }
+
         public bool IsCompleted => uAwaiter.IsCompleted;
 
         public void OnCompleted(Action continuation)
@@ -81,6 +110,11 @@ public static class UTaskExt
         return new UTask(uniTask);
     }
 
+    public static UniTask ToUniTask(this Task uniTask)
+    {
+        var pred = DelegateSupport.ConvertDelegate<Il2CppSystem.Func<bool>>(() => uniTask.IsCompleted);
+        return UniTask.WaitUntil(pred, PlayerLoopTiming.Update, new CancellationToken(false));
+    }
 
     public static IEnumerator Await<T>(this UniTask<T> uniTask, Action<T> onResult = null,
         Action<System.Exception> onException = null)

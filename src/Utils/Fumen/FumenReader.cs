@@ -71,9 +71,11 @@ public record FumenReader(byte[] fumenData)
         var result = 10 * (noteScore * simpleNoteAmount +
                            (balloonHitAmount + (int)(rendaTotalLength * 21f / 1000f)) * 10);
 
+        Logger.Info($"simpleNoteAmount: {simpleNoteAmount} rendaTotalLength: {rendaTotalLength}");
+
         if (result < 100_0000)
-            Console.Out.WriteLine($"Warning: Fumen score is less than 1000000: {result}");
-        
+            Logger.Warn($"Warning: Fumen score is less than 1000000: {result}");
+
         return result;
     }
 
