@@ -28,7 +28,7 @@ public class TnTrfMod
 {
     public const string MOD_NAME = "TnTRFMod";
     public const string MOD_AUTHOR = "SteveXMH";
-    public const string MOD_VERSION = "0.6.1";
+    public const string MOD_VERSION = "0.7.0";
 #if BEPINEX
     public const string MOD_LOADER = "BepInEx";
 #endif
@@ -55,6 +55,7 @@ public class TnTrfMod
     public ConfigEntry<bool> enableMinimumLatencyAudioClient;
     public ConfigEntry<bool> enableOpenInviteFriendDialogButton;
     public ConfigEntry<bool> enableHitStatsPanelPatch;
+    public ConfigEntry<bool> enableHighPrecisionTimerPatch;
     public ConfigEntry<bool> enableHitOffset;
     public ConfigEntry<bool> hitOffsetInvertColor;
     public ConfigEntry<float> hitOffsetRyoRange;
@@ -72,6 +73,12 @@ public class TnTrfMod
     public ConfigEntry<bool> enableBilibiliLiveStreamSongRequest;
     public ConfigEntry<uint> bilibiliLiveStreamSongRoomId;
     public ConfigEntry<string> bilibiliLiveStreamSongToken;
+
+    // 独占音频功能
+    public ConfigEntry<bool> enableExclusiveModeAudio;
+    public ConfigEntry<int> exclusiveModeAudioSampleRate;
+    public ConfigEntry<short> exclusiveModeAudioChannels;
+    public ConfigEntry<short> exclusiveModeAudioBitsPerSample;
 
     public static TnTrfMod Instance { get; internal set; }
 
@@ -104,6 +111,8 @@ public class TnTrfMod
             "Draw an nijiiro-like note text rail background.", true);
         enableMod = ConfigEntry.Register("General", "Enabled",
             "Enables the mod.", true);
+        enableHighPrecisionTimerPatch = ConfigEntry.Register("General", "EnableHighPrecisionTimerPatch",
+            "Whether to enable High Precision Timer Patch, which may benefits to hit time judging.", true);
         // 默认禁用的功能
         enableNearestNeighborOnpuPatch = ConfigEntry.Register("General", "EnableNearestNeighborOnpuPatch",
             "Whether to enable Nearest Neighbor Onpu/Note Patch, this may make the notes look more pixelated.", false);
@@ -141,10 +150,20 @@ public class TnTrfMod
         bilibiliLiveStreamSongToken = ConfigEntry.Register("BilibiliLiveStreamSongRequest", "Token",
             "Bilibili Live Stream Token. Commonly as a Cookie called \"SESSDATA\". If you don't provide this, you won't be able to get accurate sender info.",
             "");
+        // 独占音频功能
+        enableExclusiveModeAudio = ConfigEntry.Register("ExclusiveModeAudio", "Enable",
+            "Enable exclusive mode audio. (Expermental)", false);
+        exclusiveModeAudioSampleRate = ConfigEntry.Register("ExclusiveModeAudio", "SampleRate",
+            "Sample Rate of the exclusive mode wave format.", 48000);
+        exclusiveModeAudioChannels = ConfigEntry.Register("ExclusiveModeAudio", "Channels",
+            "Amount of channels of the exclusive mode wave format.", (short)2);
+        exclusiveModeAudioBitsPerSample = ConfigEntry.Register("ExclusiveModeAudio", "BitsPerSample",
+            "Bits of sample of exclusive mode wave format.", (short)16);
 
         maxBufferedInputCount = ConfigEntry.Register("BufferedInput", "MaxBufferedInputCount",
             "The maximum count of the buffered key input per side.", 5u);
     }
+
 
     public void Load(HarmonyInstance harmony)
     {
@@ -172,12 +191,23 @@ public class TnTrfMod
         SetupHarmony();
         RegisterScenes();
 
+        if (enableExclusiveModeAudio.Value) CriWareEnableExclusiveModePatch.Apply();
+        if (enableHighPrecisionTimerPatch.Value) HighPrecisionTimerPatch.Apply();
+
         try
         {
             if (enableMinimumLatencyAudioClient.Value)
             {
-                _minimumLatencyAudioClient = new MinimumLatencyAudioClient();
-                _minimumLatencyAudioClient.Start();
+                if (enableExclusiveModeAudio.Value)
+                {
+                    Logger.Warn(
+                        "MinimumLatencyAudioClient feature is disabled as it is not supported in exclusive mode.");
+                }
+                else
+                {
+                    _minimumLatencyAudioClient = new MinimumLatencyAudioClient();
+                    _minimumLatencyAudioClient.Start();
+                }
             }
         }
         catch (Exception e)

@@ -6,12 +6,13 @@ using System.Text.Json.Nodes;
 
 namespace TnTRFMod.Utils;
 
-public class BilibiliLiveCommentCrawer(long roomId, string sessionData = "")
+public class BilibiliLiveCommentCrawer
 {
     private const string UserAgent =
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36";
 
     private const string CIDInfoUrl = "https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo?id=";
+    private readonly string _sessionData;
 
     private readonly HttpClient httpClient = new()
     {
@@ -26,7 +27,7 @@ public class BilibiliLiveCommentCrawer(long roomId, string sessionData = "")
     };
 
     private readonly short protocolversion = 2;
-    private readonly long roomId = roomId;
+    private readonly long roomId;
     private string chatHost = "chat.bilibili.com";
     private int chatPort = 2243;
     private TcpClient client;
@@ -36,6 +37,12 @@ public class BilibiliLiveCommentCrawer(long roomId, string sessionData = "")
     private Task startTask;
     private string token = "";
     private long userId;
+
+    public BilibiliLiveCommentCrawer(long roomId, string sessionData = "")
+    {
+        _sessionData = sessionData;
+        this.roomId = roomId;
+    }
 
     public event EventHandler<DammakuMessage> OnDanmakuMessage;
 
@@ -81,10 +88,10 @@ public class BilibiliLiveCommentCrawer(long roomId, string sessionData = "")
         await Console.Out.WriteLineAsync("正在获取弹幕服务器地址");
 
         var url = CIDInfoUrl + roomId;
-        if (!string.IsNullOrEmpty(sessionData))
+        if (!string.IsNullOrEmpty(_sessionData))
         {
             await Console.Out.WriteLineAsync("已设置 SESSDATA 令牌，正在获取登录用户 ID");
-            httpClient.DefaultRequestHeaders.Add("Cookie", $"SESSDATA={sessionData};");
+            httpClient.DefaultRequestHeaders.Add("Cookie", $"SESSDATA={_sessionData};");
             var navResText = await httpClient.GetStringAsync("https://api.bilibili.com/x/web-interface/nav");
             var navRes = JsonNode.Parse(navResText);
             userId = navRes["data"]["mid"].GetValue<long>();
@@ -303,10 +310,6 @@ public class BilibiliLiveCommentCrawer(long roomId, string sessionData = "")
                     });
                     break;
                 }
-                default:
-                    // await Console.Out.WriteLineAsync("接收到未知指令报文: " + cmd);
-                    await Console.Out.WriteLineAsync($"接收到其他信息: {body}");
-                    break;
             }
         }
         catch (Exception e)

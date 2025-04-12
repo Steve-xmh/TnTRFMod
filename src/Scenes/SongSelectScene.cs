@@ -27,8 +27,8 @@ public class SongSelectScene : IScene
             UpdateLiveStreamSongRequestStatus();
         }
 
-        var searchTextInput = new TextFieldUi();
-        searchTextInput.Name = "SearchTextInput";
+        // var searchTextInput = new TextFieldUi();
+        // searchTextInput.Name = "SearchTextInput";
     }
 
     public void Update()
