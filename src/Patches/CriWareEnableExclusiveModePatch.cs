@@ -9,12 +9,18 @@ namespace TnTRFMod.Patches;
 [SuppressMessage("Interoperability", "CA1416")]
 public static class CriWareEnableExclusiveModePatch
 {
+    private const string CriWarePluginName = "Taiko no Tatsujin Rhythm Festival_Data/Plugins/x86_64/cri_ware_unity.dll";
     private static Guid IID_IAudioClient = typeof(IAudioClient3).GUID;
     private static IAudioClient3? audioClient;
     private static IMMDevice? device;
     private static HookEngine? engine;
 
     private static TimeSpan bufferDuration = TimeSpan.Zero;
+    private static bool isFormatSupported;
+
+    private static IAudioClientInitializeHook? AudioClientInitializeHook_Original;
+
+    private static criAtomUnity_Initialize_Delegate? criAtomUnity_Initialize_Original;
 
     public static void Apply()
     {
@@ -52,20 +58,20 @@ public static class CriWareEnableExclusiveModePatch
 
         criAtom_SetAudioClientShareMode_WASAPI(AudioClientShareMode.Shared); // Load dll
 
-        var handle = GetModuleHandle("cri_ware_unity.dll");
-        var logCallbackPtr = new IntPtr((long)handle + 0x1802273F0L - 0x180000000L);
-        
-        WriteMemory(logCallbackPtr, Marshal.GetFunctionPointerForDelegate(new OnCriAtomUnityLog(
-            (buffer, _, info, _) =>
-            {
-                var data1 = info.data1.ToString("X8");
-                var data2 = info.data2.ToString("X8");
-                var data3 = info.data3.ToString("X8");
+        // var handle = GetModuleHandle("cri_ware_unity.dll");
+        // var logCallbackPtr = new IntPtr((long)handle + 0x1802273F0L - 0x180000000L);
 
-                Logger.Info(
-                    $"[CriWareUnity] {buffer} ({data1}, {data2}, {data3})");
-            }
-        )));
+        // WriteMemory(logCallbackPtr, Marshal.GetFunctionPointerForDelegate(new OnCriAtomUnityLog(
+        //     (buffer, _, info, _) =>
+        //     {
+        //         var data1 = info.data1.ToString("X8");
+        //         var data2 = info.data2.ToString("X8");
+        //         var data3 = info.data3.ToString("X8");
+        //
+        //         Logger.Info(
+        //             $"[CriWareUnity] {buffer} ({data1}, {data2}, {data3})");
+        //     }
+        // )));
 
         engine = new HookEngine();
 
@@ -78,14 +84,16 @@ public static class CriWareEnableExclusiveModePatch
         engine.EnableHooks();
     }
 
-    private static IAudioClientInitializeHook? AudioClientInitializeHook_Original;
-
     private static int AudioClientInitializeHook(IntPtr audioclient, AudioClientShareMode sharemode,
         AudioClientStreamFlags streamflags, long hnsbufferduration, long hnsperiodicity, WaveFormat pformat,
         ref Guid audiosessionguid)
     {
+        if (isFormatSupported)
+            return AudioClientInitializeHook_Original!(audioclient, sharemode,
+                streamflags, bufferDuration.Ticks, bufferDuration.Ticks, pformat,
+                ref audiosessionguid);
         return AudioClientInitializeHook_Original!(audioclient, sharemode,
-            streamflags, bufferDuration.Ticks, bufferDuration.Ticks, pformat,
+            streamflags, hnsbufferduration, hnsperiodicity, pformat,
             ref audiosessionguid);
     }
 
@@ -121,15 +129,14 @@ public static class CriWareEnableExclusiveModePatch
     {
         // Logger.Info("Called hooked criAtomUnity_Initialize, trying to initialize with exclusive mode");
 
-        var format = GetWaveFormat();
-
         if (bufferDuration != TimeSpan.Zero)
         {
+            var format = GetWaveFormat();
             var formatPtr = Marshal.AllocHGlobal(Marshal.SizeOf(format));
             Marshal.StructureToPtr(format, formatPtr, false);
 
-            var support = criAtom_GetAudioClientIsFormatSupported_WASAPI(formatPtr);
-            if (support)
+            isFormatSupported = criAtom_GetAudioClientIsFormatSupported_WASAPI(formatPtr);
+            if (isFormatSupported)
             {
                 criAtom_SetAudioClientShareMode_WASAPI(AudioClientShareMode.Exclusive);
                 criAtom_SetAudioClientBufferDuration_WASAPI(bufferDuration);
@@ -137,7 +144,8 @@ public static class CriWareEnableExclusiveModePatch
             }
             else
             {
-                Logger.Error("The wave format of the exclusive audio is not supported by the CriWare Unity Plugin, exclusive audio feature is disabled!");
+                Logger.Error(
+                    "The wave format of the exclusive audio is not supported by the CriWare Unity Plugin, exclusive audio feature is disabled!");
                 Logger.Error("\tConfigured wave format:");
                 Logger.Error("\t\t- Channels:        " + format.channels);
                 Logger.Error("\t\t- Sample Rate:     " + format.sampleRate);
@@ -150,41 +158,12 @@ public static class CriWareEnableExclusiveModePatch
         return criAtomUnity_Initialize_Original!();
     }
 
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 2)]
-    private struct LoggingData
-    {
-        public long data1;
-        public long data2;
-        public long data3;
-    }
-
-    private const string CriWarePluginName = "Taiko no Tatsujin Rhythm Festival_Data/Plugins/x86_64/cri_ware_unity.dll";
-
-    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    private delegate int IAudioClientInitializeHook(
-        IntPtr audioClient,
-        AudioClientShareMode shareMode,
-        AudioClientStreamFlags streamFlags,
-        long hnsBufferDuration, // REFERENCE_TIME
-        long hnsPeriodicity, // REFERENCE_TIME
-        [In] WaveFormat pFormat,
-        [In] ref Guid audioSessionGuid
-    );
-
 
     [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
     private static extern IntPtr GetModuleHandle(string lpModuleName);
 
     [DllImport("kernel32", PreserveSig = true)]
     private static extern bool VirtualProtect(IntPtr lpAddress, int dwSize, uint flNewProtect, out uint lpflOldProtect);
-
-    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    private delegate void OnCriAtomUnityLog(string msgBuffer, int level, LoggingData info, IntPtr data);
-
-    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    private delegate long criAtomUnity_Initialize_Delegate();
-
-    private static criAtomUnity_Initialize_Delegate? criAtomUnity_Initialize_Original;
 
     // criAtom_SetAudioClientShareMode_WASAPI
     [DllImport(CriWarePluginName, EntryPoint = "criAtom_SetAudioClientShareMode_WASAPI",
@@ -202,4 +181,29 @@ public static class CriWareEnableExclusiveModePatch
     [DllImport(CriWarePluginName, EntryPoint = "criAtom_SetAudioClientBufferDuration_WASAPI",
         CallingConvention = CallingConvention.StdCall)]
     private static extern void criAtom_SetAudioClientBufferDuration_WASAPI(TimeSpan duration);
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 2)]
+    private struct LoggingData
+    {
+        public long data1;
+        public long data2;
+        public long data3;
+    }
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    private delegate int IAudioClientInitializeHook(
+        IntPtr audioClient,
+        AudioClientShareMode shareMode,
+        AudioClientStreamFlags streamFlags,
+        long hnsBufferDuration, // REFERENCE_TIME
+        long hnsPeriodicity, // REFERENCE_TIME
+        [In] WaveFormat pFormat,
+        [In] ref Guid audioSessionGuid
+    );
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    private delegate void OnCriAtomUnityLog(string msgBuffer, int level, LoggingData info, IntPtr data);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    private delegate long criAtomUnity_Initialize_Delegate();
 }
