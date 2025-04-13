@@ -78,7 +78,7 @@ public class TnTrfMod
     public ConfigEntry<bool> enableExclusiveModeAudio;
     public ConfigEntry<int> exclusiveModeAudioSampleRate;
     public ConfigEntry<short> exclusiveModeAudioChannels;
-    public ConfigEntry<short> exclusiveModeAudioBitsPerSample;
+    public ConfigEntry<short> exclusiveModeAudioBitPerSample;
 
     public static TnTrfMod Instance { get; internal set; }
 
@@ -157,8 +157,8 @@ public class TnTrfMod
             "Sample Rate of the exclusive mode wave format.", 48000);
         exclusiveModeAudioChannels = ConfigEntry.Register("ExclusiveModeAudio", "Channels",
             "Amount of channels of the exclusive mode wave format.", (short)2);
-        exclusiveModeAudioBitsPerSample = ConfigEntry.Register("ExclusiveModeAudio", "BitsPerSample",
-            "Bits of sample of exclusive mode wave format.", (short)16);
+        exclusiveModeAudioBitPerSample = ConfigEntry.Register("ExclusiveModeAudio", "Channels",
+            "Bit size of the sample of exclusive mode wave format.", (short)16);
 
         maxBufferedInputCount = ConfigEntry.Register("BufferedInput", "MaxBufferedInputCount",
             "The maximum count of the buffered key input per side.", 5u);
