@@ -41,6 +41,20 @@ public class WaveFormat
         return waveFormat;
     }
 
+    /// <summary>
+    ///     Helper function to retrieve a WaveFormat structure from a pointer
+    /// </summary>
+    /// <param name="pointer">WaveFormat structure</param>
+    /// <returns></returns>
+    public IntPtr MarshalToPtr()
+    {
+        var size = Marshal.SizeOf(this);
+        var ptr = Marshal.AllocHGlobal(size);
+        Marshal.StructureToPtr(this, ptr, false);
+
+        return ptr;
+    }
+
     public override string ToString()
     {
         return $"WaveFormatTag: {waveFormatTag}, Channels: {channels}, SampleRate: {sampleRate}, " +

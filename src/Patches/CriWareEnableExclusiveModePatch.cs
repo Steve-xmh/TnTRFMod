@@ -10,9 +10,6 @@ namespace TnTRFMod.Patches;
 public static class CriWareEnableExclusiveModePatch
 {
     private const string CriWarePluginName = "Taiko no Tatsujin Rhythm Festival_Data/Plugins/x86_64/cri_ware_unity.dll";
-    private static Guid IID_IAudioClient = typeof(IAudioClient3).GUID;
-    private static IAudioClient3? audioClient;
-    private static IMMDevice? device;
     private static HookEngine? engine;
 
     private static TimeSpan bufferDuration = TimeSpan.Zero;
@@ -22,79 +19,167 @@ public static class CriWareEnableExclusiveModePatch
 
     private static criAtomUnity_Initialize_Delegate? criAtomUnity_Initialize_Original;
 
+    private static
+        IntPtr audioClientInitializeFuncPtr = IntPtr.Zero;
+
+    private static bool showedUnsupportedError;
+
     public static void Apply()
     {
         Logger.Info("Starting CriWareEnableExclusiveModePatch");
-
-        IntPtr initializeFuncPtr;
-        {
-            // ReSharper disable once SuspiciousTypeConversion.Global
-            var realEnumerator = new MMDeviceEnumeratorComObject() as IMMDeviceEnumerator;
-            realEnumerator!.GetDefaultAudioEndpoint(0, 0, out device);
-
-            device.Activate(ref IID_IAudioClient, ClsCtx.ALL, IntPtr.Zero,
-                out var audioClient3);
-            audioClient = audioClient3 as IAudioClient3;
-            if (audioClient == null)
-            {
-                Logger.Error("Failed to activate IAudioClient3");
-                return;
-            }
-
-            var comPtr = Marshal.GetComInterfaceForObject(audioClient, typeof(IAudioClient3));
-            var vtable = Marshal.ReadIntPtr(comPtr);
-            {
-                var start = Marshal.GetStartComSlot(typeof(IAudioClient3));
-                // int end = Marshal.GetEndComSlot(typeof(IAudioClient3));
-                initializeFuncPtr = Marshal.ReadIntPtr(vtable, start * Marshal.SizeOf<IntPtr>());
-            }
-
-            audioClient.GetDevicePeriod(out _, out var period);
-            bufferDuration = new TimeSpan(period);
-            // audioClient.GetBufferSize(out var bufferFrameCount);
-            // bufferDuration = new TimeSpan((long)(10000.0 * 1000 / format.sampleRate * bufferFrameCount + 0.5));
-            Logger.Info($"Exclusive mode buffer duration: {bufferDuration.TotalMilliseconds}ms");
-        }
-
         criAtom_SetAudioClientShareMode_WASAPI(AudioClientShareMode.Shared); // Load dll
 
-        // var handle = GetModuleHandle("cri_ware_unity.dll");
-        // var logCallbackPtr = new IntPtr((long)handle + 0x1802273F0L - 0x180000000L);
-
-        // WriteMemory(logCallbackPtr, Marshal.GetFunctionPointerForDelegate(new OnCriAtomUnityLog(
-        //     (buffer, _, info, _) =>
-        //     {
-        //         var data1 = info.data1.ToString("X8");
-        //         var data2 = info.data2.ToString("X8");
-        //         var data3 = info.data3.ToString("X8");
-        //
-        //         Logger.Info(
-        //             $"[CriWareUnity] {buffer} ({data1}, {data2}, {data3})");
-        //     }
-        // )));
+        if (!CheckWaveFormat()) return;
+        if (TnTrfMod.Instance.enableCriWarePluginLogging.Value) EnableCriWareLogging();
 
         engine = new HookEngine();
 
         criAtomUnity_Initialize_Original = engine.CreateHook("cri_ware_unity.dll", "CRIWARE2EA3E3EA",
             new criAtomUnity_Initialize_Delegate(criAtomUnity_Initialize_Hook));
-        if (initializeFuncPtr != IntPtr.Zero)
-            AudioClientInitializeHook_Original = engine.CreateHook(initializeFuncPtr,
+        if (audioClientInitializeFuncPtr != IntPtr.Zero)
+            AudioClientInitializeHook_Original = engine.CreateHook(audioClientInitializeFuncPtr,
                 new IAudioClientInitializeHook(AudioClientInitializeHook));
 
         engine.EnableHooks();
     }
 
-    private static int AudioClientInitializeHook(IntPtr audioclient, AudioClientShareMode sharemode,
-        AudioClientStreamFlags streamflags, long hnsbufferduration, long hnsperiodicity, WaveFormat pformat,
-        ref Guid audiosessionguid)
+    private static void EnableCriWareLogging()
     {
+        var handle = GetModuleHandle("cri_ware_unity.dll");
+        var logCallbackPtr = new IntPtr((long)handle + 0x1802273F0L - 0x180000000L);
+
+        WriteMemory(logCallbackPtr, Marshal.GetFunctionPointerForDelegate(new OnCriAtomUnityLog(
+            (buffer, _, info, _) =>
+            {
+                var data1 = info.data1.ToString("X8");
+                var data2 = info.data2.ToString("X8");
+                var data3 = info.data3.ToString("X8");
+
+                Logger.Info(
+                    $"[CriWareUnity] {buffer} ({data1}, {data2}, {data3})");
+            }
+        )));
+    }
+
+    private static bool CheckWaveFormat()
+    {
+        // Ensure that we can enable this mode.
+        var result = false;
+        var format = GetWaveFormat();
+        var checkThread = new Thread(() =>
+        {
+            IAudioClient3? audioClient = null;
+            try
+            {
+                var IID_IAudioClient = typeof(IAudioClient3).GUID;
+
+                // ReSharper disable once SuspiciousTypeConversion.Global
+                var realEnumerator = new MMDeviceEnumeratorComObject() as IMMDeviceEnumerator;
+                realEnumerator!.GetDefaultAudioEndpoint(0, 0, out var device);
+
+                device.Activate(ref IID_IAudioClient, ClsCtx.ALL, IntPtr.Zero,
+                    out var audioClient3);
+                audioClient = audioClient3 as IAudioClient3;
+                if (audioClient == null)
+                {
+                    Logger.Error("Failed to activate IAudioClient3");
+                    return;
+                }
+
+                var comPtr = Marshal.GetComInterfaceForObject(audioClient, typeof(IAudioClient3));
+                var vtable = Marshal.ReadIntPtr(comPtr);
+                {
+                    var start = Marshal.GetStartComSlot(typeof(IAudioClient3));
+                    // int end = Marshal.GetEndComSlot(typeof(IAudioClient3));
+                    audioClientInitializeFuncPtr = Marshal.ReadIntPtr(vtable, start * Marshal.SizeOf<IntPtr>());
+                }
+
+                audioClient.GetDevicePeriod(out _, out var period);
+                bufferDuration = new TimeSpan(period);
+
+                result = true;
+            }
+            catch (COMException e)
+            {
+                // 0x88890001
+                Logger.Error("Failed to initialize exclusive audio client for testing:");
+                Logger.Error(e);
+                Logger.Error(
+                    "The wave format of the exclusive audio is invalid and can't be used to initialize exclusive audio, exclusive audio feature is disabled!");
+                Logger.Error("\tConfigured wave format:");
+                PrintWaveFormatError(ref format);
+            }
+            finally
+            {
+                if (audioClient != null) Marshal.ReleaseComObject(audioClient);
+            }
+        });
+        checkThread.Start();
+        checkThread.Join();
+
+        // audioClient.GetBufferSize(out var bufferFrameCount);
+        // bufferDuration = new TimeSpan((long)(10000.0 * 1000 / format.sampleRate * bufferFrameCount + 0.5));
+        Logger.Info($"Exclusive mode buffer duration: {bufferDuration.TotalMilliseconds}ms");
+
+        Thread.Sleep(1000);
+
+        return result;
+    }
+
+    private static void PrintWaveFormatWarn(ref WaveFormat format)
+    {
+        Logger.Warn("\t\t- Wave Format:       " + format.waveFormatTag);
+        Logger.Warn("\t\t- Channels:          " + format.channels);
+        Logger.Warn("\t\t- Sample Rate:       " + format.sampleRate);
+        Logger.Warn("\t\t- Avg Bytes Per Sec: " + format.averageBytesPerSecond);
+        Logger.Warn("\t\t- Block Align:       " + format.blockAlign);
+        Logger.Warn("\t\t- Bits Per Sample:   " + format.bitsPerSample);
+        Logger.Warn("\t\t- CbSize:            " + format.extraSize);
+    }
+
+    private static void PrintWaveFormatError(ref WaveFormat format)
+    {
+        Logger.Error("\t\t- Wave Format:       " + format.waveFormatTag);
+        Logger.Error("\t\t- Channels:          " + format.channels);
+        Logger.Error("\t\t- Sample Rate:       " + format.sampleRate);
+        Logger.Error("\t\t- Avg Bytes Per Sec: " + format.averageBytesPerSecond);
+        Logger.Error("\t\t- Block Align:       " + format.blockAlign);
+        Logger.Error("\t\t- Bits Per Sample:   " + format.bitsPerSample);
+        Logger.Error("\t\t- CbSize:            " + format.extraSize);
+    }
+
+    private static int AudioClientInitializeHook(IAudioClient3 audioClient, AudioClientShareMode shareMode,
+        AudioClientStreamFlags streamFlags, TimeSpan hnsBufferDuration, TimeSpan hnsPeriodicity, WaveFormat pFormat,
+        ref Guid audioSessionGuid)
+    {
+        int result;
         if (isFormatSupported)
-            return AudioClientInitializeHook_Original!(audioclient, sharemode,
-                streamflags, bufferDuration.Ticks, bufferDuration.Ticks, pformat,
-                ref audiosessionguid);
-        return AudioClientInitializeHook_Original!(audioclient, sharemode,
-            streamflags, hnsbufferduration, hnsperiodicity, pformat,
-            ref audiosessionguid);
+            result = AudioClientInitializeHook_Original!(audioClient, shareMode,
+                streamFlags, bufferDuration, bufferDuration, pFormat,
+                ref audioSessionGuid);
+        else
+            result = AudioClientInitializeHook_Original!(audioClient, shareMode,
+                streamFlags, hnsBufferDuration, hnsPeriodicity, pFormat,
+                ref audioSessionGuid);
+
+        if (result == 0) return result;
+
+        if (!showedUnsupportedError)
+        {
+            showedUnsupportedError = true;
+            Logger.Error(
+                $"The wave format of the exclusive audio is invalid and can't be used to initialize exclusive audio (HRESULT: {result:x8}), audio will be disabled!");
+            Logger.Error("\tConfigured wave format:");
+            PrintWaveFormatError(ref pFormat);
+        }
+
+        criAtom_SetAudioClientShareMode_WASAPI(AudioClientShareMode.Shared);
+        criAtom_SetAudioClientBufferDuration_WASAPI(TimeSpan.Zero);
+        criAtom_SetAudioClientFormat_WASAPI(IntPtr.Zero);
+
+        return AudioClientInitializeHook_Original!(audioClient, AudioClientShareMode.Shared,
+            streamFlags, hnsBufferDuration, hnsPeriodicity, pFormat,
+            ref audioSessionGuid);
     }
 
     private static void WriteMemory<T>(IntPtr location, [DisallowNull] T value)
@@ -117,10 +202,10 @@ public static class CriWareEnableExclusiveModePatch
             waveFormatTag = WaveFormatEncoding.Pcm,
             channels = TnTrfMod.Instance.exclusiveModeAudioChannels.Value,
             sampleRate = TnTrfMod.Instance.exclusiveModeAudioSampleRate.Value,
-            bitsPerSample = TnTrfMod.Instance.exclusiveModeAudioBitsPerSample.Value,
+            bitsPerSample = TnTrfMod.Instance.exclusiveModeAudioBitPerSample.Value,
             extraSize = 0
         };
-        format.blockAlign = (short)(format.bitsPerSample / 8 * format.channels);
+        format.blockAlign = (short)(format.bitsPerSample * format.channels / 8);
         format.averageBytesPerSecond = format.sampleRate * format.blockAlign;
         return format;
     }
@@ -147,9 +232,7 @@ public static class CriWareEnableExclusiveModePatch
                 Logger.Error(
                     "The wave format of the exclusive audio is not supported by the CriWare Unity Plugin, exclusive audio feature is disabled!");
                 Logger.Error("\tConfigured wave format:");
-                Logger.Error("\t\t- Channels:        " + format.channels);
-                Logger.Error("\t\t- Sample Rate:     " + format.sampleRate);
-                Logger.Error("\t\t- Bits Per Sample: " + format.bitsPerSample);
+                PrintWaveFormatError(ref format);
             }
 
             Marshal.FreeHGlobal(formatPtr);
@@ -192,11 +275,11 @@ public static class CriWareEnableExclusiveModePatch
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     private delegate int IAudioClientInitializeHook(
-        IntPtr audioClient,
+        [MarshalAs(UnmanagedType.Interface)] IAudioClient3 audioClient,
         AudioClientShareMode shareMode,
         AudioClientStreamFlags streamFlags,
-        long hnsBufferDuration, // REFERENCE_TIME
-        long hnsPeriodicity, // REFERENCE_TIME
+        TimeSpan hnsBufferDuration, // REFERENCE_TIME
+        TimeSpan hnsPeriodicity, // REFERENCE_TIME
         [In] WaveFormat pFormat,
         [In] ref Guid audioSessionGuid
     );

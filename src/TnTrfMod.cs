@@ -68,6 +68,11 @@ public class TnTrfMod
     public ConfigEntry<bool> enableSkipRewardPatch;
     public ConfigEntry<bool> enableLouderSongPatch;
     public ConfigEntry<uint> maxBufferedInputCount;
+    public ConfigEntry<bool> enableTatakonKeyboardSongSelect;
+
+    // 自定义玩家名称功能
+    public ConfigEntry<bool> enableCustomPlayerName;
+    public ConfigEntry<string> customPlayerName;
 
     // 直播点歌功能
     public ConfigEntry<bool> enableBilibiliLiveStreamSongRequest;
@@ -79,6 +84,7 @@ public class TnTrfMod
     public ConfigEntry<int> exclusiveModeAudioSampleRate;
     public ConfigEntry<short> exclusiveModeAudioChannels;
     public ConfigEntry<short> exclusiveModeAudioBitPerSample;
+    public ConfigEntry<bool> enableCriWarePluginLogging;
 
     public static TnTrfMod Instance { get; internal set; }
 
@@ -132,6 +138,8 @@ public class TnTrfMod
         enableScoreRankIcon = ConfigEntry.Register("General", "EnableScoreRankIcon",
             "Enable score rank icon during music game.",
             false);
+        enableTatakonKeyboardSongSelect = ConfigEntry.Register("General", "EnableTatakonKeyboardSongSelect",
+            "Enable Tatakon keyboard song select. (Unstable)", false);
         // 敲击时差功能
         enableHitOffset = ConfigEntry.Register("HitOffset", "Enable",
             "Enable hit offset during music game.",
@@ -154,11 +162,21 @@ public class TnTrfMod
         enableExclusiveModeAudio = ConfigEntry.Register("ExclusiveModeAudio", "Enable",
             "Enable exclusive mode audio. (Expermental)", false);
         exclusiveModeAudioSampleRate = ConfigEntry.Register("ExclusiveModeAudio", "SampleRate",
-            "Sample Rate of the exclusive mode wave format.", 48000);
+            "Sample Rate of the exclusive mode wave format. This should match the format of your audio output device.",
+            48000);
         exclusiveModeAudioChannels = ConfigEntry.Register("ExclusiveModeAudio", "Channels",
-            "Amount of channels of the exclusive mode wave format.", (short)2);
-        exclusiveModeAudioBitPerSample = ConfigEntry.Register("ExclusiveModeAudio", "Channels",
-            "Bit size of the sample of exclusive mode wave format.", (short)16);
+            "Amount of channels of the exclusive mode wave format. This should match the format of your audio output device.",
+            (short)2);
+        exclusiveModeAudioBitPerSample = ConfigEntry.Register("ExclusiveModeAudio", "BitPerSample",
+            "Bit size of the sample of exclusive mode wave format. This should match the format of your audio output device.",
+            (short)16);
+        enableCriWarePluginLogging = ConfigEntry.Register("ExclusiveModeAudio", "EnableCriWarePluginLogging",
+            "Enable logging of CriWare Unity Plugin, if you meet some audio issues, you can turn this on to check problems.",
+            false);
+
+        enableCustomPlayerName =
+            ConfigEntry.Register("CustomPlayerName", "Enable", "Enable custom player name.", false);
+        customPlayerName = ConfigEntry.Register("CustomPlayerName", "Name", "Custom player name.", "Don-chan");
 
         maxBufferedInputCount = ConfigEntry.Register("BufferedInput", "MaxBufferedInputCount",
             "The maximum count of the buffered key input per side.", 5u);
@@ -282,6 +300,7 @@ public class TnTrfMod
         result &= PatchClass<NearestNeighborOnpuPatch>(enableNearestNeighborOnpuPatch);
         result &= PatchClass<BufferedNoteInputPatch>(enableBufferedInputPatch);
         result &= PatchClass<ForcePlayMusicPatch>(enableLouderSongPatch);
+        result &= PatchClass<CustomPlayerNamePatch>(enableCustomPlayerName);
         result &= PatchClass<EnsoGameBasePatch>();
         result &= PatchClass<LibTaikoPatches>();
 

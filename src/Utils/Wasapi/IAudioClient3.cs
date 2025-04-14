@@ -17,8 +17,8 @@ internal interface IAudioClient3
     [PreserveSig]
     int Initialize(AudioClientShareMode shareMode,
         AudioClientStreamFlags streamFlags,
-        long hnsBufferDuration, // REFERENCE_TIME
-        long hnsPeriodicity, // REFERENCE_TIME
+        TimeSpan hnsBufferDuration, // REFERENCE_TIME
+        TimeSpan hnsPeriodicity, // REFERENCE_TIME
         [In] WaveFormat pFormat,
         [In] ref Guid audioSessionGuid);
 
