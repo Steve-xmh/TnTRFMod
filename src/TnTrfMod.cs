@@ -68,6 +68,7 @@ public class TnTrfMod
     public ConfigEntry<bool> enableSkipRewardPatch;
     public ConfigEntry<bool> enableLouderSongPatch;
     public ConfigEntry<uint> maxBufferedInputCount;
+    public ConfigEntry<float> autoPlayRendaSpeed;
     public ConfigEntry<bool> enableTatakonKeyboardSongSelect;
 
     // 自定义玩家名称功能
@@ -162,14 +163,20 @@ public class TnTrfMod
         enableExclusiveModeAudio = ConfigEntry.Register("ExclusiveModeAudio", "Enable",
             "Enable exclusive mode audio. (Expermental)", false);
         exclusiveModeAudioSampleRate = ConfigEntry.Register("ExclusiveModeAudio", "SampleRate",
-            "Sample Rate of the exclusive mode wave format. This should match the format of your audio output device.",
-            48000);
+            "Sample Rate of the exclusive mode wave format.\n" +
+            "This should match the format of your audio output device.\n" +
+            "If set to 0, it will use the sample rate of the mix format of your audio output device.",
+            0);
         exclusiveModeAudioChannels = ConfigEntry.Register("ExclusiveModeAudio", "Channels",
-            "Amount of channels of the exclusive mode wave format. This should match the format of your audio output device.",
-            (short)2);
+            "Amount of channels of the exclusive mode wave format.\n" +
+            "This should match the format of your audio output device.\n" +
+            "If set to 0, it will use the channel count of the mix format of your audio output device.",
+            (short)0);
         exclusiveModeAudioBitPerSample = ConfigEntry.Register("ExclusiveModeAudio", "BitPerSample",
-            "Bit size of the sample of exclusive mode wave format. This should match the format of your audio output device.",
-            (short)16);
+            "Bit size of the sample of exclusive mode wave format.\n" +
+            "This should match the format of your audio output device.\n" +
+            "If set to 0, it will use the bit size of the mix format of your audio output device.",
+            (short)0);
         enableCriWarePluginLogging = ConfigEntry.Register("ExclusiveModeAudio", "EnableCriWarePluginLogging",
             "Enable logging of CriWare Unity Plugin, if you meet some audio issues, you can turn this on to check problems.",
             false);
@@ -180,6 +187,9 @@ public class TnTrfMod
 
         maxBufferedInputCount = ConfigEntry.Register("BufferedInput", "MaxBufferedInputCount",
             "The maximum count of the buffered key input per side.", 5u);
+
+        autoPlayRendaSpeed = ConfigEntry.Register("General", "AutoPlayRendaSpeed",
+            "The speed of renda in auto play mode, the maximum speed is depend on the refresh rate of your display. Set it to 0 to disable playing renda when in auto play mode.", 30f);
     }
 
 

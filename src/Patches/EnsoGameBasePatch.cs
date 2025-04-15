@@ -19,6 +19,8 @@ public class EnsoGameBasePatch
     public static float KaJudgeRange = float.Epsilon;
     public static float FukaJudgeRange = float.Epsilon;
 
+    private static readonly float[] _rendaTimers = new float[5];
+
     [HarmonyPatch(typeof(EnsoGameManager))]
     [HarmonyPatch(nameof(EnsoGameManager.ProcLoading))]
     [HarmonyPatch(MethodType.Normal)]
@@ -42,26 +44,20 @@ public class EnsoGameBasePatch
     private static bool EnsoInput_CheckAutoRenda_Prefix(EnsoInput __instance, ref bool __result, int player,
         int rendaFrame)
     {
-        const float AutoHitRate = 10f;
-        var playerInfo = __instance.playerInfo[player];
-        var autoRendaCount = playerInfo.autoRendaCount;
-        var rendaTime = rendaFrame * autoRendaCount * (1000f / Application.targetFrameRate);
-
-        var shouldHit = playerInfo.autoRendaWaitTimer >= rendaTime;
-        __result = shouldHit;
-        if (shouldHit)
+        var speed = TnTrfMod.Instance.autoPlayRendaSpeed.Value;
+        if (speed == 0f)
         {
-            playerInfo.autoRendaCount ++;
+            __result = false;
+            return false;
         }
-
-        playerInfo.autoRendaWaitTimer += 1000f / AutoHitRate;
         
-        // Logger.Info($"EnsoInput_CheckAutoRenda_Prefix \n" +
-        //             $"\tautoRendaCount {autoRendaCount}\n" +
-        //             $"\trendaTime {rendaTime}\n" +
-        //             $"\tautoRendaWaitTimer {playerInfo.autoRendaWaitTimer}\n" +
-        //             $"\tplayer {player}\n" +
-        //             $"\trendaFrame {rendaFrame}\n");
+        var playerInfo = __instance.playerInfo[player];
+        _rendaTimers[player] = Math.Max(0, _rendaTimers[player] - Time.deltaTime);
+
+        __result = _rendaTimers[player] <= 0;
+        if (!__result) return false;
+        playerInfo.autoRendaCount++;
+        _rendaTimers[player] = speed / 1000f;
 
         return false;
     }

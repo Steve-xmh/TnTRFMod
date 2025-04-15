@@ -25,6 +25,7 @@ A mod aiming to improve experiences of PC version of Taiko no Tatsujin: Rhythm F
 - Hit stats panel in enso game, similar to the past training mode panel, and can show the time difference of note hits.
 - Support WASAPI Exclusive Audio mode, which can get lower audio latency.
 - Support high precision timer, which can improve hit timing judgement.
+- Configurable auto play renda speed.
 - Faster boot scene to quickly get into game.
 - Support to skip reward dialog when already max level and max coins.
 - Allow to control animation and preview angle of Don-chan model when in costume page.
@@ -43,6 +44,7 @@ A mod aiming to improve experiences of PC version of Taiko no Tatsujin: Rhythm F
 - 在游戏中显示击打数据面板，和过去的特训模式类似的面板，同时可以显示音符击打的时间差距。
 - 支持独占音频播放模式，可以获得更加低的音频延迟。
 - 支持高精度计时器，可以改善敲击时间判定。
+- 可配置的自动演奏连打速度。
 - 快速跳过启动页面，可以更快地进入游戏。
 - 允许控制在装扮页面时的小咚的模型动画和预览角度。
 - 支持在已经满级满金币的情况下跳过奖励对话框。
@@ -91,6 +93,26 @@ You can access `UserData/net.stevexmh.TnTRFMod.cfg` to configure the mod feature
 文件夹后启动游戏即可。
 
 你可以通过访问 `UserData/net.stevexmh.TnTRFMod.cfg` 来配置模组的功能。
+
+### About Exclusive Audio Mode / 关于独占音频模式
+
+This mod supports WASAPI Exclusive Audio mode, which can get lower audio latency.
+
+But only tested with audio device in wave formats below:
+- 44100Hz 16bit 2 channels
+- 48000hz 16bit 2 channels
+
+If you enabled this mode but not audio work,
+please try to change your audio device format in Windows Settings to follow the format one of above that,
+and edit the config to follow the format one of above that.
+
+这个模组支持启用独占音频模式，可以获得更低的音频延迟。
+
+但是仅以下格式的音频波形格式经过测试：
+- 44100Hz 16bit 2 通道
+- 48000hz 16bit 2 通道
+
+如果你启用这个模式但没有音频工作，请尝试在系统设置中将音频播放格式更改成上述格式后重试，并同时修改配置文件以符合上述播放格式要求
 
 ## Disclaimer / 免责声明
 

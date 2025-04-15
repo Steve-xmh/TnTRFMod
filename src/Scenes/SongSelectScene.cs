@@ -21,12 +21,13 @@ public class SongSelectScene : IScene
 
     public void Start()
     {
+        _cached = null;
         if (TnTrfMod.Instance.enableBilibiliLiveStreamSongRequest.Value)
         {
             liveStreamSongRequestStatus = new TextUi
             {
                 FontSize = 20,
-                Position = new Vector2(1570f, 863f)
+                Position = new Vector2(1500f, 863f)
             };
             UpdateLiveStreamSongRequestStatus();
         }
@@ -42,7 +43,7 @@ public class SongSelectScene : IScene
         if (TnTrfMod.Instance.enableTatakonKeyboardSongSelect.Value)
         {
             repeatCounter = Math.Max(0, repeatCounter - Time.deltaTime);
-            
+
             if (Keyboard.current[Key.D].wasPressedThisFrame)
             {
                 var uiController = GetUiSongScroller();
