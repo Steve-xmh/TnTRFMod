@@ -156,16 +156,19 @@ public static class CriWareEnableExclusiveModePatch
         Logger.Error("\t\t- Bits Per Sample:   " + format.bitsPerSample);
         Logger.Error("\t\t- CbSize:            " + format.extraSize);
     }
+    
+    private static TimeSpan? calibratedBufferDuration;
 
-    private static int AudioClientInitializeHook(IAudioClient3 audioClient, AudioClientShareMode shareMode,
+    private static uint AudioClientInitializeHook(IAudioClient3 audioClient, AudioClientShareMode shareMode,
         AudioClientStreamFlags streamFlags, TimeSpan hnsBufferDuration, TimeSpan hnsPeriodicity, WaveFormat pFormat,
         ref Guid audioSessionGuid)
     {
-        int result;
+        uint result;
         if (isFormatSupported)
         {
+            var duration = calibratedBufferDuration ?? bufferDuration;
             result = AudioClientInitializeHook_Original!(audioClient, shareMode,
-                streamFlags, bufferDuration, bufferDuration, pFormat,
+                streamFlags, duration, duration, pFormat,
                 ref audioSessionGuid);
         }
         else
@@ -178,6 +181,19 @@ public static class CriWareEnableExclusiveModePatch
 
         if (result == 0) return result;
 
+        if (result == 0x88890019 && !calibratedBufferDuration.HasValue)
+        {
+            Logger.Warn("Inappropriate buffer size, recalculating buffer size...");
+
+            audioClient.GetBufferSize(out var frameSize);
+            var newBufferSize = 10000.0 * 1000 / pFormat.sampleRate * frameSize + 0.5;
+            calibratedBufferDuration = TimeSpan.FromTicks((long)newBufferSize);
+            
+            Logger.Warn($"New buffer duration: {calibratedBufferDuration}");
+            
+            return result;
+        } 
+        
         if (!showedUnsupportedError)
         {
             showedUnsupportedError = true;
@@ -185,11 +201,20 @@ public static class CriWareEnableExclusiveModePatch
                 $"The wave format of the exclusive audio is invalid and can't be used to initialize exclusive audio (HRESULT: {result:x8}), audio will be disabled!");
             Logger.Error("\tConfigured wave format:");
             PrintWaveFormatError(ref pFormat);
-        }
+            switch (result)
+            {
+                case 0x88890019:
+                    Logger.Warn("Error meaning: AUDCLNT_E_BUFFER_SIZE_NOT_ALIGNED (The audio buffer is not aligned)");
+                    break;
+                case 0x8889000a:
+                    Logger.Warn("Error meaning: AUDCLNT_E_DEVICE_IN_USE (The audio device is already in use for other software)");
+                    break;
+            }
 
-        criAtom_SetAudioClientShareMode_WASAPI(AudioClientShareMode.Shared);
-        criAtom_SetAudioClientBufferDuration_WASAPI(TimeSpan.Zero);
-        criAtom_SetAudioClientFormat_WASAPI(IntPtr.Zero);
+            criAtom_SetAudioClientShareMode_WASAPI(AudioClientShareMode.Shared);
+            criAtom_SetAudioClientBufferDuration_WASAPI(TimeSpan.Zero);
+            criAtom_SetAudioClientFormat_WASAPI(IntPtr.Zero);
+        }
 
         return AudioClientInitializeHook_Original!(audioClient, AudioClientShareMode.Shared,
             streamFlags, hnsBufferDuration, hnsPeriodicity, pFormat,
@@ -244,6 +269,7 @@ public static class CriWareEnableExclusiveModePatch
             isFormatSupported = criAtom_GetAudioClientIsFormatSupported_WASAPI(formatPtr);
             if (isFormatSupported)
             {
+                Logger.Info("The format is supported by the CriWare Unity Plugin, enabling exclusive audio mode");
                 criAtom_SetAudioClientShareMode_WASAPI(AudioClientShareMode.Exclusive);
                 criAtom_SetAudioClientBufferDuration_WASAPI(bufferDuration);
                 criAtom_SetAudioClientFormat_WASAPI(formatPtr);
@@ -295,7 +321,7 @@ public static class CriWareEnableExclusiveModePatch
     }
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    private delegate int IAudioClientInitializeHook(
+    private delegate uint IAudioClientInitializeHook(
         [MarshalAs(UnmanagedType.Interface)] IAudioClient3 audioClient,
         AudioClientShareMode shareMode,
         AudioClientStreamFlags streamFlags,

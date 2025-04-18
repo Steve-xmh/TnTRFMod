@@ -10,7 +10,7 @@ namespace TnTRFMod.Patches;
 
 public class AutoDownloadSubscriptionSongs
 {
-    private TextUi downloadText;
+    private TextUi? downloadText;
 
     public async Task StartAutoDownloadSubscriptionSongsAsync()
     {
