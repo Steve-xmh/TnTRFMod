@@ -25,6 +25,8 @@ public static class CriWareEnableExclusiveModePatch
 
     private static bool showedUnsupportedError;
 
+    private static TimeSpan? calibratedBufferDuration;
+
     public static void Apply()
     {
         Logger.Info("Starting CriWareEnableExclusiveModePatch");
@@ -99,6 +101,11 @@ public static class CriWareEnableExclusiveModePatch
             Logger.Info("Exclusive mode mix format:");
             PrintWaveFormatInfo(ref mixFormat);
 
+            // 游戏只允许使用 2 通道立体声音频设备输出
+            if (mixFormat.channels != 2)
+                throw new Exception(
+                    "Exclusive mode only supports stereo audio (2 channels), please check your audio device and restart the game.");
+
             audioClient.GetDevicePeriod(out _, out var period);
             bufferDuration = new TimeSpan(period);
         }
@@ -156,8 +163,6 @@ public static class CriWareEnableExclusiveModePatch
         Logger.Error("\t\t- Bits Per Sample:   " + format.bitsPerSample);
         Logger.Error("\t\t- CbSize:            " + format.extraSize);
     }
-    
-    private static TimeSpan? calibratedBufferDuration;
 
     private static uint AudioClientInitializeHook(IAudioClient3 audioClient, AudioClientShareMode shareMode,
         AudioClientStreamFlags streamFlags, TimeSpan hnsBufferDuration, TimeSpan hnsPeriodicity, WaveFormat pFormat,
@@ -188,12 +193,12 @@ public static class CriWareEnableExclusiveModePatch
             audioClient.GetBufferSize(out var frameSize);
             var newBufferSize = 10000.0 * 1000 / pFormat.sampleRate * frameSize + 0.5;
             calibratedBufferDuration = TimeSpan.FromTicks((long)newBufferSize);
-            
+
             Logger.Warn($"New buffer duration: {calibratedBufferDuration}");
-            
+
             return result;
-        } 
-        
+        }
+
         if (!showedUnsupportedError)
         {
             showedUnsupportedError = true;
@@ -207,7 +212,8 @@ public static class CriWareEnableExclusiveModePatch
                     Logger.Warn("Error meaning: AUDCLNT_E_BUFFER_SIZE_NOT_ALIGNED (The audio buffer is not aligned)");
                     break;
                 case 0x8889000a:
-                    Logger.Warn("Error meaning: AUDCLNT_E_DEVICE_IN_USE (The audio device is already in use for other software)");
+                    Logger.Warn(
+                        "Error meaning: AUDCLNT_E_DEVICE_IN_USE (The audio device is already in use for other software)");
                     break;
             }
 
@@ -239,7 +245,7 @@ public static class CriWareEnableExclusiveModePatch
         var format = new WaveFormat
         {
             waveFormatTag = WaveFormatEncoding.Pcm,
-            channels = TnTrfMod.Instance.exclusiveModeAudioChannels.Value,
+            channels = 2,
             sampleRate = TnTrfMod.Instance.exclusiveModeAudioSampleRate.Value,
             bitsPerSample = TnTrfMod.Instance.exclusiveModeAudioBitPerSample.Value,
             extraSize = 0

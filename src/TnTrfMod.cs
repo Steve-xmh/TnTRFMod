@@ -28,7 +28,7 @@ public class TnTrfMod
 {
     public const string MOD_NAME = "TnTRFMod";
     public const string MOD_AUTHOR = "SteveXMH";
-    public const string MOD_VERSION = "0.7.0";
+    public const string MOD_VERSION = "0.7.1";
 #if BEPINEX
     public const string MOD_LOADER = "BepInEx";
 #endif
@@ -83,7 +83,6 @@ public class TnTrfMod
     // 独占音频功能
     public ConfigEntry<bool> enableExclusiveModeAudio;
     public ConfigEntry<int> exclusiveModeAudioSampleRate;
-    public ConfigEntry<short> exclusiveModeAudioChannels;
     public ConfigEntry<short> exclusiveModeAudioBitPerSample;
     public ConfigEntry<bool> enableCriWarePluginLogging;
 
@@ -167,11 +166,6 @@ public class TnTrfMod
             "This should match the format of your audio output device.\n" +
             "If set to 0, it will use the sample rate of the mix format of your audio output device.",
             0);
-        exclusiveModeAudioChannels = ConfigEntry.Register("ExclusiveModeAudio", "Channels",
-            "Amount of channels of the exclusive mode wave format.\n" +
-            "This should match the format of your audio output device.\n" +
-            "If set to 0, it will use the channel count of the mix format of your audio output device.",
-            (short)0);
         exclusiveModeAudioBitPerSample = ConfigEntry.Register("ExclusiveModeAudio", "BitPerSample",
             "Bit size of the sample of exclusive mode wave format.\n" +
             "This should match the format of your audio output device.\n" +
@@ -189,7 +183,8 @@ public class TnTrfMod
             "The maximum count of the buffered key input per side.", 5u);
 
         autoPlayRendaSpeed = ConfigEntry.Register("General", "AutoPlayRendaSpeed",
-            "The speed of renda in auto play mode, the maximum speed is depend on the refresh rate of your display. Set it to 0 to disable playing renda when in auto play mode.", 30f);
+            "The speed of renda in auto play mode, the maximum speed is depend on the refresh rate of your display. Set it to 0 to disable playing renda when in auto play mode.",
+            30f);
     }
 
 
