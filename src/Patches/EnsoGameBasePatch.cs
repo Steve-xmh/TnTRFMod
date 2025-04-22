@@ -50,7 +50,7 @@ public class EnsoGameBasePatch
             __result = false;
             return false;
         }
-        
+
         var playerInfo = __instance.playerInfo[player];
         _rendaTimers[player] = Math.Max(0, _rendaTimers[player] - Time.deltaTime);
 
@@ -129,6 +129,8 @@ public class EnsoGameBasePatch
             // Logger.Info($"- hit.onpu.justTime {hit.onpu.justTime} ({__instance.totalTime - hit.onpu.justTime})");
             // Logger.Info($"  onpuType {onpuType}");
             // Logger.Info($"  hitResult {hitResult}");
+            // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+            // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
             switch (onpuType)
             {
                 case TaikoCoreTypes.OnpuTypes.Don:
@@ -139,8 +141,11 @@ public class EnsoGameBasePatch
                 case TaikoCoreTypes.OnpuTypes.WDon:
                 case TaikoCoreTypes.OnpuTypes.DaiDon:
                 case TaikoCoreTypes.OnpuTypes.DaiKatsu:
-                    // TODO __instance.settings.noteDelay
-                    OnSimpleHit(hitResult, hit.onpu.justTime - (float)__instance.totalTime);
+                    // 音符判定调整： __instance.settings.noteDelay
+                    // 太鼓控制器判定调整： __instance.settings.tatakonDelay
+                    var onpuJustTime = hit.onpu.justTime - (float)__instance.totalTime - __instance.settings.noteDelay * 5;
+                    Console.Out.WriteLine($"Onpu Type: {hitResult} noteDelay: {__instance.settings.noteDelay} tatakonDelay: {__instance.settings.tatakonDelay}");
+                    OnSimpleHit(hitResult, onpuJustTime);
                     break;
                 case TaikoCoreTypes.OnpuTypes.GekiRenda:
                 case TaikoCoreTypes.OnpuTypes.DaiRenda:
