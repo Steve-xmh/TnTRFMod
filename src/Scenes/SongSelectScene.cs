@@ -1,5 +1,7 @@
+using Il2CppInterop.Runtime;
 using TnTRFMod.Scenes.Enso;
 using TnTRFMod.Ui.Widgets;
+using TnTRFMod.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
 #if BEPINEX
@@ -13,14 +15,24 @@ namespace TnTRFMod.Scenes;
 
 public class SongSelectScene : IScene
 {
+    private static readonly ControllerManager mgr = TaikoSingletonMonoBehaviour<ControllerManager>.Instance;
     private SongSelectSceneUiController? _cached;
     private TextUi liveStreamSongRequestStatus;
 
     private float repeatCounter;
+
+    private Il2CppSystem.Action<char>? textInputDelegate;
     public string SceneName => "SongSelect";
 
     public void Start()
     {
+        if (TnTrfMod.Instance.enableTatakonKeyboardSongSelect.Value)
+        {
+            textInputDelegate =
+                DelegateSupport.ConvertDelegate<Il2CppSystem.Action<char>>(OnTextInput);
+            Keyboard.current.add_onTextInput(textInputDelegate);
+        }
+
         _cached = null;
         if (TnTrfMod.Instance.enableBilibiliLiveStreamSongRequest.Value)
         {
@@ -36,40 +48,17 @@ public class SongSelectScene : IScene
         // searchTextInput.Name = "SearchTextInput";
     }
 
+    public void Destroy()
+    {
+        if (textInputDelegate != null)
+            Keyboard.current.remove_onTextInput(textInputDelegate);
+    }
+
     public void Update()
     {
         if (!TnTrfMod.Instance.enableBilibiliLiveStreamSongRequest.Value) return;
 
-        if (TnTrfMod.Instance.enableTatakonKeyboardSongSelect.Value)
-        {
-            repeatCounter = Math.Max(0, repeatCounter - Time.deltaTime);
-
-            if (Keyboard.current[Key.D].wasPressedThisFrame)
-            {
-                var uiController = GetUiSongScroller();
-                if (repeatCounter > 0)
-                    uiController.UiSongScroller.OnDirectionInput(ControllerManager.Dir.Left);
-                else if (!uiController.UiSongScroller.IsScrolling.Value)
-                    uiController.UiSongScroller.OnDirectionInput(ControllerManager.Dir.Up);
-                repeatCounter = 0.1f;
-            }
-
-            if (Keyboard.current[Key.K].wasPressedThisFrame)
-            {
-                var uiController = GetUiSongScroller();
-                if (repeatCounter > 0)
-                    uiController.UiSongScroller.OnDirectionInput(ControllerManager.Dir.Right);
-                else if (!uiController.UiSongScroller.IsScrolling.Value)
-                    uiController.UiSongScroller.OnDirectionInput(ControllerManager.Dir.Down);
-                repeatCounter = 0.1f;
-            }
-
-            if (Keyboard.current[Key.F].wasPressedThisFrame || Keyboard.current[Key.J].wasPressedThisFrame)
-            {
-                var uiController = GetUiSongScroller();
-                uiController.SelectedSong(uiController.songScroller.SelectedItem.Value.Value);
-            }
-        }
+        repeatCounter = Math.Max(0, repeatCounter - Time.deltaTime);
 
         if (Keyboard.current[Key.O].wasPressedThisFrame)
             UpdatePlaylistToQueuedSongList();
@@ -86,7 +75,76 @@ public class SongSelectScene : IScene
         }
 
         UpdateLiveStreamSongRequestStatus();
+    }
+
+    private void OnTextInput(char character)
+    {
+        var donLKey = mgr.keyConfig[(int)ControllerManager.Taiko.DonL];
+        var donRKey = mgr.keyConfig[(int)ControllerManager.Taiko.DonR];
+        var katsuLKey = mgr.keyConfig[(int)ControllerManager.Taiko.KatsuL];
+        var katsuRKey = mgr.keyConfig[(int)ControllerManager.Taiko.KatsuR];
+        var charCode = (short)KeyConversion.CharToKey(character);
+
+        if (charCode == katsuLKey)
+        {
+            var uiController = GetUiSongScroller();
+            switch (uiController.focus)
+            {
+                case Focuses.Filters:
+                    uiController.filterScroller.OnDirectionInput(ControllerManager.Dir.Up);
+                    break;
+                case Focuses.Difficulties:
+                    uiController.diffSelect.OnDirectionInput(ControllerManager.Dir.Left);
+                    break;
+                case Focuses.Songs:
+                    if (repeatCounter > 0)
+                        uiController.UiSongScroller.OnDirectionInput(ControllerManager.Dir.Left);
+                    else if (!uiController.UiSongScroller.IsScrolling.Value)
+                        uiController.UiSongScroller.OnDirectionInput(ControllerManager.Dir.Up);
+                    repeatCounter = 0.1f;
+                    break;
+            }
+        }
+
+        if (charCode == katsuRKey)
+        {
+            var uiController = GetUiSongScroller();
+            switch (uiController.focus)
+            {
+                case Focuses.Filters:
+                    uiController.filterScroller.OnDirectionInput(ControllerManager.Dir.Down);
+                    break;
+                case Focuses.Difficulties:
+                    uiController.diffSelect.OnDirectionInput(ControllerManager.Dir.Right);
+                    break;
+                case Focuses.Songs:
+                    if (repeatCounter > 0)
+                        uiController.UiSongScroller.OnDirectionInput(ControllerManager.Dir.Right);
+                    else if (!uiController.UiSongScroller.IsScrolling.Value)
+                        uiController.UiSongScroller.OnDirectionInput(ControllerManager.Dir.Down);
+                    break;
+            }
+            repeatCounter = 0.1f;
+        }
+
+        if (charCode == donLKey || charCode == donRKey)
+        {
+            var uiController = GetUiSongScroller();
+            switch (uiController.focus)
+            {
+                case Focuses.Filters:
+                    uiController.filterScroller.Decision();
+                    break;
+                case Focuses.Difficulties:
+                    uiController.diffSelect.Decision();
+                    break;
+                case Focuses.Songs:
+                    uiController.songScroller.Decision();
+                    break;
+            }
+        }
     } // ReSharper disable Unity.PerformanceAnalysis
+
     private SongSelectSceneUiController GetUiSongScroller()
     {
         if (_cached != null) return _cached;

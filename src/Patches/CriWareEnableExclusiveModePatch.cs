@@ -252,7 +252,6 @@ public static class CriWareEnableExclusiveModePatch
         };
         if (mixFormat != null)
         {
-            format.channels = format.channels == 0 ? mixFormat.channels : format.channels;
             format.sampleRate = format.sampleRate == 0 ? mixFormat.sampleRate : format.sampleRate;
             format.bitsPerSample = format.bitsPerSample == 0 ? mixFormat.bitsPerSample : format.bitsPerSample;
         }
@@ -279,6 +278,7 @@ public static class CriWareEnableExclusiveModePatch
                 criAtom_SetAudioClientShareMode_WASAPI(AudioClientShareMode.Exclusive);
                 criAtom_SetAudioClientBufferDuration_WASAPI(bufferDuration);
                 criAtom_SetAudioClientFormat_WASAPI(formatPtr);
+                Logger.Info("Exclusive audio mode has been setup");
             }
             else
             {
@@ -291,7 +291,10 @@ public static class CriWareEnableExclusiveModePatch
             Marshal.FreeHGlobal(formatPtr);
         }
 
-        return criAtomUnity_Initialize_Original!();
+        Logger.Info("Running criAtomUnity_Initialize_Original");
+        var result = criAtomUnity_Initialize_Original!();
+        Logger.Info($"Result criAtomUnity_Initialize_Original: {result}");
+        return result;
     }
 
 
