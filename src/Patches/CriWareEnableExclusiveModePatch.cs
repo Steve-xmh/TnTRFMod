@@ -273,7 +273,8 @@ public static class CriWareEnableExclusiveModePatch
                 criAtom_SetAudioClientShareMode_WASAPI(AudioClientShareMode.Exclusive);
                 criAtom_SetAudioClientBufferDuration_WASAPI(bufferDuration);
                 criAtom_SetAudioClientFormat_WASAPI(formatPtr);
-                Logger.Info("Exclusive audio mode has been setup");
+                Logger.Info("Exclusive audio mode has been setup with format:");
+                PrintWaveFormatInfo(ref format);
             }
             else
             {

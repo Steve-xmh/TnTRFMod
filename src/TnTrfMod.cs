@@ -1,6 +1,8 @@
 ﻿using System.Collections;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using Il2CppInterop.Runtime;
+using Il2CppSystem.Runtime.CompilerServices;
 using TnTRFMod.Config;
 using TnTRFMod.Patches;
 using TnTRFMod.Scenes;
@@ -11,6 +13,7 @@ using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using Exception = System.Exception;
 using Logger = TnTRFMod.Utils.Logger;
+using RuntimeHelpers = System.Runtime.CompilerServices.RuntimeHelpers;
 
 #if BEPINEX
 using BepInEx.Unity.IL2CPP.Utils.Collections;
@@ -195,6 +198,20 @@ public class TnTrfMod
         {
             Logger.Warn("TnTRFMod has disabled!");
             return;
+        }
+        
+        // Prepare all code
+        Logger.Info("Preparing TnTRFMod methods...");
+        var asm = Assembly.GetCallingAssembly();
+        foreach (var typeInfo in asm.DefinedTypes)
+        {
+            foreach (var methodInfo in typeInfo.DeclaredMethods)
+            {
+                try
+                {
+                    RuntimeHelpers.PrepareMethod(methodInfo.MethodHandle);
+                } catch (Exception ignored) {}
+            }
         }
 
         _harmony = harmony;
