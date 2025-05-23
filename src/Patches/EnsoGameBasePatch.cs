@@ -96,6 +96,7 @@ public class EnsoGameBasePatch
     }
 
     // EnsoGameManager__ProcExecMain
+    // 此函数为逐帧调用，尽量避免产生过多开销
     [HarmonyPatch(typeof(EnsoGameManager))]
     [HarmonyPatch(nameof(EnsoGameManager.ProcExecMain))]
     [HarmonyPatch(MethodType.Normal)]
@@ -121,8 +122,9 @@ public class EnsoGameBasePatch
 
         // Logger.Info($"donRange {ryoRange}ms kaRange {kaRange}ms fukaRange {fukaRange}ms hitResultInfoMax {results.hitResultInfoMax} hitResultInfoNum {results.hitResultInfoNum}");
         // Logger.Info($"results.firstOnpu.state {results.firstOnpu.state}");
-        foreach (var hit in results.hitResultInfo.Take(results.hitResultInfoNum))
+        for (var i = 0; i < results.hitResultInfoNum; i++)
         {
+            var hit = results.hitResultInfo[i];
             var hitResult = (TaikoCoreTypes.HitResultTypes)hit.hitResult;
             var onpuType = (TaikoCoreTypes.OnpuTypes)hit.onpuType;
             if (hitResult == TaikoCoreTypes.HitResultTypes.None) continue;
@@ -144,7 +146,7 @@ public class EnsoGameBasePatch
                     // 音符判定调整： __instance.settings.noteDelay
                     // 太鼓控制器判定调整： __instance.settings.tatakonDelay
                     var onpuJustTime = hit.onpu.justTime - (float)__instance.totalTime - __instance.settings.noteDelay * 5;
-                    Console.Out.WriteLine($"Onpu Type: {hitResult} noteDelay: {__instance.settings.noteDelay} tatakonDelay: {__instance.settings.tatakonDelay}");
+                    // Console.Out.WriteLine($"Onpu Type: {hitResult} noteDelay: {__instance.settings.noteDelay} tatakonDelay: {__instance.settings.tatakonDelay}");
                     OnSimpleHit(hitResult, onpuJustTime);
                     break;
                 case TaikoCoreTypes.OnpuTypes.GekiRenda:

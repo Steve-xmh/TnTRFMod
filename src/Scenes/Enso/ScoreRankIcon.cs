@@ -56,49 +56,49 @@ public class ScoreRankIcon
         {
             var score = frameResult.eachPlayer[i].score;
             var playerStatus = playerStatuses[i];
-            if (playerStatus.fumenReader is null)
+            if (playerStatus.FumenReader is null)
                 try
                 {
                     var reader = ReadFumen(_ensoGameManager.fumenLoader.playerData[i]);
-                    playerStatus.fumenReader = reader;
+                    playerStatus.FumenReader = reader;
                     var maxScore = reader.CalculateMaxScore();
                     Logger.Info($"Loaded Fumen score of Player {i + 1}: {maxScore}");
-                    playerStatus.levelInfos =
+                    playerStatus.LevelInfos =
                     [
                         new LevelInfo
                         {
-                            name = "粹（白）",
-                            score = maxScore * 5 / 10
+                            Name = "粹（白）",
+                            Score = maxScore * 5 / 10
                         },
                         new LevelInfo
                         {
-                            name = "粹（铜）",
-                            score = maxScore * 6 / 10
+                            Name = "粹（铜）",
+                            Score = maxScore * 6 / 10
                         },
                         new LevelInfo
                         {
-                            name = "粹（银）",
-                            score = maxScore * 7 / 10
+                            Name = "粹（银）",
+                            Score = maxScore * 7 / 10
                         },
                         new LevelInfo
                         {
-                            name = "雅（金）",
-                            score = maxScore * 8 / 10
+                            Name = "雅（金）",
+                            Score = maxScore * 8 / 10
                         },
                         new LevelInfo
                         {
-                            name = "雅（粉）",
-                            score = maxScore * 9 / 10
+                            Name = "雅（粉）",
+                            Score = maxScore * 9 / 10
                         },
                         new LevelInfo
                         {
-                            name = "雅（紫）",
-                            score = maxScore * 95 / 100
+                            Name = "雅（紫）",
+                            Score = maxScore * 95 / 100
                         },
                         new LevelInfo
                         {
-                            name = "极",
-                            score = maxScore
+                            Name = "极",
+                            Score = maxScore
                         }
                     ];
                 }
@@ -107,14 +107,15 @@ public class ScoreRankIcon
                     continue;
                 }
 
-            if (playerStatus.levelInfos.Length == 0) continue;
-            var nextLevel = playerStatus.nextLevel;
-            if (nextLevel >= playerStatus.levelInfos.Length) continue;
-            var nextLevelInfo = playerStatus.levelInfos[nextLevel];
-            if (nextLevelInfo.score > score) continue;
+            if (playerStatus.LevelInfos is null) continue;
+            if (playerStatus.LevelInfos.Length == 0) continue;
+            var nextLevel = playerStatus.NextLevel;
+            if (nextLevel >= playerStatus.LevelInfos.Length) continue;
+            var nextLevelInfo = playerStatus.LevelInfos[nextLevel];
+            if (nextLevelInfo.Score > score) continue;
             // ReSharper disable once Unity.PerformanceCriticalCodeInvocation
             TnTrfMod.Instance.StartCoroutine(ShowScoreRank(nextLevel));
-            playerStatus.nextLevel += 1;
+            playerStatus.NextLevel += 1;
         }
     }
 
@@ -196,14 +197,14 @@ public class ScoreRankIcon
 
     private struct LevelInfo
     {
-        public string name;
-        public int score;
+        public string Name;
+        public int Score;
     }
 
     private class PlayerStatus
     {
-        public int nextLevel = 0;
-        public FumenReader fumenReader;
-        public LevelInfo[] levelInfos;
+        public int NextLevel = 0;
+        public FumenReader? FumenReader = null;
+        public LevelInfo[]? LevelInfos = null;
     }
 }

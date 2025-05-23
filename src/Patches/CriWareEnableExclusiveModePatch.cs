@@ -101,11 +101,6 @@ public static class CriWareEnableExclusiveModePatch
             Logger.Info("Exclusive mode mix format:");
             PrintWaveFormatInfo(ref mixFormat);
 
-            // 游戏只允许使用 2 通道立体声音频设备输出
-            if (mixFormat.channels != 2)
-                throw new Exception(
-                    "Exclusive mode only supports stereo audio (2 channels), please check your audio device and restart the game.");
-
             audioClient.GetDevicePeriod(out _, out var period);
             bufferDuration = new TimeSpan(period);
         }
