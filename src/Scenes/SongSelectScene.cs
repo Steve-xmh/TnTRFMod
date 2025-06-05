@@ -124,6 +124,7 @@ public class SongSelectScene : IScene
                         uiController.UiSongScroller.OnDirectionInput(ControllerManager.Dir.Down);
                     break;
             }
+
             repeatCounter = 0.1f;
         }
 

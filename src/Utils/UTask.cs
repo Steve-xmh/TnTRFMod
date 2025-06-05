@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using Il2CppInterop.Runtime;
 using CancellationToken = Il2CppSystem.Threading.CancellationToken;
 using Exception = Il2CppSystem.Exception;
+using YieldAwaitable = Cysharp.Threading.Tasks.YieldAwaitable;
 
 #if BEPINEX
 using Cysharp.Threading.Tasks;
@@ -110,6 +111,11 @@ public static class UTaskExt
         return new UTask(uniTask);
     }
 
+    public static UTask ToTask(this YieldAwaitable awaitable)
+    {
+        return new UTask(awaitable.ToUniTask());
+    }
+
     public static UniTask ToUniTask(this Task uniTask)
     {
         var pred = DelegateSupport.ConvertDelegate<Il2CppSystem.Func<bool>>(() => uniTask.IsCompleted);
@@ -122,11 +128,9 @@ public static class UTaskExt
         var result = default(T);
         Exception ex = null;
         var co = uniTask.ToCoroutine(
-            DelegateSupport.ConvertDelegate<Il2CppSystem.Action<T>>(
-                (T r) => { result = r; }
+            DelegateSupport.ConvertDelegate<Il2CppSystem.Action<T>>((T r) => { result = r; }
             ),
-            DelegateSupport.ConvertDelegate<Il2CppSystem.Action<Exception>>(
-                (Exception exception) => { ex = exception; }
+            DelegateSupport.ConvertDelegate<Il2CppSystem.Action<Exception>>((Exception exception) => { ex = exception; }
             )
         );
 

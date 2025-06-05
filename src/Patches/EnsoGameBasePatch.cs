@@ -145,7 +145,8 @@ public class EnsoGameBasePatch
                 case TaikoCoreTypes.OnpuTypes.DaiKatsu:
                     // 音符判定调整： __instance.settings.noteDelay
                     // 太鼓控制器判定调整： __instance.settings.tatakonDelay
-                    var onpuJustTime = hit.onpu.justTime - (float)__instance.totalTime - __instance.settings.noteDelay * 5;
+                    var onpuJustTime = hit.onpu.justTime - (float)__instance.totalTime -
+                                       __instance.settings.noteDelay * 5;
                     // Console.Out.WriteLine($"Onpu Type: {hitResult} noteDelay: {__instance.settings.noteDelay} tatakonDelay: {__instance.settings.tatakonDelay}");
                     OnSimpleHit(hitResult, onpuJustTime);
                     break;

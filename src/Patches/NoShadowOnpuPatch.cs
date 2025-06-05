@@ -54,10 +54,10 @@ internal class NoShadowOnpuPatch
         _spriteKatuDai01 = CreateSprite("katu_dai_01_no_shadow", new Rect(2 + 2 * (172 + 2), bigNoteTop, 172, 172));
         _spriteKatuDai02 = CreateSprite("katu_dai_02_no_shadow", new Rect(2 + 3 * (172 + 2), bigNoteTop, 172, 172));
 
-        PrintIndices("OnpuNormal.indicesDon", OnpuNormal.indicesDon);
-        PrintIndices("OnpuNormal.indicesKatsu", OnpuNormal.indicesKatsu);
-        PrintIndices("OnpuNormal.indicesDaiDon", OnpuNormal.indicesDaiDon);
-        PrintIndices("OnpuNormal.indicesDaiKatsu", OnpuNormal.indicesDaiKatsu);
+        // PrintIndices("OnpuNormal.indicesDon", OnpuNormal.indicesDon);
+        // PrintIndices("OnpuNormal.indicesKatsu", OnpuNormal.indicesKatsu);
+        // PrintIndices("OnpuNormal.indicesDaiDon", OnpuNormal.indicesDaiDon);
+        // PrintIndices("OnpuNormal.indicesDaiKatsu", OnpuNormal.indicesDaiKatsu);
     }
 
     private static void PrintIndices(string name, int[] indices)

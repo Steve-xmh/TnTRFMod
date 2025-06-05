@@ -1,9 +1,9 @@
 using TnTRFMod.Patches;
 using TnTRFMod.Ui.Widgets;
 using UnityEngine;
-
 #if BEPINEX
 using TMPro;
+
 #elif MELONLOADER
 using Il2CppTMPro;
 #endif
@@ -47,8 +47,9 @@ public class HitOffsetTip
             hitOffset.SetActive(false);
             return;
         }
+
         hitOffset.SetActive(true);
-        
+
         var time = (int)EnsoGameBasePatch.LastHitTimeOffset;
         hitOffset.Text = $"{time}ms";
         if (time > JudgeRange)

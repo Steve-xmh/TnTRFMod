@@ -7,6 +7,7 @@ using Logger = TnTRFMod.Utils.Logger;
 #if BEPINEX
 using Cysharp.Threading.Tasks;
 using TMPro;
+
 #elif MELONLOADER
 using Il2CppCysharp.Threading.Tasks;
 using Il2CppTMPro;
@@ -52,7 +53,7 @@ public class LiveStreamSongSelectPanel
         while (true)
         {
             while (!NeedUpdateNotify)
-                await UniTask.WaitForEndOfFrame().ToUniTask().ToTask();
+                await UniTask.WaitForEndOfFrame().ToTask();
             text.Clear();
             foreach (var info in NotifySongList)
             {

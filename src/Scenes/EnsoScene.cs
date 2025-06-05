@@ -2,6 +2,7 @@ using System.Collections;
 using TnTRFMod.Patches;
 using TnTRFMod.Scenes.Enso;
 using UnityEngine;
+using UnityEngine.Scripting;
 using UnityEngine.UI;
 
 namespace TnTRFMod.Scenes;
@@ -19,6 +20,8 @@ public class EnsoScene : IScene
         NoShadowOnpuPatch.CheckOrInitializePatch();
         BufferedNoteInputPatch.ResetCounts();
 
+        GarbageCollector.SetMode(GarbageCollector.Mode.Disabled);
+
         LiveStreamSongSelectPanel.QueuedSongList.Remove(LiveStreamSongSelectPanel.QueuedSongList.Find(info =>
             info.SongInfo.UniqueId == CommonObjects.Instance.MyDataManager.EnsoData.ensoSettings.musicUniqueId));
 
@@ -28,6 +31,11 @@ public class EnsoScene : IScene
 
         if (TnTrfMod.Instance.enableScoreRankIcon.Value) ScoreRankIcon.Init();
         if (TnTrfMod.Instance.enableOnpuTextRail.Value) TnTrfMod.Instance.StartCoroutine(DrawOnpuTextRail());
+    }
+
+    public void Destroy()
+    {
+        GarbageCollector.SetMode(GarbageCollector.Mode.Enabled);
     }
 
     public void Update()

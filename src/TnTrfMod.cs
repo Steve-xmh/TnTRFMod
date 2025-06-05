@@ -2,7 +2,6 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Il2CppInterop.Runtime;
-using Il2CppSystem.Runtime.CompilerServices;
 using TnTRFMod.Config;
 using TnTRFMod.Patches;
 using TnTRFMod.Scenes;
@@ -31,7 +30,7 @@ public class TnTrfMod
 {
     public const string MOD_NAME = "TnTRFMod";
     public const string MOD_AUTHOR = "SteveXMH";
-    public const string MOD_VERSION = "0.7.1";
+    public const string MOD_VERSION = "0.7.2";
 #if BEPINEX
     public const string MOD_LOADER = "BepInEx";
 #endif
@@ -199,20 +198,19 @@ public class TnTrfMod
             Logger.Warn("TnTRFMod has disabled!");
             return;
         }
-        
+
         // Prepare all code
         Logger.Info("Preparing TnTRFMod methods...");
         var asm = Assembly.GetCallingAssembly();
         foreach (var typeInfo in asm.DefinedTypes)
-        {
-            foreach (var methodInfo in typeInfo.DeclaredMethods)
+        foreach (var methodInfo in typeInfo.DeclaredMethods)
+            try
             {
-                try
-                {
-                    RuntimeHelpers.PrepareMethod(methodInfo.MethodHandle);
-                } catch (Exception ignored) {}
+                RuntimeHelpers.PrepareMethod(methodInfo.MethodHandle);
             }
-        }
+            catch (Exception ignored)
+            {
+            }
 
         _harmony = harmony;
         Logger.Info("TnTRFMod has loaded!");
@@ -339,7 +337,7 @@ public class TnTrfMod
 
     public void OnUpdate()
     {
-        if (sceneName != null && _scenes[sceneName] is IScene customScene) customScene.Update();
+        if (_scenes[sceneName] is IScene customScene) customScene.Update();
     }
 
     private void OnSceneWasLoaded(Scene scene, LoadSceneMode mode)

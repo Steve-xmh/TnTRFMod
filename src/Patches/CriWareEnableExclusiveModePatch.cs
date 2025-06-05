@@ -51,8 +51,7 @@ public static class CriWareEnableExclusiveModePatch
         var handle = GetModuleHandle("cri_ware_unity.dll");
         var logCallbackPtr = new IntPtr((long)handle + 0x1802273F0L - 0x180000000L);
 
-        WriteMemory(logCallbackPtr, Marshal.GetFunctionPointerForDelegate(new OnCriAtomUnityLog(
-            (buffer, _, info, _) =>
+        WriteMemory(logCallbackPtr, Marshal.GetFunctionPointerForDelegate(new OnCriAtomUnityLog((buffer, _, info, _) =>
             {
                 var data1 = info.data1.ToString("X8");
                 var data2 = info.data2.ToString("X8");

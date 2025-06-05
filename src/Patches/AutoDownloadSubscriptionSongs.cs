@@ -68,8 +68,7 @@ public class AutoDownloadSubscriptionSongs
                     Logger.Info($"Start downloading {availableSongPreviewUids.Count} song previews");
                     await SubscriptionUtility.DownloadPreviewFiles(
                         availableSongPreviewUids.ToArray(), source.Token,
-                        DelegateSupport.ConvertDelegate<UnityAction<float>>(
-                            (float result) =>
+                        DelegateSupport.ConvertDelegate<UnityAction<float>>((float result) =>
                             {
                                 var prog = (result * 100).ToString("F1");
                                 Logger.Info($"Downloading song previews: {prog}%");
@@ -107,8 +106,7 @@ public class AutoDownloadSubscriptionSongs
                         Logger.Info($"Start downloading {availableSongFileUids.Count} song files");
                         await SubscriptionUtility.DownloadSongFilesAsync(
                             availableSongFileUids.ToArray(), source.Token,
-                            DelegateSupport.ConvertDelegate<UnityAction<float>>(
-                                (float result) =>
+                            DelegateSupport.ConvertDelegate<UnityAction<float>>((float result) =>
                                 {
                                     var prog = (result * 100).ToString("F1");
                                     Logger.Info($"Downloading song files: {prog}%");

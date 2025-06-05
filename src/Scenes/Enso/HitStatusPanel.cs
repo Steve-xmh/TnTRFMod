@@ -156,25 +156,32 @@ public class HitStatusPanel
         rendaCounter.Position = new Vector2(CounterAlignX, 333);
     }
 
-    public void Update()
+    private int curRyo = 0;
+    private int curKa = 0;
+    private int curFuka = 0;
+    private int curRenda = 0;
+
+    private void UpdatePanel()
     {
-        if (_ensoGameManager.ensoParam.IsPause || _ensoGameManager.state >= EnsoGameManager.State.ToResult)
-        {
-            trainCounterUi.SetActive(false);
-            return;
-        }
-
-        trainCounterUi.SetActive(true);
-
         var ryo = EnsoGameBasePatch.RyoCount;
         var ka = EnsoGameBasePatch.KaCount;
         var fuka = EnsoGameBasePatch.FuKaCount;
+        var renda = EnsoGameBasePatch.RendaCount;
+        // 如果没有变化则不更新
+        if (ryo == curRyo && ka == curKa && fuka == curFuka && renda == curRenda) return;
+        curRyo = ryo;
+        curKa = ka;
+        curFuka = fuka;
+        curRenda = renda;
 
         var total = ryo + ka + fuka;
 
-        ryoCounter.Text = ryo.ToString();
-        kaCounter.Text = ka.ToString();
-        fukaCounter.Text = fuka.ToString();
+        // ryoCounter.Text = ryo.ToString();
+        // kaCounter.Text = ka.ToString();
+        // fukaCounter.Text = fuka.ToString();
+        ryoCounter.SetText("{0}", ryo);
+        kaCounter.SetText("{0}", ka);
+        fukaCounter.SetText("{0}", fuka);
 
         if (total > 0)
         {
@@ -182,8 +189,11 @@ public class HitStatusPanel
             if (fuka == 0)
             {
                 var ryoAspectValue = (int)(100 * (ryo / (float)totalRyoAndKa));
-                ryoAspect.Text = $"{ryoAspectValue}%";
-                kaAspect.Text = $"{100 - ryoAspectValue}%";
+                // ryoAspect.Text = $"{ryoAspectValue}%";
+                // kaAspect.Text = $"{100 - ryoAspectValue}%";
+
+                ryoAspect.SetText("{0}%", ryoAspectValue);
+                kaAspect.SetText("{0}%", 100 - ryoAspectValue);
                 fukaAspect.Text = "0%";
                 hitAspectValue.Text = "100%";
             }
@@ -192,10 +202,15 @@ public class HitStatusPanel
                 var ryoAspectValue = (int)(100 * (ryo / (float)total));
                 var kaAspectValue = (int)(100 * (ka / (float)total));
                 var fukaAspectValue = 100 - ryoAspectValue - kaAspectValue;
-                ryoAspect.Text = $"{ryoAspectValue}%";
-                kaAspect.Text = $"{kaAspectValue}%";
-                fukaAspect.Text = $"{fukaAspectValue}%";
-                hitAspectValue.Text = $"{100 - fukaAspectValue}%";
+                // ryoAspect.Text = $"{ryoAspectValue}%";
+                // kaAspect.Text = $"{kaAspectValue}%";
+                // fukaAspect.Text = $"{fukaAspectValue}%";
+                // hitAspectValue.Text = $"{100 - fukaAspectValue}%";
+
+                ryoAspect.SetText("{0}%", ryoAspectValue);
+                kaAspect.SetText("{0}%", kaAspectValue);
+                fukaAspect.SetText("{0}%", fukaAspectValue);
+                hitAspectValue.SetText("{0}%", 100 - fukaAspectValue);
             }
         }
         else
@@ -207,7 +222,21 @@ public class HitStatusPanel
             hitAspectValue.Text = "100%";
         }
 
-        rendaCounter.Text = EnsoGameBasePatch.RendaCount.ToString();
+        // rendaCounter.Text = EnsoGameBasePatch.RendaCount.ToString();
+        rendaCounter.SetText("{0}", renda);
+    }
+
+    public void Update()
+    {
+        if (_ensoGameManager.ensoParam.IsPause || _ensoGameManager.state >= EnsoGameManager.State.ToResult)
+        {
+            trainCounterUi.SetActive(false);
+            return;
+        }
+
+        trainCounterUi.SetActive(true);
+
+        UpdatePanel();
     }
 
     public void HideTrainCounter()

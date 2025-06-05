@@ -62,6 +62,16 @@ public class TextUi : BaseUi
         set => _uitext.tmpro.alignment = value;
     }
 
+    public void SetText(string format, float value0)
+    {
+        _uitext.tmpro.SetText(format, value0);
+    }
+    
+    public void SetText(string format, float value0, float value1)
+    {
+        _uitext.tmpro.SetText(format, value0, value1);
+    }
+
     private void UpdateText()
     {
         var color = Color.black;

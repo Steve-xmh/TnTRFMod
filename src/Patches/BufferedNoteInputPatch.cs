@@ -25,7 +25,8 @@ internal class BufferedNoteInputPatch
 
     public static void ResetCounts()
     {
-        foreach (var inputState in playerInputStates) inputState.Reset();
+        for (var i = 0; i < playerInputStates.Count; i++)
+            playerInputStates[i].Reset();
 
         if (Injected) return;
         InputSystem.onEvent +=
@@ -40,8 +41,9 @@ internal class BufferedNoteInputPatch
     private static void OnInputSystemEvent(InputEventPtr eventPtr, InputDevice device)
     {
         if (!eventPtr.handled) return;
-        foreach (var inputState in playerInputStates)
+        for (var i = 0; i < playerInputStates.Count; i++)
         {
+            var inputState = playerInputStates[i];
             var ctler = mgr.Controllers[(int)inputState.PlayerNo];
             if (ctler.deviceId == device.deviceId)
             {

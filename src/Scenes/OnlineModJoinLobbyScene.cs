@@ -1,8 +1,6 @@
-using TnTRFMod.Patches;
 using TnTRFMod.Ui.Widgets;
 using UnityEngine;
 #if BEPINEX
-using Steamworks;
 #endif
 
 #if MELONLOADER

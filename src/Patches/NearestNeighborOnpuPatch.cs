@@ -24,6 +24,7 @@ internal class NearestNeighborOnpuPatch
         ref float time)
     {
         if (!TnTrfMod.Instance.enableNearestNeighborOnpuPatch.Value) return;
-        foreach (var sprite in data.spriteList) sprite.sprite.texture.filterMode = FilterMode.Point;
+        for (var i = 0; i < data.spriteList.Count; i++)
+            data.spriteList._items[i].sprite.texture.filterMode = FilterMode.Point;
     }
 }

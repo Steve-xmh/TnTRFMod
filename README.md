@@ -99,6 +99,7 @@ You can access `UserData/net.stevexmh.TnTRFMod.cfg` to configure the mod feature
 This mod supports WASAPI Exclusive Audio mode, which can get lower audio latency.
 
 But only tested with audio device in wave formats below:
+
 - 44100Hz 16bit 2 channels
 - 48000hz 16bit 2 channels
 
@@ -109,6 +110,7 @@ and edit the config to follow the format one of above that.
 这个模组支持启用独占音频模式，可以获得更低的音频延迟。
 
 但是仅以下格式的音频波形格式经过测试：
+
 - 44100Hz 16bit 2 通道
 - 48000hz 16bit 2 通道
 

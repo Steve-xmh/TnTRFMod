@@ -2,6 +2,7 @@ using HarmonyLib;
 #if BEPINEX
 using Scripts.Common;
 #endif
+
 #if MELONLOADER
 using Il2CppScripts.Common;
 #endif

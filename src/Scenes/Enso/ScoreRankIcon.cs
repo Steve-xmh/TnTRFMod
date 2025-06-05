@@ -62,7 +62,7 @@ public class ScoreRankIcon
                     var reader = ReadFumen(_ensoGameManager.fumenLoader.playerData[i]);
                     playerStatus.FumenReader = reader;
                     var maxScore = reader.CalculateMaxScore();
-                    Logger.Info($"Loaded Fumen score of Player {i + 1}: {maxScore}");
+                    // Logger.Info($"Loaded Fumen score of Player {i + 1}: {maxScore}");
                     playerStatus.LevelInfos =
                     [
                         new LevelInfo
@@ -130,7 +130,7 @@ public class ScoreRankIcon
 
     private IEnumerator ShowScoreRank(int level)
     {
-        Logger.Info($"Showing score rank icon {level}");
+        // Logger.Info($"Showing score rank icon {level}");
         var width = scoreRankSprites.width;
         var heightPerIcon = scoreRankSprites.height / 7;
         var iconSprite = Sprite.Create(scoreRankSprites,
@@ -157,7 +157,7 @@ public class ScoreRankIcon
 
         iconUi.Image.color = Color.white;
         iconUi.Position = new Vector2(posX, posY);
-        
+
         time = 0f;
         while (time < 0.05f)
         {
@@ -165,10 +165,10 @@ public class ScoreRankIcon
             yield return null;
             time += Time.deltaTime;
         }
-        
-        iconUi._transform.localScale = Vector3.one * (1.05f);
+
+        iconUi._transform.localScale = Vector3.one * 1.05f;
         yield return null;
-        
+
         time = 0f;
         while (time < 0.05f)
         {
@@ -176,7 +176,7 @@ public class ScoreRankIcon
             yield return null;
             time += Time.deltaTime;
         }
-        
+
         iconUi._transform.localScale = Vector3.one;
 
         yield return new WaitForSeconds(3);
@@ -189,7 +189,7 @@ public class ScoreRankIcon
             yield return null;
             time += Time.deltaTime;
         }
-        
+
         iconUi.Image.color = Color.white.AlphaMultiplied(0f);
         yield return null;
         iconUi.Dispose();
@@ -203,8 +203,8 @@ public class ScoreRankIcon
 
     private class PlayerStatus
     {
-        public int NextLevel = 0;
-        public FumenReader? FumenReader = null;
-        public LevelInfo[]? LevelInfos = null;
+        public FumenReader? FumenReader;
+        public LevelInfo[]? LevelInfos;
+        public int NextLevel;
     }
 }
