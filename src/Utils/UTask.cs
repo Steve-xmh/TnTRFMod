@@ -7,10 +7,15 @@ using Exception = Il2CppSystem.Exception;
 using Object = Il2CppSystem.Object;
 using YieldAwaitable = Cysharp.Threading.Tasks.YieldAwaitable;
 using Cysharp.Threading.Tasks;
-#endif
 
-#if MELONLOADER
+#elif MELONLOADER
 using Il2CppCysharp.Threading.Tasks;
+using Il2CppInterop.Runtime;
+using YieldAwaitable = Il2CppCysharp.Threading.Tasks.YieldAwaitable;
+using Object = Il2CppSystem.Object;
+using Exception = Il2CppSystem.Exception;
+using CancellationToken = Il2CppSystem.Threading.CancellationToken;
+
 #endif
 
 namespace TnTRFMod.Utils;

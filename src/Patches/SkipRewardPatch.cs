@@ -1,5 +1,13 @@
+// The patch is from https://github.com/Deathbloodjr/RF.SkipCoinAndRewardScreen
+// Under MIT License
+
 using HarmonyLib;
+#if BEPINEX
 using Scripts.CrownPoint;
+
+#elif MELONLOADER
+using Il2CppScripts.CrownPoint;
+#endif
 
 namespace TnTRFMod.Patches;
 
@@ -16,7 +24,7 @@ internal class SkipRewardPatch
         __result = new CrownPointData
         {
             CurrentPoints = __result.CurrentPoints,
-            SavedPoints = __result.CurrentPoints,
+            SavedPoints = __result.CurrentPoints
         };
     }
 

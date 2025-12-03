@@ -1,5 +1,8 @@
-using BepInEx.Unity.IL2CPP.Utils.Collections;
+#if BEPINEX
 using Cysharp.Threading.Tasks;
+#elif MELONLOADER
+using Il2CppCysharp.Threading.Tasks;
+#endif
 using HarmonyLib;
 using TnTRFMod.Utils;
 using TnTRFMod.Utils.Fumen;
@@ -258,7 +261,7 @@ public class EnsoGameBasePatch
             ensoGameManager.ensoSound.songPlayer = new CriPlayer(true);
             ensoGameManager.ensoSound.songPlayer.CueSheetName = song.SongFileName;
             if (song.InPackage == MusicDataInterface.InPackageType.HasSongAndFumen)
-                TnTrfMod.Instance.StartCoroutine(ensoGameManager.ensoSound.songPlayer.LoadAsync().WrapToManaged());
+                TnTrfMod.Instance.StartCoroutine(ensoGameManager.ensoSound.songPlayer.LoadAsync());
             else
                 ensoGameManager.ensoSound.songPlayer.LoadLocalStorageData(song.UniqueId).Forget();
             ensoGameManager.ensoSound.loadState = EnsoSound.LoadState.Song;

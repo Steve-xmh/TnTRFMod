@@ -1,9 +1,15 @@
 ﻿using Il2CppInterop.Runtime;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using Button = UnityEngine.UI.Button;
 using Image = UnityEngine.UI.Image;
+
+#if BEPINEX
+using TMPro;
+
+#elif MELONLOADER
+using Il2CppTMPro;
+#endif
 
 namespace TnTRFMod.Ui.Widgets;
 

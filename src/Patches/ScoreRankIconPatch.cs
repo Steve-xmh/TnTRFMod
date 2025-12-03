@@ -1,9 +1,15 @@
 ﻿using HarmonyLib;
-using Scripts.OutGame.SongSelect;
 using TnTRFMod.Ui;
 using TnTRFMod.Ui.Widgets;
 using UnityEngine;
 using Logger = TnTRFMod.Utils.Logger;
+
+#if BEPINEX
+using Scripts.OutGame.SongSelect;
+
+#elif MELONLOADER
+using Il2CppScripts.OutGame.SongSelect;
+#endif
 
 namespace TnTRFMod.Patches;
 

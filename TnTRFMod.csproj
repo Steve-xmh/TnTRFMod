@@ -35,11 +35,7 @@
 
     <!-- Common Libraries -->
     <ItemGroup>
-        <PackageReference Include="NAudio" Version="2.2.1"/>
-        <PackageReference Include="NAudio.Vorbis" Version="1.5.0"/>
         <PackageReference Include="Tommy" Version="3.1.2"/>
-        <PackageReference Include="Ude.NET" Version="1.0.0"/>
-        <PackageReference Include="VGAudio" Version="2.2.1"/>
     </ItemGroup>
 
     <!-- BepInEx -->

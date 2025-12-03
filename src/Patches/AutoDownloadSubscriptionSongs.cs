@@ -1,13 +1,21 @@
-using Cysharp.Threading.Tasks;
 using HarmonyLib;
 using Il2CppInterop.Runtime;
-using Scripts.OutGame.Common;
-using Scripts.OutGame.SongSelect;
 using TnTRFMod.Ui;
 using TnTRFMod.Utils;
 using UnityEngine.Events;
 using CancellationToken = Il2CppSystem.Threading.CancellationToken;
 using Logger = TnTRFMod.Utils.Logger;
+
+#if BEPINEX
+using Cysharp.Threading.Tasks;
+using Scripts.OutGame.Common;
+using Scripts.OutGame.SongSelect;
+
+#elif MELONLOADER
+using Il2CppCysharp.Threading.Tasks;
+using Il2CppScripts.OutGame.Common;
+using Il2CppScripts.OutGame.SongSelect;
+#endif
 
 namespace TnTRFMod.Patches;
 

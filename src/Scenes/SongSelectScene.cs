@@ -1,5 +1,4 @@
 using Il2CppInterop.Runtime;
-using Scripts.OutGame.Common;
 using TnTRFMod.Patches;
 using TnTRFMod.Scenes.Enso;
 using TnTRFMod.Ui;
@@ -9,11 +8,17 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Logger = TnTRFMod.Utils.Logger;
 using Random = UnityEngine.Random;
+
 #if BEPINEX
 using Scripts.OutGame.SongSelect;
+using Scripts.OutGame.Common;
+using SoundLabelClass = SoundLabel.SoundLabel;
 
 #elif MELONLOADER
 using Il2CppScripts.OutGame.SongSelect;
+using Il2CppScripts.OutGame.Common;
+using SoundLabelClass = Il2CppSoundLabel.SoundLabel;
+
 #endif
 
 namespace TnTRFMod.Scenes;
@@ -518,7 +523,7 @@ public class SongSelectScene : IScene
 
         var buttons = uiController.songScroller.CreateItemList(result);
         uiController.songScroller.SelectItem(buttons, true);
-        CommonObjects.Instance.MySoundManager.PlayCommonSe(SoundLabel.SoundLabel.Common.don);
+        CommonObjects.Instance.MySoundManager.PlayCommonSe(SoundLabelClass.Common.don);
         return;
 
         int DiffFilterToLevel(string diff)

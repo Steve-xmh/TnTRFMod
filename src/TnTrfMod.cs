@@ -14,9 +14,9 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using Exception = System.Exception;
 using Logger = TnTRFMod.Utils.Logger;
+using Il2CppIEnumerator = Il2CppSystem.Collections.IEnumerator;
 
 #if BEPINEX
-using BepInEx.Unity.IL2CPP.Utils.Collections;
 using HarmonyInstance = HarmonyLib.Harmony;
 #endif
 
@@ -47,9 +47,8 @@ public class TnTrfMod
 
     public static readonly string Dir = Path.GetFullPath(Path.Join(Application.dataPath, "../TnTRFMod"));
 
-#if BEPINEX
-    internal Updater _updater;
-#endif
+    internal CoroutineRunner _runner;
+
     public ConfigEntry<bool> enableAutoDownloadSubscriptionSongs = ConfigEntry<bool>.Noop;
 
     public ConfigEntry<bool> enableBetterBigHitPatch = ConfigEntry<bool>.Noop;
@@ -294,39 +293,23 @@ public class TnTrfMod
 
     public void StartCoroutine(IEnumerator routine)
     {
-#if BEPINEX
-        _updater.StartCoroutine(routine.WrapToIl2Cpp());
-#endif
-#if MELONLOADER
-        MelonCoroutines.Start(routine);
-#endif
+        _runner.RunCoroutine(routine);
+    }
+
+    public void StartCoroutine(Il2CppIEnumerator routine)
+    {
+        _runner.RunCoroutine(routine);
     }
 
     public void StartCoroutine(IEnumerable routine)
     {
-#if BEPINEX
-        // ReSharper disable once GenericEnumeratorNotDisposed
-        _updater.StartCoroutine(ExecCoroutineWithIEnumerable(routine).WrapToIl2Cpp());
-#endif
-#if MELONLOADER
-        MelonCoroutines.Start(ExecCoroutineWithIEnumerable(routine));
-#endif
+        _runner.RunCoroutine(ExecCoroutineWithIEnumerable(routine));
     }
 
     private static IEnumerator ExecCoroutineWithIEnumerable(IEnumerable routine)
     {
         yield return routine;
     }
-
-//     public void StartCoroutine(Il2CppSystem.Collections.IEnumerator routine)
-//     {
-// #if BEPINEX
-//         _updater.StartCoroutine(routine);
-// #endif
-// #if MELONLOADER
-//         MelonCoroutines.Start(routine);
-// #endif
-//     }
 
     private void SetupHarmony()
     {
@@ -542,11 +525,10 @@ public class TnTrfMod
         RegisterScene<SongSelectScene>();
     }
 
-    internal class Updater : MonoBehaviour
+    internal interface CoroutineRunner
     {
-        private void Update()
-        {
-            Instance.OnUpdate();
-        }
+        void RunCoroutine(IEnumerator routine);
+        void RunCoroutine(Il2CppIEnumerator routine);
+        void RunCoroutine(IEnumerable routine);
     }
 }

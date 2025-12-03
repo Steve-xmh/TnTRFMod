@@ -15,34 +15,52 @@ A multi-functional mod aiming to improve experiences of PC version of Taiko no T
 
 </div>
 
+# Foreword (Huge Disclaimer) / 前言（重要免责声明）
+
 > [!CAUTION]
-> 
+>
 > Due to the [statement](https://x.com/taiko_kateiyou/status/1935532991863820367) in Bandai Namco's handling of modding,
 > and due to the threat of [DMCA takedowns](https://github.com/TaikoModding/TekaTeka),
 > this repository may have unpredictable development status,
 > and the possibility of archiving/deleting/migrating repository without warning.
 >
 > If you are the copyright owner (e.g: Bandai Namco) and having issues with this mod project,
-> please send an email to [`stevexmh@qq.com`](mailto:stevexmh@qq.com) to contact me for any action for this repository smoothly, thank you.
+> please send an email to [`stevexmh@qq.com`](mailto:stevexmh@qq.com) to contact me for any action for this repository
+> instantly and smoothly, thank you.
 >
-> **Note:** This mod contains features that may be considered as a abuse/cheating feature (like downloading songs or single hit patch),
-> but it does **NOT** contain any copyrighted assets or reverse engineering code.
-> (All of them are generated from BepInEx/MelonLoader APIs or written from scratch)
+> This mod contains features that may be considered as a abuse/cheating feature (like downloading songs or
+> single hit patch),
+> but it does **NOT** contain any copyrighted assets or reverse engineering code,
+> nor does it contain any functionality to obtain copyrighted assets free by improper means.
+> (All the code are generated from BepInEx/MelonLoader APIs or written from scratch)
+>
+> This mod is completely free and open source, if you brought this from somewhere,
+> ask for refund and report to the selling platform.
+> the mod author takes no responsibility for any issues caused thereby.
+>
+> The author of this mod **never allowed** any third party to redistribute this mod (e.g: making game modpacks etc),
+> nor recommend using any redistributed version to avoid unnecessary disputes.
 
 > [!CAUTION]
-> 
+>
 > 由于万代南梦宫对于模组开发的[严肃声明](https://x.com/taiko_kateiyou/status/1935532991863820367)，
 > 以及对于现有游戏模组项目的[ DMCA 封锁](https://github.com/TaikoModding/TekaTeka),
 > 本仓库可能会有不可预知的开发状态，以及有可能在毫无预警的情况下包括但不限于归档/删除/转移仓库，敬请留意。
 >
-> 如果你是版权所有方（例如：万代南梦宫），且对本模组项目有任何异议，请电邮至 [`stevexmh@qq.com`](mailto:stevexmh@qq.com) 以更快且温和地处置本仓库，非常感谢。
+> 如果你是版权所有方（例如：万代南梦宫），且对本模组项目有任何异议，请电邮至 [`stevexmh@qq.com`](mailto:stevexmh@qq.com)
+> 以更快且温和地处置本仓库，非常感谢。
 >
-> **Note:** 本模组包含部分可能会被认为是滥用或作弊的功能（例如歌曲下载及单打补丁），但**不包含**任何受版权保护的资源或逆向工程代码。
-> （所有接入代码均来自 BepInEx/MelonLoader 生成的接口或自行编写）
+> 本模组包含部分可能会被认为是滥用或作弊的功能（例如歌曲下载及单打补丁），但**不包含**任何受版权保护的资源或逆向工程代码，也
+**不包含**以不正当手段免费获取版权保护的资源的功能。
+> （所有代码均来自 BepInEx/MelonLoader 生成的接口或自行编写）
+>
+> 本模组完全免费且开源，如果你从其他地方购买了本模组，请要求退款并向销售平台举报。模组作者不承担因此产生的任何责任。
+>
+> 本模组作者**从未允许**任意第三方将模组进行二次分发（例如制作成游戏整合包等），也不建议使用任何二次分发的包含本模组的游戏，以免造成不必要的纠纷。
 
 > [!WARNING]
 >
-> This mod is still unstable and under construction, use it at your own risk!
+> This mod is still unstable and still under development, use it at your own risk!
 >
 > 此模组仍在开发当中，仍不稳定，敬请留意！
 
@@ -120,14 +138,29 @@ For configuration, please read [below](#configuration--配置).
 
 Install [MelonLoader](https://github.com/LavaGang/MelonLoader) into your game, then download this mod from
 the [release page](https://github.com/Steve-xmh/TnTRFMod/releases/latest) and put it in the `Mods` folder
-under the game
-directory and start the game.
+under the game directory.
+And copy files listed below into the `UserLibs` folder under the game directory:
+
+- `Tommy.dll`
+- `MinHook.NET.dll`
+
+Then you can start the game.
+
+> [!INFO]
+> Currently tested on MelonLoader version `v0.7.1`
+>
+> 目前已测试的 MelonLoader 版本为 `v0.7.1`
 
 For configuration, please read [below](#configuration--配置).
 
 为你的游戏安装好 [MelonLoader](https://github.com/LavaGang/MelonLoader)
-，然后从[发行页面](https://github.com/Steve-xmh/TnTRFMod/releases/latest)中下载本模组并放入游戏目录下的 `Mods`
-文件夹后启动游戏即可。
+，然后从[发行页面](https://github.com/Steve-xmh/TnTRFMod/releases/latest)中下载本模组并放入游戏目录下的 `Mods` 文件夹下。
+并将下列文件复制到游戏目录下的 `UserLibs` 文件夹中：
+
+- `Tommy.dll`
+- `MinHook.NET.dll`
+
+然后启动游戏即可。
 
 如需配置，请阅读[下方](#configuration--配置)。
 

@@ -5,6 +5,13 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Logger = TnTRFMod.Utils.Logger;
 
+#if BEPINEX
+using SoundLabelClass = SoundLabel.SoundLabel;
+
+#elif MELONLOADER
+using SoundLabelClass = Il2CppSoundLabel.SoundLabel;
+#endif
+
 namespace TnTRFMod.Patches;
 
 [HarmonyPatch]
@@ -259,7 +266,7 @@ public class TokkunGamePatch
 
     private static void PlayKatsuSound(ref EnsoGameManager __instance)
     {
-        if (Paused) __instance.ensoSound.SoundManager.PlayCommonSe(SoundLabel.SoundLabel.Common.katsu);
+        if (Paused) __instance.ensoSound.SoundManager.PlayCommonSe(SoundLabelClass.Common.katsu);
     }
 
     private static void LoadSE(ref CriAtomExPlayer? player, string cueName = "")
@@ -274,7 +281,7 @@ public class TokkunGamePatch
     {
         if (playbackSound == null)
         {
-            __instance.ensoSound.SoundManager.PlayCommonSe(SoundLabel.SoundLabel.Common.katsu);
+            __instance.ensoSound.SoundManager.PlayCommonSe(SoundLabelClass.Common.katsu);
         }
         else
         {
@@ -287,7 +294,7 @@ public class TokkunGamePatch
     {
         if (speedFastSound == null)
         {
-            __instance.ensoSound.SoundManager.PlayCommonSe(SoundLabel.SoundLabel.Common.katsu);
+            __instance.ensoSound.SoundManager.PlayCommonSe(SoundLabelClass.Common.katsu);
         }
         else
         {
@@ -300,7 +307,7 @@ public class TokkunGamePatch
     {
         if (speedSlowSound == null)
         {
-            __instance.ensoSound.SoundManager.PlayCommonSe(SoundLabel.SoundLabel.Common.katsu);
+            __instance.ensoSound.SoundManager.PlayCommonSe(SoundLabelClass.Common.katsu);
         }
         else
         {
