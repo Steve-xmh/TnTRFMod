@@ -146,7 +146,7 @@ And copy files listed below into the `UserLibs` folder under the game directory:
 
 Then you can start the game.
 
-> [!INFO]
+> [!TIP]
 > Currently tested on MelonLoader version `v0.7.1`
 >
 > 目前已测试的 MelonLoader 版本为 `v0.7.1`
