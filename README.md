@@ -1,5 +1,5 @@
 <div align="center">
-<img alt="Mod Logo" src="./TnTRFMod/src/Resources/ModLogo.png" >
+<img alt="Mod Logo" src="./src/Resources/ModLogo.png" >
 
 <br>
 
@@ -13,25 +13,32 @@ A multi-functional mod aiming to improve experiences of PC version of Taiko no T
 
 （自己做的，因为我不喜欢安装一堆模组来获得我想要的功能……）
 
+</div>
+
 > [!CAUTION]
+> 
 > Due to the [statement](https://x.com/taiko_kateiyou/status/1935532991863820367) in Bandai Namco's handling of modding,
 > and due to the threat of [DMCA takedowns](https://github.com/TaikoModding/TekaTeka),
 > this repository may have unpredictable development status,
 > and the possibility of archiving/deleting/migrating repository without warning.
 >
-> **Note:** This mod contains features that may be considered as a abuse feature (like downloading songs),
+> If you are the copyright owner (e.g: Bandai Namco) and having issues with this mod project,
+> please send an email to [`stevexmh@qq.com`](mailto:stevexmh@qq.com) to contact me for any action for this repository smoothly, thank you.
+>
+> **Note:** This mod contains features that may be considered as a abuse/cheating feature (like downloading songs or single hit patch),
 > but it does **NOT** contain any copyrighted assets or reverse engineering code.
 > (All of them are generated from BepInEx/MelonLoader APIs or written from scratch)
 
 > [!CAUTION]
+> 
 > 由于万代南梦宫对于模组开发的[严肃声明](https://x.com/taiko_kateiyou/status/1935532991863820367)，
 > 以及对于现有游戏模组项目的[ DMCA 封锁](https://github.com/TaikoModding/TekaTeka),
 > 本仓库可能会有不可预知的开发状态，以及有可能在毫无预警的情况下包括但不限于归档/删除/转移仓库，敬请留意。
 >
+> 如果你是版权所有方（例如：万代南梦宫），且对本模组项目有任何异议，请电邮至 [`stevexmh@qq.com`](mailto:stevexmh@qq.com) 以更快且温和地处置本仓库，非常感谢。
+>
 > **Note:** 本模组包含部分可能会被认为是滥用或作弊的功能（例如歌曲下载及单打补丁），但**不包含**任何受版权保护的资源或逆向工程代码。
 > （所有接入代码均来自 BepInEx/MelonLoader 生成的接口或自行编写）
-
-</div>
 
 > [!WARNING]
 >
