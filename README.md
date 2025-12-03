@@ -100,7 +100,7 @@ A multi-functional mod aiming to improve experiences of PC version of Taiko no T
 #### Use BepInEx / 使用 BepInEx
 
 Install [BepInEx](https://github.com/BepInEx/BepInEx) into your game, then download this mod from
-the [release page](https://github.com/Steve-xmh/TnTRFMod/releases/latest) and put it in the `BepInX/plugins` folder
+the [release page](https://github.com/Steve-xmh/TnTRFMod/releases/latest) and put it in the `BepInEx/plugins` folder
 under the game directory and start the game.
 
 > [!IMPORTANT]
@@ -111,7 +111,7 @@ under the game directory and start the game.
 For configuration, please read [below](#configuration--配置).
 
 为你的游戏安装好 [BepInEx](https://github.com/BepInEx/BepInEx)
-，然后从[发行页面](https://github.com/Steve-xmh/TnTRFMod/releases/latest)中下载本模组并放入游戏目录下的 `BepInX/plugins`
+，然后从[发行页面](https://github.com/Steve-xmh/TnTRFMod/releases/latest)中下载本模组并放入游戏目录下的 `BepInEx/plugins`
 文件夹后启动游戏即可。
 
 如需配置，请阅读[下方](#configuration--配置)。
