@@ -103,7 +103,7 @@ Install [BepInEx](https://github.com/BepInEx/BepInEx) into your game, then downl
 the [release page](https://github.com/Steve-xmh/TnTRFMod/releases/latest) and put it in the `BepInX/plugins` folder
 under the game directory and start the game.
 
-> [!INFO]
+> [!IMPORTANT]
 > Please make sure you have installed the latest version of BepInEx 6 (Or the version must higher than `6.0.0-be.697`).
 >
 > 请确保你已经安装了最新版本的 BepInEx 6 (或者版本必须高于 `6.0.0-be.697`).
