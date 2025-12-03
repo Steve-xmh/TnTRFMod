@@ -9,6 +9,8 @@ namespace TnTRFMod.Patches;
 [HarmonyPatch]
 internal class BufferedNoteInputPatch
 {
+    public delegate void OnKeyPressEventHandler(Key key);
+
     private static bool Injected;
 
     private static readonly ControllerManager mgr = TaikoSingletonMonoBehaviour<ControllerManager>.Instance;
@@ -23,14 +25,16 @@ internal class BufferedNoteInputPatch
 
     private static bool Disabled => !TnTrfMod.Instance.enableBufferedInputPatch.Value;
 
+    public static event OnKeyPressEventHandler OnKeyPressEvent = delegate { };
+
     public static void ResetCounts()
     {
         for (var i = 0; i < playerInputStates.Count; i++)
             playerInputStates[i].Reset();
 
         if (Injected) return;
-        InputSystem.onEvent +=
-            DelegateSupport.ConvertDelegate<Il2CppSystem.Action<InputEventPtr, InputDevice>>(OnInputSystemEvent);
+        // InputSystem.onEvent +=
+        //     DelegateSupport.ConvertDelegate<Il2CppSystem.Action<InputEventPtr, InputDevice>>(OnInputSystemEvent);
         Keyboard.current.add_onTextInput(
             DelegateSupport.ConvertDelegate<Il2CppSystem.Action<char>>(OnTextInput));
 
@@ -57,21 +61,39 @@ internal class BufferedNoteInputPatch
 
     private static void OnTextInput(char character)
     {
+        var charKey = KeyConversion.CharToKey(character);
+
+        if (charKey != Key.None)
+            OnKeyPressEvent.Invoke(charKey);
+
+        var charCode = (short)charKey;
+
         if (Disabled) return;
-        if (!mgr.IsKeyOperationAvailable()) return;
 
         // (InputSystem.FindControl("") as ButtonControl).isPressed;
-        mgr.GetNormalAxis(ControllerManager.ControllerPlayerNo.All, ControllerManager.Buttons.A);
+        // mgr.GetNormalAxis(ControllerManager.ControllerPlayerNo.All, ControllerManager.Buttons.A);
 
-        var donLKey = mgr.keyConfig[(int)ControllerManager.Taiko.DonL];
-        var donRKey = mgr.keyConfig[(int)ControllerManager.Taiko.DonR];
-        var katsuLKey = mgr.keyConfig[(int)ControllerManager.Taiko.KatsuL];
-        var katsuRKey = mgr.keyConfig[(int)ControllerManager.Taiko.KatsuR];
-        var charCode = (short)KeyConversion.CharToKey(character);
-        if (charCode == donLKey) playerInputStates[0].InvokeDonL();
-        else if (charCode == donRKey) playerInputStates[0].InvokeDonR();
-        else if (charCode == katsuLKey) playerInputStates[0].InvokeKatsuL();
-        else if (charCode == katsuRKey) playerInputStates[0].InvokeKatsuR();
+        // 玩家 1
+        if (mgr.IsKeyOperationAvailable())
+        {
+            var donLKey = mgr.keyConfig[(int)ControllerManager.Taiko.DonL];
+            var donRKey = mgr.keyConfig[(int)ControllerManager.Taiko.DonR];
+            var katsuLKey = mgr.keyConfig[(int)ControllerManager.Taiko.KatsuL];
+            var katsuRKey = mgr.keyConfig[(int)ControllerManager.Taiko.KatsuR];
+            if (charCode == donLKey) playerInputStates[0].InvokeDonL();
+            else if (charCode == donRKey) playerInputStates[0].InvokeDonR();
+            else if (charCode == katsuLKey) playerInputStates[0].InvokeKatsuL();
+            else if (charCode == katsuRKey) playerInputStates[0].InvokeKatsuR();
+        }
+
+        // 玩家 2 的额外键盘适配
+        if (mgr.IsPlayerControllerConnected(ControllerManager.ControllerPlayerNo.Player2))
+        {
+            if (charKey == TnTrfMod.Instance.p2LeftDonKey.Value) playerInputStates[1].InvokeDonL();
+            else if (charKey == TnTrfMod.Instance.p2RightDonKey.Value) playerInputStates[1].InvokeDonR();
+            else if (charKey == TnTrfMod.Instance.p2LeftKaKey.Value) playerInputStates[1].InvokeKatsuL();
+            else if (charKey == TnTrfMod.Instance.p2RightKaKey.Value) playerInputStates[1].InvokeKatsuR();
+        }
     }
 
     [HarmonyPatch(typeof(EnsoInput))]
@@ -89,13 +111,13 @@ internal class BufferedNoteInputPatch
     private class InputState(ControllerManager.ControllerPlayerNo playerNo)
     {
         public readonly ControllerManager.ControllerPlayerNo PlayerNo = playerNo;
-        private uint DonL;
-        private uint DonR;
-        private uint KatsuL;
-        private uint KatsuR;
+        private int DonL;
+        private int DonR;
+        private int KatsuL;
+        private int KatsuR;
         private bool prevInput;
 
-        private uint MaxBufferedInputCount => TnTrfMod.Instance.maxBufferedInputCount.Value;
+        private int MaxBufferedInputCount => TnTrfMod.Instance.maxBufferedInputCount.Value;
 
         public void Scan(Gamepad gamepad, InputEventPtr eventPtr)
         {

@@ -9,6 +9,7 @@ public class EnsoTestScene : IScene
     private readonly HitStatusPanel HitStatusPanel = new();
 
     public string SceneName => "EnsoTest";
+    public bool LowLatencyMode => true;
 
     public void Init()
     {

@@ -7,7 +7,7 @@ namespace TnTRFMod.Utils.Wasapi;
 ///     https://docs.microsoft.com/en-us/windows/win32/coreaudio/audclnt-streamflags-xxx-constants
 /// </summary>
 [Flags]
-internal enum AudioClientStreamFlags : uint
+public enum AudioClientStreamFlags : uint
 {
     /// <summary>
     ///     None

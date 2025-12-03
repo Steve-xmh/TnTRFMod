@@ -1,4 +1,5 @@
 using TnTRFMod.Patches;
+using TnTRFMod.Ui;
 using TnTRFMod.Ui.Widgets;
 using TnTRFMod.Utils;
 using UnityEngine;
@@ -15,6 +16,11 @@ namespace TnTRFMod.Scenes.Enso;
 public class HitStatusPanel
 {
     private EnsoGameManager _ensoGameManager;
+    private int curFuka;
+    private int curKa;
+    private int curRenda;
+
+    private int curRyo;
     private TextUi fukaAspect;
     private TextUi fukaCounter;
 
@@ -34,7 +40,7 @@ public class HitStatusPanel
     {
         _ensoGameManager = GameObject.Find("EnsoGameManager").GetComponent<EnsoGameManager>();
 
-        trainCounterUi = new ImageUi(Resources.TrainCounter)
+        trainCounterUi = new ImageUi(TextureManager.Textures.TrainCounter)
         {
             Position = new Vector2(37.5f, 577.5f),
             Name = "TrainCounterSprite"
@@ -61,13 +67,13 @@ public class HitStatusPanel
 
         const int LabelAlignX = 130;
 
-        var ryo = new ImageUi(Resources.HitRyo);
+        var ryo = new ImageUi(TextureManager.Textures.HitRyo);
         trainCounterUi.AddChild(ryo);
         ryo.Position = new Vector2(LabelAlignX - ryo.Size.x, 121);
-        var ka = new ImageUi(Resources.HitKa);
+        var ka = new ImageUi(TextureManager.Textures.HitKa);
         trainCounterUi.AddChild(ka);
         ka.Position = new Vector2(LabelAlignX - ka.Size.x, 179);
-        var fuka = new ImageUi(Resources.HitFuka);
+        var fuka = new ImageUi(TextureManager.Textures.HitFuka);
         trainCounterUi.AddChild(fuka);
         fuka.Position = new Vector2(LabelAlignX - fuka.Size.x, 236);
 
@@ -156,17 +162,12 @@ public class HitStatusPanel
         rendaCounter.Position = new Vector2(CounterAlignX, 333);
     }
 
-    private int curRyo = 0;
-    private int curKa = 0;
-    private int curFuka = 0;
-    private int curRenda = 0;
-
     private void UpdatePanel()
     {
-        var ryo = EnsoGameBasePatch.RyoCount;
-        var ka = EnsoGameBasePatch.KaCount;
-        var fuka = EnsoGameBasePatch.FuKaCount;
-        var renda = EnsoGameBasePatch.RendaCount;
+        var ryo = EnsoGameBasePatch.PlayerStates[0].RyoCount;
+        var ka = EnsoGameBasePatch.PlayerStates[0].KaCount;
+        var fuka = EnsoGameBasePatch.PlayerStates[0].FuKaCount;
+        var renda = EnsoGameBasePatch.PlayerStates[0].RendaCount;
         // 如果没有变化则不更新
         if (ryo == curRyo && ka == curKa && fuka == curFuka && renda == curRenda) return;
         curRyo = ryo;
@@ -228,19 +229,6 @@ public class HitStatusPanel
 
     public void Update()
     {
-        if (_ensoGameManager.ensoParam.IsPause || _ensoGameManager.state >= EnsoGameManager.State.ToResult)
-        {
-            trainCounterUi.SetActive(false);
-            return;
-        }
-
-        trainCounterUi.SetActive(true);
-
         UpdatePanel();
-    }
-
-    public void HideTrainCounter()
-    {
-        trainCounterUi.SetActive(false);
     }
 }

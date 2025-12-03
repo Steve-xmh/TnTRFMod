@@ -1,5 +1,4 @@
 using System.Text;
-using System.Text.Json.Nodes;
 using TnTRFMod.Ui.Widgets;
 using TnTRFMod.Utils;
 using UnityEngine;
@@ -23,15 +22,13 @@ public class LiveStreamSongSelectPanel
     private static readonly List<QueuedSongInfo> NotifySongList = [];
     private static bool NeedUpdateNotify;
 
-    private static Task _liveStreamDanmakuTask;
+    private static Task? _liveStreamDanmakuTask;
 
     // 
     // CommonObjects.Instance.MySceneManager.ChangeRelayScene("Enso");
     // SongSelectUtility.
     // var ensoManager = CommonObjects.Instance.MyDataManager.EnsoData;
     // ensoManager.ensoSettings.mu
-
-    private static readonly Dictionary<string, string> AliasTable = new();
 
     public static void StartLiveStreamDanmaku()
     {
@@ -54,52 +51,29 @@ public class LiveStreamSongSelectPanel
         {
             while (!NeedUpdateNotify)
                 await UniTask.WaitForEndOfFrame().ToTask();
-            text.Clear();
+            await text.Clear();
             foreach (var info in NotifySongList)
             {
-                text.AppendLine($"用户 {info.DammakuMessage.SenderName} ({info.DammakuMessage.SenderUid}) 点歌");
+                await text.AppendLine($"用户 {info.DammakuMessage.SenderName} ({info.DammakuMessage.SenderUid}) 点歌");
                 var curLangName = "";
 
                 if (I18n.CurrentLanguage != DataConst.LanguageType.Japanese)
                 {
-                    text.Append("  ");
+                    await text.Append("  ");
                     curLangName = info.SongInfo.SongNames[(int)I18n.CurrentLanguage];
                     curLangName = curLangName[(curLangName.IndexOf('>') + 1)..];
-                    text.AppendLine(curLangName);
+                    await text.AppendLine(curLangName);
                 }
 
                 var jpName = info.SongInfo.SongNames[(int)DataConst.LanguageType.Japanese];
                 jpName = jpName[(jpName.IndexOf('>') + 1)..];
                 if (curLangName == jpName) continue;
-                text.Append("  ");
-                text.AppendLine(jpName);
+                await text.Append("  ");
+                await text.AppendLine(jpName);
             }
 
             notifyText.Text = text.ToString();
             NeedUpdateNotify = false;
-        }
-    }
-
-    private static async Task LoadAliasTable()
-    {
-        AliasTable.Clear();
-        try
-        {
-            var aliasTableFile = Path.Combine(TnTrfMod.Dir, "alias.json");
-            Logger.Info($"Loading alias table from {aliasTableFile}");
-            if (!File.Exists(aliasTableFile)) return;
-            var aliasTableData = await File.ReadAllTextAsync(aliasTableFile);
-            var aliasTable = JsonNode.Parse(aliasTableData);
-            foreach (var kv in aliasTable.AsObject())
-                if (kv.Value.AsValue().TryGetValue<string>(out var alias))
-                    AliasTable[kv.Key.ToLower()] = alias;
-
-            Logger.Info($"Loaded {AliasTable.Count} alias table");
-        }
-        catch (Exception e)
-        {
-            Logger.Warn("Can't load alias table:");
-            Logger.Warn(e.Message);
         }
     }
 
@@ -112,8 +86,6 @@ public class LiveStreamSongSelectPanel
             return;
         }
 
-        await LoadAliasTable();
-
         Logger.Warn("Starting Bilibili Live Stream Song Request...");
         var crawer = new BilibiliLiveCommentCrawer(TnTrfMod.Instance.bilibiliLiveStreamSongRoomId.Value,
             TnTrfMod.Instance.bilibiliLiveStreamSongToken.Value);
@@ -122,7 +94,8 @@ public class LiveStreamSongSelectPanel
             var message = msg.Message;
             if (!message.StartsWith("/点歌 ")) return;
             var songQuery = message[4..].ToLower();
-            if (AliasTable.TryGetValue(songQuery, out var musicId))
+
+            if (SongAliasTable.TryGetAlias(songQuery, out var musicId))
                 foreach (var music in CommonObjects.Instance.MyDataManager.MusicData.MusicInfoAccesserList)
                 {
                     if (music.Id.ToLower() != musicId) continue;
@@ -160,7 +133,7 @@ public class LiveStreamSongSelectPanel
             catch (Exception e)
             {
                 Logger.Warn("Failed to start Bilibili Live Stream Song Request:");
-                Logger.Warn(e.Message);
+                Logger.Warn(e);
             }
 
             try
@@ -170,7 +143,7 @@ public class LiveStreamSongSelectPanel
             catch (Exception e)
             {
                 Logger.Warn("Failed to stop Bilibili Live Stream Song Request:");
-                Logger.Warn(e.Message);
+                Logger.Warn(e);
             }
 
             await Task.Delay(5000);
@@ -206,7 +179,7 @@ public class LiveStreamSongSelectPanel
         NotifySongList.Add(info);
         NeedUpdateNotify = true;
         await Task.Delay(TimeSpan.FromSeconds(5));
-        NotifySongList.Remove(info);
+        await NotifySongList.Remove(info);
         NeedUpdateNotify = true;
     }
 

@@ -22,7 +22,8 @@ internal class BetterBigHitPatch
     {
         if (!TnTrfMod.Instance.enableBetterBigHitPatch.Value) return;
         // 在线模式下不对输入进行修改
-        if (__instance.ensoParam.networkGameMode != NetworkGameMode.None) return;
+        if (!TnTrfMod.Instance.betterBigHitSkipOnlineCheck.Value &&
+            __instance.ensoParam.networkGameMode != NetworkGameMode.None) return;
         switch (__result)
         {
             case TaikoCoreTypes.UserInputType.Don_Weak:

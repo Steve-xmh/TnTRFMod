@@ -3,6 +3,7 @@ using TnTRFMod.Scenes.Enso;
 using TnTRFMod.Ui;
 using UnityEngine;
 using UnityEngine.UI;
+using Logger = TnTRFMod.Utils.Logger;
 
 namespace TnTRFMod.Scenes;
 
@@ -25,33 +26,68 @@ public class BootScene : IScene
         var image = blackGo.AddComponent<Image>();
         image.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero, 1f);
 
-        LiveStreamSongSelectPanel.StartLiveStreamDanmaku();
-        _ = DumpMusicNames();
+        if (TnTrfMod.Instance.enableBilibiliLiveStreamSongRequest.Value)
+            LiveStreamSongSelectPanel.StartLiveStreamDanmaku();
+        if (TnTrfMod.Instance.debugExportMusicNames.Value)
+            DumpMusicNames();
+        if (TnTrfMod.Instance.debugExportGameData.Value)
+            DumpAllAssets();
+
+        // SRDebug.Init();
+        // BufferedNoteInputPatch.OnKeyPressEvent += key =>
+        // {
+        //     if (key != Key.F2) return;
+        //     if (SRDebug.Instance.IsDebugPanelVisible)
+        //         SRDebug.Instance.HideDebugPanel();
+        //     else
+        //         SRDebug.Instance.ShowDebugPanel(DefaultTabs.Profiler, false);
+        // };
     }
 
-    private static async Task DumpMusicNames()
+    private void DumpAllAssets()
+    {
+        var path = Path.Combine(Application.streamingAssetsPath, "model");
+        var dest = Path.Combine(TnTrfMod.Dir, "DumpedModels");
+
+        if (!Directory.Exists(dest))
+            Directory.CreateDirectory(dest);
+
+        foreach (var filePath in Directory.EnumerateFiles(path, "*.bin", SearchOption.AllDirectories))
+        {
+            var relPath = filePath[(path.Length + 1)..];
+            var destPath = Path.Combine(dest, relPath);
+            if (File.Exists(destPath)) continue;
+            Logger.Info($"Dumping model: {filePath}");
+            var data = Cryptgraphy.ReadAllAesBytes(filePath, Cryptgraphy.AesKeyType.Type0);
+            if (!Directory.Exists(Path.GetDirectoryName(destPath)))
+                Directory.CreateDirectory(Path.GetDirectoryName(destPath)!);
+            File.WriteAllBytes(destPath, data);
+        }
+    }
+
+    private static void DumpMusicNames()
     {
         var outputPath = Path.Combine(TnTrfMod.Dir, "SongIndices.csv");
-        await using var writer = new StreamWriter(outputPath, false, Encoding.UTF8);
+        using var writer = new StreamWriter(outputPath, false, Encoding.UTF8);
         // write bom utf-8
-        await writer.WriteAsync('\uFEFF');
+        writer.Write('\uFEFF');
 
-        await writer.WriteLineAsync("SongId,NameJA,NameEN,NameFR,NameIT,NameDE,NameES,NameZHT,NameZHS,NameKO");
+        writer.WriteLine("SongId,NameJA,NameEN,NameFR,NameIT,NameDE,NameES,NameZHT,NameZHS,NameKO");
         foreach (var musicInfo in CommonObjects.Instance.MyDataManager.MusicData.MusicInfoAccesserList)
         {
-            await writer.WriteAsync($"{musicInfo.Id}");
+            writer.Write($"{musicInfo.Id}");
             // await writer.WriteLineAsync(
             //     $"{musicInfo.Id},{musicInfo.SongNames.Join()}");
             foreach (var name in musicInfo.SongNames)
             {
                 var modified = name[(name.IndexOf('>') + 1)..];
                 modified = modified.Replace("\"", "\"\"");
-                await writer.WriteAsync($",\"{modified}\"");
+                writer.Write($",\"{modified}\"");
             }
 
-            await writer.WriteLineAsync();
+            writer.WriteLine();
         }
 
-        await writer.FlushAsync();
+        writer.Flush();
     }
 }

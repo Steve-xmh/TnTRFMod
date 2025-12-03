@@ -18,7 +18,7 @@ internal interface IMMDeviceEnumerator
         DeviceState stateMask,
         out IMMDeviceCollection devices);
 
-    void GetDefaultAudioEndpoint(DataFlow dataFlow, Role role, out IMMDevice endpoint);
+    void GetDefaultAudioEndpoint(DataFlow dataFlow, Role role, out IMMDevice? endpoint);
 
     // int GetDevice(string id, out IMMDevice deviceName);
     //     

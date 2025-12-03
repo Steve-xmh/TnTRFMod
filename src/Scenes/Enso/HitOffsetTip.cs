@@ -16,7 +16,7 @@ public class HitOffsetTip
     private TextUi hitOffset;
 
     private static float JudgeRange => Mathf.Approximately(TnTrfMod.Instance.hitOffsetRyoRange.Value, -1)
-        ? EnsoGameBasePatch.RyoJudgeRange
+        ? EnsoGameBasePatch.PlayerStates[0].RyoJudgeRange
         : TnTrfMod.Instance.hitOffsetRyoRange.Value;
 
     private static Color FastColor => TnTrfMod.Instance.hitOffsetInvertColor.Value
@@ -42,15 +42,7 @@ public class HitOffsetTip
 
     public void Update()
     {
-        if (_ensoGameManager.ensoParam.IsPause || _ensoGameManager.state >= EnsoGameManager.State.ToResult)
-        {
-            hitOffset.SetActive(false);
-            return;
-        }
-
-        hitOffset.SetActive(true);
-
-        var time = (int)EnsoGameBasePatch.LastHitTimeOffset;
+        var time = (int)EnsoGameBasePatch.PlayerStates[0].LastHitTimeOffset;
         hitOffset.Text = $"{time}ms";
         if (time > JudgeRange)
             hitOffset.Color = FastColor;

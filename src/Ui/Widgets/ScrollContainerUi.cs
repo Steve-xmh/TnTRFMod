@@ -6,8 +6,11 @@ namespace TnTRFMod.Ui.Widgets;
 public class ScrollContainerUi : BaseUi
 {
     private readonly GameObject _container;
+    private readonly RectTransform _containerRect;
+    private readonly Image _image;
     private readonly ScrollRect _scrollRect;
     private readonly GameObject _viewport;
+    private readonly RectTransform _viewportRect;
 
     public ScrollContainerUi()
     {
@@ -16,16 +19,21 @@ public class ScrollContainerUi : BaseUi
         _scrollRect.vertical = true;
         _scrollRect.scrollSensitivity = 32;
 
+        _image = _go.AddComponent<Image>();
+        _image.sprite = baseUiSprite;
+        _image.type = Image.Type.Sliced;
+        _image.pixelsPerUnitMultiplier = 100;
+
         _viewport = new GameObject("Viewport");
         _viewport.transform.SetParent(_go.transform);
-        var viewportRect = _viewport.AddComponent<RectTransform>();
-        viewportRect.anchorMin = Vector2.zero;
-        viewportRect.anchorMax = Vector2.one;
-        viewportRect.sizeDelta = Vector2.zero;
-        viewportRect.pivot = new Vector2(0.5f, 0.5f);
+        _viewportRect = _viewport.AddComponent<RectTransform>();
+        _viewportRect.anchorMin = Vector2.zero;
+        _viewportRect.anchorMax = Vector2.one;
+        _viewportRect.offsetMin = new Vector2(15, 8);
+        _viewportRect.offsetMax = new Vector2(-15, -8);
         var viewportMask = _viewport.AddComponent<Mask>();
         viewportMask.showMaskGraphic = false;
-        _scrollRect.viewport = viewportRect;
+        _scrollRect.viewport = _viewportRect;
         var viewportImage = _viewport.AddComponent<Image>();
         viewportImage.color = Color.white;
         viewportImage.raycastTarget = true;
@@ -33,22 +41,22 @@ public class ScrollContainerUi : BaseUi
 
         _container = new GameObject("Container");
         _container.transform.SetParent(_viewport.transform);
-        var containerRect = _container.AddComponent<RectTransform>();
-        containerRect.anchorMin = Vector2.zero;
-        containerRect.anchorMax = Vector2.one;
-        containerRect.sizeDelta = Vector2.zero;
-        containerRect.pivot = new Vector2(0.5f, 0.5f);
-        _scrollRect.content = containerRect;
+        _containerRect = _container.AddComponent<RectTransform>();
+        _containerRect.anchorMin = Vector2.zero;
+        _containerRect.anchorMax = Vector2.one;
+        _scrollRect.content = _containerRect;
         var layoutGroup = _container.AddComponent<VerticalLayoutGroup>();
         layoutGroup.childControlWidth = true;
         layoutGroup.childControlHeight = false;
         layoutGroup.childForceExpandWidth = false;
         layoutGroup.childForceExpandHeight = false;
-        layoutGroup.padding = new RectOffset(4, 4, 4, 4);
+        layoutGroup.spacing = 4;
 
         var fitter = _container.AddComponent<ContentSizeFitter>();
-        fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+        fitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
         fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+        _containerRect.offsetMin = Vector2.zero;
+        _containerRect.offsetMax = Vector2.zero;
     }
 
     public new Vector2 Position
@@ -65,7 +73,18 @@ public class ScrollContainerUi : BaseUi
     public new Vector2 Size
     {
         get => _transform.sizeDelta;
-        set => _transform.sizeDelta = value;
+        set
+        {
+            _transform.sizeDelta = value;
+            _containerRect.sizeDelta =
+                new Vector2(_viewportRect.sizeDelta.x - _viewportRect.offsetMin.x + _viewportRect.offsetMax.x, 0);
+        }
+    }
+
+    public Color Color
+    {
+        get => _image.color;
+        set => _image.color = value;
     }
 
     public new void AddChild(GameObject child)
@@ -80,5 +99,7 @@ public class ScrollContainerUi : BaseUi
         var fitter = _container.GetComponent<ContentSizeFitter>();
         fitter.enabled = false;
         fitter.enabled = true;
+        _containerRect.offsetMin = Vector2.zero;
+        _containerRect.offsetMax = Vector2.zero;
     }
 }

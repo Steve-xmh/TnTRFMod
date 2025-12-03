@@ -8,8 +8,8 @@ namespace TnTRFMod.Utils;
 public class MinimumLatencyAudioClient
 {
     private static Guid IID_IAudioClient = typeof(IAudioClient3).GUID;
-    private IAudioClient3 audioClient;
-    private IMMDevice device;
+    private IAudioClient3? audioClient;
+    private IMMDevice? device;
 
     public void Start()
     {
@@ -74,7 +74,7 @@ public class MinimumLatencyAudioClient
     public void Stop()
     {
         Logger.Info("Stopping MinimumLatencyAudioClient");
-        audioClient.Stop();
+        audioClient?.Stop();
 #if WINDOWS
         Marshal.ReleaseComObject(device);
         Marshal.ReleaseComObject(audioClient);

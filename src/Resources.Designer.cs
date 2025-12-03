@@ -122,6 +122,116 @@ namespace TnTRFMod {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] TokkunButtonDon {
+            get {
+                object obj = ResourceManager.GetObject("TokkunButtonDon", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] TokkunButtonKatsu {
+            get {
+                object obj = ResourceManager.GetObject("TokkunButtonKatsu", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] TokkunDrum {
+            get {
+                object obj = ResourceManager.GetObject("TokkunDrum", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] TokkunDrumHitEffectDon {
+            get {
+                object obj = ResourceManager.GetObject("TokkunDrumHitEffectDon", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] TokkunDrumHitEffectLeftKatsu {
+            get {
+                object obj = ResourceManager.GetObject("TokkunDrumHitEffectLeftKatsu", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] TokkunDrumHitEffectRightKatsu {
+            get {
+                object obj = ResourceManager.GetObject("TokkunDrumHitEffectRightKatsu", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] TokkunIconForward {
+            get {
+                object obj = ResourceManager.GetObject("TokkunIconForward", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] TokkunIconLanePaused {
+            get {
+                object obj = ResourceManager.GetObject("TokkunIconLanePaused", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] TokkunIconPause {
+            get {
+                object obj = ResourceManager.GetObject("TokkunIconPause", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] TokkunIconResume {
+            get {
+                object obj = ResourceManager.GetObject("TokkunIconResume", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] TokkunIconRewind {
+            get {
+                object obj = ResourceManager.GetObject("TokkunIconRewind", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] TrainCounter {
             get {
                 object obj = ResourceManager.GetObject("TrainCounter", resourceCulture);

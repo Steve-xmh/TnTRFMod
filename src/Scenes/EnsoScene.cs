@@ -1,8 +1,8 @@
 using System.Collections;
 using TnTRFMod.Patches;
 using TnTRFMod.Scenes.Enso;
+using TnTRFMod.Ui;
 using UnityEngine;
-using UnityEngine.Scripting;
 using UnityEngine.UI;
 
 namespace TnTRFMod.Scenes;
@@ -13,6 +13,10 @@ public class EnsoScene : IScene
     private readonly HitStatusPanel HitStatusPanel = new();
     private readonly ScoreRankIcon ScoreRankIcon = new();
 
+    private readonly TokkunMode TokkunMode = new();
+
+    public bool LowLatencyMode => true;
+
     public string SceneName => "Enso";
 
     public void Start()
@@ -20,7 +24,6 @@ public class EnsoScene : IScene
         NoShadowOnpuPatch.CheckOrInitializePatch();
         BufferedNoteInputPatch.ResetCounts();
 
-        GarbageCollector.SetMode(GarbageCollector.Mode.Disabled);
 
         LiveStreamSongSelectPanel.QueuedSongList.Remove(LiveStreamSongSelectPanel.QueuedSongList.Find(info =>
             info.SongInfo.UniqueId == CommonObjects.Instance.MyDataManager.EnsoData.ensoSettings.musicUniqueId));
@@ -28,14 +31,17 @@ public class EnsoScene : IScene
         if (TnTrfMod.Instance.enableNearestNeighborOnpuPatch.Value) NearestNeighborOnpuPatch.PatchLaneTarget();
         if (TnTrfMod.Instance.enableHitStatsPanelPatch.Value) HitStatusPanel.Start();
         if (TnTrfMod.Instance.enableHitOffset.Value) HitOffsetTip.Start();
+        if (TnTrfMod.Instance.enableTokkunGamePatch.Value) TokkunMode.Start();
 
         if (TnTrfMod.Instance.enableScoreRankIcon.Value) ScoreRankIcon.Init();
         if (TnTrfMod.Instance.enableOnpuTextRail.Value) TnTrfMod.Instance.StartCoroutine(DrawOnpuTextRail());
+
+        Common.MoveLocalCanvas("Canvas");
     }
 
     public void Destroy()
     {
-        GarbageCollector.SetMode(GarbageCollector.Mode.Enabled);
+        if (TnTrfMod.Instance.enableTokkunGamePatch.Value) TokkunMode.Destroy();
     }
 
     public void Update()
@@ -43,6 +49,8 @@ public class EnsoScene : IScene
         if (TnTrfMod.Instance.enableHitStatsPanelPatch.Value) HitStatusPanel.Update();
         if (TnTrfMod.Instance.enableScoreRankIcon.Value) ScoreRankIcon.Update();
         if (TnTrfMod.Instance.enableHitOffset.Value) HitOffsetTip.Update();
+        if (TnTrfMod.Instance.enableTokkunGamePatch.Value) TokkunMode.Update();
+        // debugSmoothDeltaText.SetText("调试：音频延迟：{0:00.00}ms", (float)SmoothEnsoGamePatch.SmoothDelta);
     }
 
     private IEnumerator DrawOnpuTextRail()

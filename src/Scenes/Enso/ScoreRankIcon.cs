@@ -1,8 +1,6 @@
 using System.Collections;
-using TnTRFMod.Ui.Widgets;
-using TnTRFMod.Utils.Fumen;
+using TnTRFMod.Patches;
 using UnityEngine;
-using Logger = TnTRFMod.Utils.Logger;
 
 namespace TnTRFMod.Scenes.Enso;
 
@@ -10,133 +8,39 @@ public class ScoreRankIcon
 {
     private EnsoGameManager _ensoGameManager;
 
-    private PlayerStatus[] playerStatuses;
-
-    private Texture2D scoreRankSprites;
+    private int[] lastScoreRanks;
 
     public void Init()
     {
+        EnsoGameBasePatch.ResetCounts();
         _ensoGameManager = GameObject.Find("EnsoGameManager").GetComponent<EnsoGameManager>();
-        playerStatuses = new PlayerStatus[_ensoGameManager.playerNum];
+        lastScoreRanks = new int[_ensoGameManager.playerNum];
         for (var i = 0; i < _ensoGameManager.playerNum; i++)
-            playerStatuses[i] = new PlayerStatus();
-    }
-
-    private void LoadScoreRankIcons()
-    {
-        var scoreRankImagePath = Path.Join(TnTrfMod.Dir, "ScoreRank.png");
-        byte[] scoreRankImageData;
-        if (File.Exists(scoreRankImagePath))
-        {
-            scoreRankImageData = File.ReadAllBytes(scoreRankImagePath);
-        }
-        else
-        {
-            Logger.Error($"{scoreRankImagePath} not found, will use builtin alternative.");
-            scoreRankImageData = Resources.ScoreRankIcons;
-        }
-
-        scoreRankSprites = ImageUi.LoadImage(scoreRankImageData);
+            lastScoreRanks[i] = -1;
     }
 
     public void Update()
     {
-        if (!scoreRankSprites)
-        {
-            LoadScoreRankIcons();
-            if (!scoreRankSprites) return;
-        }
+        if (!EnsoGameBasePatch.IsShinuchiMode) return; // 如果不是真打模式则禁用
+        if (!EnsoGameBasePatch.IsPlaying) return; // 如果不是真打模式则禁用
 
         if (_ensoGameManager.fumenLoader.playerData == null ||
             _ensoGameManager.fumenLoader.playerData.Count == 0) return;
 
-        var frameResult =
-            _ensoGameManager.ensoParam.GetFrameResults();
-        for (var i = 0; i < playerStatuses.Length; i++)
+        // ReSharper disable once Unity.PerformanceCriticalCodeInvocation
+        var lastScoreRank = lastScoreRanks[0]; // TODO: 支持多玩家
+        var curScoreRank = EnsoGameBasePatch.PlayerStates[0].CurrentScoreRank;
+        if (lastScoreRank != curScoreRank)
         {
-            var score = frameResult.eachPlayer[i].score;
-            var playerStatus = playerStatuses[i];
-            if (playerStatus.FumenReader is null)
-                try
-                {
-                    var reader = ReadFumen(_ensoGameManager.fumenLoader.playerData[i]);
-                    playerStatus.FumenReader = reader;
-                    var maxScore = reader.CalculateMaxScore();
-                    // Logger.Info($"Loaded Fumen score of Player {i + 1}: {maxScore}");
-                    playerStatus.LevelInfos =
-                    [
-                        new LevelInfo
-                        {
-                            Name = "粹（白）",
-                            Score = maxScore * 5 / 10
-                        },
-                        new LevelInfo
-                        {
-                            Name = "粹（铜）",
-                            Score = maxScore * 6 / 10
-                        },
-                        new LevelInfo
-                        {
-                            Name = "粹（银）",
-                            Score = maxScore * 7 / 10
-                        },
-                        new LevelInfo
-                        {
-                            Name = "雅（金）",
-                            Score = maxScore * 8 / 10
-                        },
-                        new LevelInfo
-                        {
-                            Name = "雅（粉）",
-                            Score = maxScore * 9 / 10
-                        },
-                        new LevelInfo
-                        {
-                            Name = "雅（紫）",
-                            Score = maxScore * 95 / 100
-                        },
-                        new LevelInfo
-                        {
-                            Name = "极",
-                            Score = maxScore
-                        }
-                    ];
-                }
-                catch (FumenNoLoadedException)
-                {
-                    continue;
-                }
-
-            if (playerStatus.LevelInfos is null) continue;
-            if (playerStatus.LevelInfos.Length == 0) continue;
-            var nextLevel = playerStatus.NextLevel;
-            if (nextLevel >= playerStatus.LevelInfos.Length) continue;
-            var nextLevelInfo = playerStatus.LevelInfos[nextLevel];
-            if (nextLevelInfo.Score > score) continue;
-            // ReSharper disable once Unity.PerformanceCriticalCodeInvocation
-            TnTrfMod.Instance.StartCoroutine(ShowScoreRank(nextLevel));
-            playerStatus.NextLevel += 1;
+            lastScoreRanks[0] = curScoreRank;
+            if (curScoreRank >= 0 && lastScoreRank < curScoreRank)
+                TnTrfMod.Instance.StartCoroutine(ShowScoreRank(curScoreRank));
         }
-    }
-
-    private static FumenReader ReadFumen(FumenLoader.PlayerData playerData)
-    {
-        var data = playerData.GetFumenDataAsBytes();
-        // var fumenName = Path.ChangeExtension(Path.GetFileName(playerData.fumenPath), ".bin");
-        // var fumenPath = Path.Combine(TnTrfMod.Dir, fumenName);
-        // File.WriteAllBytes(fumenPath, data);
-        return new FumenReader(data);
     }
 
     private IEnumerator ShowScoreRank(int level)
     {
-        // Logger.Info($"Showing score rank icon {level}");
-        var width = scoreRankSprites.width;
-        var heightPerIcon = scoreRankSprites.height / 7;
-        var iconSprite = Sprite.Create(scoreRankSprites,
-            new Rect(0.0f, (6 - level) * heightPerIcon, width, heightPerIcon),
-            new Vector2(0.5f, 0.5f), width / 140f);
-        var iconUi = new ImageUi(iconSprite);
+        var iconUi = ScoreRankIconPatch.GenerateScoreRankIcon(level);
 
         var posX = 180;
         var posY = 145;
@@ -193,18 +97,5 @@ public class ScoreRankIcon
         iconUi.Image.color = Color.white.AlphaMultiplied(0f);
         yield return null;
         iconUi.Dispose();
-    }
-
-    private struct LevelInfo
-    {
-        public string Name;
-        public int Score;
-    }
-
-    private class PlayerStatus
-    {
-        public FumenReader? FumenReader;
-        public LevelInfo[]? LevelInfos;
-        public int NextLevel;
     }
 }

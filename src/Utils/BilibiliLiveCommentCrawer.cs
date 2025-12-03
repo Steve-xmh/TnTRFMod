@@ -9,9 +9,11 @@ namespace TnTRFMod.Utils;
 public class BilibiliLiveCommentCrawer
 {
     private const string UserAgent =
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36";
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36";
 
-    private const string CIDInfoUrl = "https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo?id=";
+    private const string CIDInfoUrl =
+        "https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo";
+
     private readonly string _sessionData;
 
     private readonly HttpClient httpClient = new()
@@ -64,7 +66,7 @@ public class BilibiliLiveCommentCrawer
     {
         try
         {
-            while (cts.Token.IsCancellationRequested == false)
+            while (!cts.Token.IsCancellationRequested)
             {
                 //每30秒发送一次 心跳
                 await SendHeartbeatAsync();
@@ -87,7 +89,14 @@ public class BilibiliLiveCommentCrawer
         await Console.Out.WriteLineAsync($"开始连接直播间 {roomId}");
         await Console.Out.WriteLineAsync("正在获取弹幕服务器地址");
 
-        var url = CIDInfoUrl + roomId;
+        var queryParams = new Dictionary<string, string>
+        {
+            { "id", roomId.ToString() },
+            { "type", "0" },
+            { "web_location", "444.8" }
+        };
+
+        var url = CIDInfoUrl + roomId + "&wts=" + DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         if (!string.IsNullOrEmpty(_sessionData))
         {
             await Console.Out.WriteLineAsync("已设置 SESSDATA 令牌，正在获取登录用户 ID");
@@ -102,7 +111,13 @@ public class BilibiliLiveCommentCrawer
             await Console.Out.WriteLineAsync("警告：未设置 SESSDATA 令牌，将以游客身份连接，无法获取完整弹幕发送者用户信息");
         }
 
-        var resText = await httpClient.GetStringAsync(url, cts.Token);
+        var (imgKey, subKey) = await BilibiliWbiSign.GetWbiKeys();
+        queryParams = BilibiliWbiSign.EncWbi(queryParams, imgKey, subKey);
+        var query = await new FormUrlEncodedContent(queryParams).ReadAsStringAsync();
+        var requestUri = new Uri($"{CIDInfoUrl}?{query}");
+
+        var resText = await httpClient.GetStringAsync(requestUri, cts.Token);
+        await Console.Out.WriteLineAsync($"Bilibili {requestUri}: {resText}");
         var res = JsonNode.Parse(resText);
         token = res["data"]["token"].GetValue<string>();
 
@@ -140,7 +155,7 @@ public class BilibiliLiveCommentCrawer
     {
         var headerBuffer = new byte[16];
 
-        while (cts.Token.IsCancellationRequested == false && client.Connected)
+        while (!cts.Token.IsCancellationRequested && client.Connected)
             try
             {
                 await netStream.ReadAllAsync(headerBuffer);

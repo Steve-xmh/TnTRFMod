@@ -3,24 +3,21 @@ using Object = UnityEngine.Object;
 
 namespace TnTRFMod.Ui.Widgets;
 
-public class BaseUi
+public class BaseUi : IDisposable
 {
-    protected static Texture2D baseUiTexture;
     protected static Sprite baseUiSprite;
 
-    internal readonly GameObject _go;
-    internal readonly RectTransform _transform;
+    public readonly GameObject _go;
+    public readonly RectTransform _transform;
 
     protected BaseUi()
     {
-        if (baseUiTexture == null)
+        if (!baseUiSprite)
         {
-            baseUiTexture = new Texture2D(16, 16, TextureFormat.RGBA32, false);
-            baseUiTexture.LoadImage(Resources.UiBase);
-            baseUiTexture.filterMode = FilterMode.Point;
+            var baseUiTexture = TextureManager.LoadTexture(TextureManager.Textures.UiBase);
             baseUiSprite = Sprite.Create(baseUiTexture, new Rect(0, 0, baseUiTexture.width, baseUiTexture.height),
                 new Vector2(0.5f, 0.5f), 1f, 0,
-                SpriteMeshType.Tight, new Vector4(4f, 4f, 4f, 4f));
+                SpriteMeshType.Tight, new Vector4(15f, 15f, 15f, 15f));
             baseUiSprite.name = "BaseUiSprite";
         }
 
@@ -68,16 +65,19 @@ public class BaseUi
         set => _go.SetActive(value);
     }
 
-    public void SetActive(bool active)
+    public BaseUi Parent
     {
-        _go.SetActive(active);
+        set => value.AddChild(this);
     }
 
     public void Dispose()
     {
-        _go.transform.SetParent(null);
-        _go.SetActive(false);
         Object.Destroy(_go);
+    }
+
+    public void SetActive(bool active)
+    {
+        _go.SetActive(active);
     }
 
     public void MoveToNoDestroyCanvas()

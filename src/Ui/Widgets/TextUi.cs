@@ -56,6 +56,30 @@ public class TextUi : BaseUi
         }
     }
 
+    public bool WordWrap
+    {
+        get => _uitext.tmpro.enableWordWrapping;
+        set
+        {
+            _uitext.tmpro.enableWordWrapping = value;
+            _uitext.Refresh();
+        }
+    }
+
+    public RectTransform Rect
+    {
+        get => _transform;
+        set
+        {
+            _transform.anchorMin = value.anchorMin;
+            _transform.anchorMax = value.anchorMax;
+            _transform.pivot = value.pivot;
+            _transform.sizeDelta = value.sizeDelta;
+            _transform.anchoredPosition = value.anchoredPosition;
+            _uitext.Refresh();
+        }
+    }
+
     public TextAlignmentOptions Alignment
     {
         get => _uitext.tmpro.alignment;
@@ -66,7 +90,7 @@ public class TextUi : BaseUi
     {
         _uitext.tmpro.SetText(format, value0);
     }
-    
+
     public void SetText(string format, float value0, float value1)
     {
         _uitext.tmpro.SetText(format, value0, value1);

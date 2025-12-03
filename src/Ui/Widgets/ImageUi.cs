@@ -8,22 +8,10 @@ public class ImageUi : BaseUi
     private readonly Sprite imageSprite;
     private readonly Texture2D imageTex;
 
-    public ImageUi(byte[] imageData)
+    public ImageUi(TextureManager.TexHandle handle)
     {
-        imageTex = LoadImage(imageData);
-        imageSprite =
-            Sprite.Create(imageTex, new Rect(0, 0, imageTex.width, imageTex.height), Vector2.zero,
-                1f);
-        imageSprite.name = "BaseImageSprite";
-
-        Image = _go.AddComponent<Image>();
-
-        Init();
-    }
-
-    public ImageUi(Texture2D imageTex)
-    {
-        this.imageTex = imageTex;
+        imageTex = TextureManager.LoadTexture(handle);
+        imageTex = LoadImage(handle.Data);
         imageSprite =
             Sprite.Create(imageTex, new Rect(0, 0, imageTex.width, imageTex.height), Vector2.zero,
                 1f);
@@ -53,6 +41,7 @@ public class ImageUi : BaseUi
     {
         var imageTex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
         imageTex.LoadImage(imageData);
+        imageTex.filterMode = FilterMode.Trilinear;
         return imageTex;
     }
 

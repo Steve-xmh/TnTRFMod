@@ -1,0 +1,266 @@
+[zhs]
+title.firstRunTip = """配置文件已生成，请关闭游戏后去编辑配置文件以启用更多功能吧！
+配置文件路径：{0}"""
+
+autoDownloadSub.stepOne = "自动下载歌曲已开启\n(1/5) 正在检索 Music Pass 订阅可用性"
+autoDownloadSub.stepTwo = "(2/5) Music Pass 订阅可用，正在检索歌曲列表"
+autoDownloadSub.stepThree = "(3/5) 正在下载 {0} 首歌曲预览"
+autoDownloadSub.stepFour = "(4/5) 正在下载 {0} 首订阅歌曲文件"
+autoDownloadSub.stepFive = "(5/5) 正在下载第 {0}/{1} 首 DLC 歌曲文件"
+autoDownloadSub.finished = "歌曲已下载完成！"
+autoDownloadSub.notVaild = "Music Pass 订阅不可用或已过期。"
+autoDownloadSub.errorOnCheck = "无法确认 Music Pass 订阅可用性，可能是网络错误。"
+autoDownloadSub.otherError = "自动歌曲下载发生错误：\n{0}"
+autoDownloadSub.hideTip = "\n文字信息将在 5 秒后消失"
+
+hitStats.hitAspectLabel = "音符命中率"
+hitStats.rendaLabel = "连打"
+
+fumenLoader.error.mainText = "谱面加载错误：{0}\n已加载空白谱面以避免游戏卡死崩溃"
+fumenLoader.error.measuresExceed = "小节数量超过 300 ({0})"
+fumenLoader.error.sourceError = "歌曲数据源加载歌曲时出错\n错误详情：{0}"
+
+advanceSongSearch.button = "高级歌曲搜索"
+advanceSongSearch.confirm = "搜索歌曲"
+advanceSongSearch.keyword.label = "搜索关键字"
+advanceSongSearch.keyword.placeholder = "歌曲名称 / 别名"
+advanceSongSearch.diffFilter.label = "难度筛选"
+advanceSongSearch.diffFilter.all = "全部"
+advanceSongSearch.diffFilter.easy = "简单"
+advanceSongSearch.diffFilter.normal = "普通"
+advanceSongSearch.diffFilter.hard = "困难"
+advanceSongSearch.diffFilter.oni = "魔王（表）"
+advanceSongSearch.diffFilter.ura = "魔王（里）"
+advanceSongSearch.diffFilter.oni-ura = "魔王（表+里）"
+advanceSongSearch.diffFilter.min-level-placeholder = "最低难度"
+advanceSongSearch.diffFilter.max-level-placeholder = "最高难度"
+advanceSongSearch.sortMethod.label = "排序方式"
+advanceSongSearch.sortMethod.normal = "正常排序"
+advanceSongSearch.sortMethod.name-asc = "名称升序（A-Z）"
+advanceSongSearch.sortMethod.name-desc = "名称降序（Z-A）"
+advanceSongSearch.sortMethod.level-asc = "难度升序（小到大）"
+advanceSongSearch.sortMethod.level-desc = "难度降序（大到小）"
+advanceSongSearch.sortMethod.score-asc = "分数升序（小到大）"
+advanceSongSearch.sortMethod.score-desc = "分数降序（大到小）"
+advanceSongSearch.sortMethod.shinuti-score-asc = "真打分数升序（小到大）"
+advanceSongSearch.sortMethod.shinuti-score-desc = "真打分数降序（大到小）"
+advanceSongSearch.sortMethod.random = "随机打乱"
+
+fumenPostProcessing.button = "谱面后处理功能"
+fumenPostProcessing.tip = "启用本面板任何功能将不会记录到游戏内存档中，\n且会在游戏重启后关闭。"
+fumenPostProcessing.equalScrollSpeed = "等速音符滚动"
+fumenPostProcessing.superSlowScrollSpeed = "乱数调整的寿司"
+fumenPostProcessing.randomScrollSpeed = "每小节随机滚速"
+fumenPostProcessing.reverseScrollSpeed = "怎么从左边过来了"
+fumenPostProcessing.strictJudgeTiming = "超严格判定"
+
+config.Enabled = "启用本模组"
+config.EnableBetterBigHitPatch = "启用大打补丁（将单侧打击视为大打）"
+config.BetterBigHitSkipOnlineCheck = """在大打补丁中跳过对是否处于在线模式的检查
+（警告：启用此功能有可能会被判定为在线游戏作弊，还请三思而后行！！！）"""
+config.EnableSkipBootScreenPatch = "启用跳过启动画面补丁"
+config.EnableSkipRewardPatch = "启用跳过奖励提示框补丁"
+config.EnableMinimumLatencyAudioClient = "启用最低延迟音频客户端（可能减少音频延迟）"
+config.EnableAutoDownloadSubscriptionSongs = "启用自动下载订阅歌曲（未完全测试）"
+config.EnableOnpuTextRail = "启用音符文字轨道背景"
+config.EnableHighPrecisionTimerPatch = "启用高精度计时器补丁（可能有助于音符判定）"
+config.EnableNearestNeighborOnpuPatch = "启用最近邻音符/音符贴图（可能使音符看起来更像素化）"
+config.EnableNoShadowOnpuPatch = "启用无阴影音符/音符贴图（可能减少滚动时的运动模糊效果，但可能降低性能）"
+config.EnableCustomDressAnimationMod = "启用自定义服装动画模组（可在服装页面切换预览动画）"
+config.EnableOpenInviteFriendDialogButton = "启用在线好友房间大厅邀请好友对话框按钮"
+config.EnableHitStatsPanelPatch = "启用游戏中音符统计面板"
+config.EnableLouderSongPatch = "允许播放更响亮的歌曲"
+config.EnableScoreRankIcon = "启用游戏中分数排名图标"
+config.EnableTatakonKeyboardSongSelect = "启用太鼓键盘歌曲选择（不稳定）"
+config.AutoPlayRendaSpeed = """自动演奏模式下的连打速度
+最大速度取决于显示器刷新率
+设置为 0 可禁用自动演奏模式下的连打"""
+config.EnableInstantRelayPatch = "是否启用快速加载页面过渡补丁"
+config.CustomTitleSceneEnterSceneName = """自定义在标题页面下进入游戏的页面
+此处的值为场景 ID，如果留空则默认进入主菜单，推荐使用以下值：
+- `SongSelect`: 进入单人游戏选曲列表
+- `TrainingEntrance`: 进入训练菜单
+"""
+config.Debug.SaveRawSaveData = "明文保存游戏存档数据（调试用）"
+config.Debug.ExportGameData = "导出游戏数据（调试用）"
+config.Debug.ExportMusicNames = "导出游戏内置歌曲名称列表（调试用）"
+
+config.HitOffset.Enable = "启用音符敲击时差指示器"
+config.HitOffset.InvertColor = "反转快/慢音符偏移文本颜色"
+config.HitOffset.RyoRange = "音符的良判范围（单位正负毫秒），设置为 -1f 可跟随所选歌曲难度"
+
+config.BilibiliLiveStreamSongRequest.Enable = "启用 Bilibili 直播点歌功能"
+config.BilibiliLiveStreamSongRequest.RoomId = "Bilibili 站直播间 ID"
+config.BilibiliLiveStreamSongRequest.Token = """Bilibili 站直播间 Token
+通常为名为 SESSDATA 的 Cookie
+如果不提供此项，将无法获取准确的发送者信息"""
+
+config.ExclusiveModeAudio.Enable = """启用独占模式音频（实验性）
+启用此模式可以获得足够低的音频输出延迟，且音符滚动会更加稳定
+但是此功能可能会在不同的电脑上产生诸如声音出错、游戏启动时崩溃的情况，还请多多留意"""
+config.ExclusiveModeAudio.SampleRate = """独占模式音频采样率
+应与音频输出设备的格式匹配
+设置为 0 将使用音频输出设备的混合格式采样率"""
+config.ExclusiveModeAudio.BitPerSample = "独占模式音频采样位数（通常为 16 或 24）"
+config.ExclusiveModeAudio.EnableCriWarePluginLogging = """是否启用输出 CriWare 插件日志
+这是游戏所使用的音频引擎，如果你遇到了独占音频问题，可以尝试启用这个选项来检查问题"""
+
+config.CustomPlayerName.Enable = "启用自定义玩家名称"
+config.CustomPlayerName.Name = "自定义玩家名称"
+
+config.BufferedInput.Enable = "启用缓冲输入补丁"
+config.BufferedInput.MaxBufferedInputCount = "最多在缓冲区里保存的按键输入数量（每侧）"
+
+config.CustomSongs.Enable = """启用自定义歌曲功能（高度实验性）
+此功能与 TekaTeka 模组完全不兼容！请勿同时安装或启用此模组和 TekaTeka 模组！
+且本功能将会永久修改你的存档以留下使用了模组的痕迹！
+（但理论禁用功能/模组后仍然可以正常读取存档）
+请询问作者以获得更多该功能的其他信息！"""
+
+config.TokkunMode.Enable = """启用高仿特训模式（高度实验性）
+启用后，在单人演奏模式下按下 X/C 键即可暂停/继续播放音乐
+且暂停时可以用 Z/V 键跳转到上一个或下一个小节位置"""
+config.TokkunMode.SlowTimeOffset = """当慢速回放音频时，谱面与音乐的时间差（谱面时间戳加上这个数值），单位为毫秒
+如果为正值，则音符会向右侧位移，因此音符会比音频更晚流入
+如果为负值，则音符会向左侧位移，因此音符会比音频更早流入
+请适当调整这个数值，以匹配音频的延迟（本设置支持游戏中热重载，可以在游戏时编辑配置文件后保存实时更新）
+"""
+config.TokkunMode.FastTimeOffset = """当快速回放音频时，谱面与音乐的时间差（谱面时间戳加上这个数值），单位为毫秒
+如果为正值，则音符会向右侧位移，因此音符会比音频更晚流入
+如果为负值，则音符会向左侧位移，因此音符会比音频更早流入
+请适当调整这个数值，以匹配音频的延迟（本设置支持游戏中热重载，可以在游戏时编辑配置文件后保存实时更新）
+"""
+config.TokkunMode.OnSongEndBehaviour = """当音乐结束时的行为，有以下行为：
+- ToSongStart : 返回歌曲开始位置并暂停（默认值）
+- ToLastResumePosition : 返回上次恢复播放的位置并暂停
+- PauseAtLastMeasure : 在最后一个小节处暂停
+"""
+config.TokkunMode.OnPauseBehaviour = """当音乐暂停时的行为，有以下行为：
+- PauseAtCurrentPosition : 在当前小节开始处暂停（默认值）
+- ToLastPausePosition : 返回上一次恢复播放的位置并暂停
+"""
+
+config.TokkunMode.P2LeftDonKey = "P2 左侧鼓面键位"
+config.TokkunMode.P2LeftKaKey = "P2 左侧鼓边键位"
+config.TokkunMode.P2RightDonKey = "P2 右侧鼓面键位"
+config.TokkunMode.P2RightKaKey = "P2 右侧鼓边键位"
+
+[en]
+title.firstRunTip = """Configuration file has been generated, please close the game and edit the config file to enable more features!
+Configuration file path: {0}"""
+
+autoDownloadSub.stepOne = "Auto download songs is enabled\n(1/5) Checking Music Pass subscription..."
+autoDownloadSub.stepTwo = "(2/5) Music Pass subscription is available, checking song list"
+autoDownloadSub.stepThree = "(3/5) Downloading {0} songs preview"
+autoDownloadSub.stepFour = "(4/5) Downloading {0} subscription songs files"
+autoDownloadSub.stepFive = "(5/5) Downloading {0}/{1} DLC songs files"
+autoDownloadSub.finished = "Songs have been downloaded!"
+autoDownloadSub.notVaild = "Music Pass subscription is not available or expired."
+autoDownloadSub.errorOnCheck = "Failed to confirm Music Pass subscription availability, probably due to network error."
+autoDownloadSub.otherError = "An error occurred while auto downloading songs:\n{0}"
+autoDownloadSub.hideTip = "\nText message will disappear in 5 seconds"
+
+hitStats.hitAspectLabel = "Hit Aspect"
+hitStats.rendaLabel = "Renda"
+
+fumenLoader.error.mainText = "Chart load failed：{0}\nLoaded blank chart to avoid game freeze crash"
+fumenLoader.error.measuresExceed = "The number of measures exceeds 300 ({0})"
+fumenLoader.error.sourceError = "Music source failed to load chart\nDetail：{0}"
+
+advanceSongSearch.button = "Advanced Song Search"
+advanceSongSearch.confirm = "Search"
+advanceSongSearch.keyword.label = "Keyword"
+advanceSongSearch.keyword.placeholder = "Song Name / Alias"
+advanceSongSearch.diffFilter.label = "Difficulty Filter"
+advanceSongSearch.diffFilter.all = "All"
+advanceSongSearch.diffFilter.easy = "Easy"
+advanceSongSearch.diffFilter.normal = "Normal"
+advanceSongSearch.diffFilter.hard = "Hard"
+advanceSongSearch.diffFilter.oni = "Oni"
+advanceSongSearch.diffFilter.ura = "Ura"
+advanceSongSearch.diffFilter.oni-ura = "Oni + Ura"
+advanceSongSearch.diffFilter.min-level-placeholder = "Min Level"
+advanceSongSearch.diffFilter.max-level-placeholder = "Max Level"
+advanceSongSearch.sortMethod.label = "Sort Method"
+advanceSongSearch.sortMethod.normal = "Normal"
+advanceSongSearch.sortMethod.name-asc = "Name Ascending (A-Z)"
+advanceSongSearch.sortMethod.name-desc = "Name Descending (Z-A)"
+advanceSongSearch.sortMethod.level-asc = "Level Ascending (Low to High)"
+advanceSongSearch.sortMethod.level-desc = "Level Descending (High to Low)"
+advanceSongSearch.sortMethod.score-asc = "Score Ascending (Low to High)"
+advanceSongSearch.sortMethod.score-desc = "Score Descending (High to Low)"
+advanceSongSearch.sortMethod.shinuti-score-asc = "Shinuti Score Ascending (Low to High)"
+advanceSongSearch.sortMethod.shinuti-score-desc = "Shinuti Score Descending (High to Low)"
+advanceSongSearch.sortMethod.random = "Random"
+
+fumenPostProcessing.button = "Fumen Post Processing"
+fumenPostProcessing.tip = "Enabling any feature in this panel will not be recorded in the game save, and will be disabled after the game restarts."
+fumenPostProcessing.equalScrollSpeed = "Equal Scroll Speed"
+fumenPostProcessing.superSlowScrollSpeed = "Is that a sushi?"
+fumenPostProcessing.randomScrollSpeed = "Random Scroll Speed"
+fumenPostProcessing.reverseScrollSpeed = "omg they come from the left wth"
+fumenPostProcessing.strictJudgeTiming = "VERY STRICT Judge Timing"
+
+config.Enabled = "Enables the mod."
+config.EnableBetterBigHitPatch = "Whether to enable better Big Hit Patch, which will treat one side hit as a big hit."
+config.EnableSkipBootScreenPatch = "Whether to enable Skip Boot Screen Patch."
+config.EnableSkipRewardPatch = "Whether to enable Skip Reward Dialog Patch."
+config.EnableBufferedInputPatch = "Whether to enable Buffered Input Patch."
+config.EnableMinimumLatencyAudioClient = "Whether to enable Minimum Latency Audio Client, which can reduce the audio latency if possible."
+config.EnableAutoDownloadSubscriptionSongs = "Enable auto download subscription songs. (NOT FULLY TESTED)"
+config.EnableOnpuTextRail = "Draw an nijiiro-like note text rail background."
+config.EnableHighPrecisionTimerPatch = "Whether to enable High Precision Timer Patch, which may benefits to hit time judging."
+config.EnableNearestNeighborOnpuPatch = "Whether to enable Nearest Neighbor Onpu/Note Patch, this may make the notes look more pixelated."
+config.EnableNoShadowOnpuPatch = "Whether to enable No Shadow Onpu/Note Patch, this may reduce motion blur effect when notes are scrolling, but may also reduce the performance."
+config.EnableCustomDressAnimationMod = "Enable a simple gui that can switch preview animation of don-chan when in dressing page."
+config.EnableOpenInviteFriendDialogButton = "Enable open invite friend dialog button when in online friend room lobby."
+config.EnableHitStatsPanelPatch = "Enable hit stats panel during music game."
+config.EnableLouderSongPatch = "Allow to play little louder song."
+config.EnableScoreRankIcon = "Enable score rank icon during music game."
+config.EnableTatakonKeyboardSongSelect = "Enable Tatakon keyboard song select. (Unstable)"
+config.AutoPlayRendaSpeed = "The speed of renda in auto play mode, the maximum speed is depend on the refresh rate of your display. Set it to 0 to disable playing renda when in auto play mode."
+config.EnableInstantRelayPatch = "Enable instant relay loading screen patch."
+config.CustomTitleSceneEnterSceneName = """Custom the scene to enter when exit from the title scene.
+This value is the scene ID, if left empty, it will enter the main menu by default. Recommended values are:
+- `SongSelect`: Enter the single player song select scene
+- `TrainingEntrance`: Enter the training menu
+"""
+config.Debug.SaveRawSaveData = "Save raw save data in plain text (for debugging)"
+config.Debug.ExportGameData = "Export game data (for debugging)"
+config.Debug.ExportMusicNames = "Export built-in music names list (for debugging)"
+
+config.HitOffset.Enable = "Enable hit offset during music game."
+config.HitOffset.InvertColor = "Invert color of fast/late hit offset text."
+config.HitOffset.RyoRange = "Define ryo judge range of note in positive milliseconds, set to -1f to follow difficulty of selected song course."
+
+config.BilibiliLiveStreamSongRequest.Enable = "Enable Bilibili Live Stream Song Request."
+config.BilibiliLiveStreamSongRequest.RoomId = "Bilibili Live Stream Room Id."
+config.BilibiliLiveStreamSongRequest.Token = "Bilibili Live Stream Token. Commonly as a Cookie called 'SESSDATA'. If you don't provide this, you won't be able to get accurate sender info."
+
+config.ExclusiveModeAudio.Enable = "Enable exclusive mode audio. (Expermental)"
+config.ExclusiveModeAudio.SampleRate = "Sample Rate of the exclusive mode wave format. This should match the format of your audio output device. If set to 0, it will use the sample rate of the mix format of your audio output device."
+config.ExclusiveModeAudio.BitPerSample = "Bit size of the sample of exclusive mode wave format. This should match the format of your audio output device. If set to 0, it will use the bit size of the mix format of your audio output device."
+config.ExclusiveModeAudio.EnableCriWarePluginLogging = "Enable logging of CriWare Unity Plugin, if you meet some audio issues, you can turn this on to check problems."
+
+config.CustomPlayerName.Enable = "Enable custom player name."
+config.CustomPlayerName.Name = "Custom player name."
+
+config.BufferedInput.MaxBufferedInputCount = "The maximum count of the buffered key input per side."
+
+config.CustomSongs.Enable = """Enable custom songs feature. (Highly experimental)
+This feature is not compatible with TekaTeka mod! Please do not install or enable this mod and TekaTeka mod at the same time!
+And this feature will permanently modify your save data to leave a trace of using the mod!
+(But theoretically you can still read the save data normally after disabling the feature/mod.)
+Please ask the author for more information about this feature!"""
+
+config.TokkunMode.Enable = """Enable Tokun Mode (Highly experimental)
+When enabled, you can pause/continue the music by pressing X/C key in single player mode.
+And you can jump to the previous/next measure by pressing Z/V key when paused."""
+config.TokkunMode.SlowTimeOffset = """The time offset between the chart and the music when playing audio in slow mode, in milliseconds.
+If positive, the notes will be shifted to the right, so they will come in later than the audio.
+If negative, the notes will be shifted to the left, so they will come in earlier than the audio.
+Please adjust this value to match the audio delay. (This setting supports hot reload in game, you can edit the config file while playing and save it to update in real time.)"""
+config.TokkunMode.FastTimeOffset = """The time offset between the chart and the music when playing audio in fast mode, in milliseconds.
+If positive, the notes will be shifted to the right, so they will come in later than the audio.
+If negative, the notes will be shifted to the left, so they will come in earlier than the audio.
+Please adjust this value to match the audio delay. (This setting supports hot reload in game, you can edit the config file while playing and save it to update in real time.)"""

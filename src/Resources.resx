@@ -70,9 +70,74 @@
         <comment>Builtin Score Rank Icons</comment>
     </data>
     <data name="Locale" type="System.Resources.ResXFileRef, System.Windows.Forms">
-        <value>Resources\Locales.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral,
+        <value>Resources\Locales.toml;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral,
             PublicKeyToken=b77a5c561934e089
         </value>
         <comment>Locale file</comment>
+    </data>
+
+    <!-- Tokkun Ui Images -->
+
+    <data name="TokkunDrum" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\Tokkun\Drum.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+        <comment>Drum for Tokkun Mode</comment>
+    </data>
+    <data name="TokkunDrumHitEffectDon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\Tokkun\DrumHitEffectDon.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </data>
+    <data name="TokkunDrumHitEffectLeftKatsu" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\Tokkun\DrumHitEffectLeftKatsu.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </data>
+    <data name="TokkunDrumHitEffectRightKatsu" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\Tokkun\DrumHitEffectRightKatsu.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </data>
+
+    <data name="TokkunButtonDon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\Tokkun\ButtonDon.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+        <comment>Don Button for Tokkun Mode</comment>
+    </data>
+    <data name="TokkunButtonKatsu" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\Tokkun\ButtonKatsu.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+        <comment>Katsu Button for Tokkun Mode</comment>
+    </data>
+
+    <data name="TokkunIconLanePaused" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\Tokkun\IconLanePaused.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+        <comment>Paused icon on the lane when paused in tokkun mode</comment>
+    </data>
+
+    <data name="TokkunIconForward" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\Tokkun\IconForward.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </data>
+    <data name="TokkunIconPause" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\Tokkun\IconPause.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </data>
+    <data name="TokkunIconResume" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\Tokkun\IconResume.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </data>
+    <data name="TokkunIconRewind" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\Tokkun\IconRewind.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
     </data>
 </root>

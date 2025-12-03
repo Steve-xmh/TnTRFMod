@@ -10,7 +10,7 @@ namespace TnTRFMod.Utils.Wasapi;
 [ComImport]
 [Guid("7ED4EE07-8E67-4CD4-8C1A-2B7A5987AD42")]
 [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-internal interface IAudioClient3
+public interface IAudioClient3
 {
     #region IAudioClient
 

@@ -5,7 +5,7 @@ namespace TnTRFMod.Utils.Wasapi;
 /// <summary>
 ///     AUDCLNT_SHAREMODE
 /// </summary>
-internal enum AudioClientShareMode
+public enum AudioClientShareMode
 {
     /// <summary>
     ///     AUDCLNT_SHAREMODE_SHARED,

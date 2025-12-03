@@ -5,6 +5,7 @@ namespace TnTRFMod.Scenes;
 public class EnsoNetworkScene : IScene
 {
     public string SceneName => "EnsoNetwork";
+    public bool LowLatencyMode => true;
 
     public void Start()
     {

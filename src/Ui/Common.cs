@@ -10,7 +10,9 @@ public class Common
     public const int ScreenHeight = 1080;
     private static FontTMPManager _fontMgr;
     private static GameObject _drawCanvasForScene;
+    private static CanvasGroup _drawCanvasForSceneCanvasGroup;
     private static GameObject _drawCanvasForSceneNoDestroy;
+    private static CanvasGroup _drawCanvasForSceneNoDestroyCanvasGroup;
     private static ControllerManager _controllerManager;
     private static bool inited;
 
@@ -20,6 +22,7 @@ public class Common
         inited = true;
         _drawCanvasForSceneNoDestroy = new GameObject("CanvasForTnTRFModNoDestroy");
         Object.DontDestroyOnLoad(_drawCanvasForSceneNoDestroy);
+        _drawCanvasForSceneNoDestroyCanvasGroup = _drawCanvasForSceneNoDestroy.AddComponent<CanvasGroup>();
         _drawCanvasForSceneNoDestroy.hideFlags = HideFlags.HideAndDontSave;
 
         var canvas = _drawCanvasForSceneNoDestroy.AddComponent<Canvas>();
@@ -38,6 +41,7 @@ public class Common
     {
         _drawCanvasForScene = new GameObject("CanvasForTnTRFMod");
         var canvas = _drawCanvasForScene.AddComponent<Canvas>();
+        _drawCanvasForSceneCanvasGroup = _drawCanvasForScene.AddComponent<CanvasGroup>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         canvas.sortingOrder = 5;
         var scaler = _drawCanvasForScene.AddComponent<CanvasScaler>();
@@ -48,6 +52,21 @@ public class Common
         _drawCanvasForScene.layer = LayerMask.NameToLayer("UI");
     }
 
+    public static void MoveLocalCanvas(string goName)
+    {
+        if (goName == "")
+        {
+            _drawCanvasForScene.GetComponent<RectTransform>().SetParent(null, false);
+            _drawCanvasForScene.transform.localPosition = Vector3.zero;
+        }
+        else
+        {
+            var go = GameObject.Find(goName);
+            _drawCanvasForScene.GetComponent<RectTransform>().SetParent(go.transform, false);
+            _drawCanvasForScene.transform.localPosition = Vector3.zero;
+        }
+    }
+
     public static Transform GetDrawCanvasForScene()
     {
         return _drawCanvasForScene!.transform!;
@@ -56,6 +75,16 @@ public class Common
     public static Transform GetDrawCanvasNoDestroyForScene()
     {
         return _drawCanvasForSceneNoDestroy!.transform!;
+    }
+
+    public static CanvasGroup GetDrawCanvasForSceneCanvasGroup()
+    {
+        return _drawCanvasForSceneCanvasGroup!;
+    }
+
+    public static CanvasGroup GetDrawCanvasNoDestroyForSceneCanvasGroup()
+    {
+        return _drawCanvasForSceneNoDestroyCanvasGroup!;
     }
 
     public static FontTMPManager GetFontManager()

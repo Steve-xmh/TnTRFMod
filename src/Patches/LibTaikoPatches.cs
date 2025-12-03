@@ -18,21 +18,4 @@ internal class LibTaikoPatches
         File.WriteAllBytes(debugOutputPath, buffer);
         Logger.Info($"Wrote fumen data to {debugOutputPath}");
     }
-
-    [HarmonyPatch(typeof(LibTaikoWrapper))]
-    [HarmonyPatch(nameof(LibTaikoWrapper.SetCourse))]
-    [HarmonyPrefix]
-    private static void SetCoursePostfix(ref int player, ref int course)
-    {
-    }
-
-    [HarmonyPatch(typeof(FumenLoader))]
-    [HarmonyPatch(nameof(FumenLoader.Update))]
-    [HarmonyPrefix]
-    private static void FumenLoader_UpdatePrefix(FumenLoader __instance)
-    {
-        if (__instance.state != FumenLoader.State.Loading && __instance.playerData == null) return;
-        var fumenPath = __instance.MakeFumenPath(0, false);
-        // Logger.Info($"fumenPath: {fumenPath}");
-    }
 }
