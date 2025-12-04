@@ -9,12 +9,17 @@ autoDownloadSub.stepFour = "(4/5) 正在下载 {0} 首订阅歌曲文件"
 autoDownloadSub.stepFive = "(5/5) 正在下载第 {0}/{1} 首 DLC 歌曲文件"
 autoDownloadSub.finished = "歌曲已下载完成！"
 autoDownloadSub.notVaild = "Music Pass 订阅不可用或已过期。"
+autoDownloadSub.networkIssue = "无法请求服务器或网络连接不可用"
 autoDownloadSub.errorOnCheck = "无法确认 Music Pass 订阅可用性，可能是网络错误。"
 autoDownloadSub.otherError = "自动歌曲下载发生错误：\n{0}"
 autoDownloadSub.hideTip = "\n文字信息将在 5 秒后消失"
 
 hitStats.hitAspectLabel = "音符命中率"
 hitStats.rendaLabel = "连打"
+
+tokkunMode.playbackSpeedText = "速度: {0:F1}x"
+
+dressUpMod.rotateDonModelText = "自定义动画功能已启用，按下 T/Y 键可旋转小咚"
 
 fumenLoader.error.mainText = "谱面加载错误：{0}\n已加载空白谱面以避免游戏卡死崩溃"
 fumenLoader.error.measuresExceed = "小节数量超过 300 ({0})"
@@ -156,12 +161,17 @@ autoDownloadSub.stepFour = "(4/5) Downloading {0} subscription songs files"
 autoDownloadSub.stepFive = "(5/5) Downloading {0}/{1} DLC songs files"
 autoDownloadSub.finished = "Songs have been downloaded!"
 autoDownloadSub.notVaild = "Music Pass subscription is not available or expired."
+autoDownloadSub.networkIssue = "Failed to request server or network is unavailable"
 autoDownloadSub.errorOnCheck = "Failed to confirm Music Pass subscription availability, probably due to network error."
 autoDownloadSub.otherError = "An error occurred while auto downloading songs:\n{0}"
 autoDownloadSub.hideTip = "\nText message will disappear in 5 seconds"
 
 hitStats.hitAspectLabel = "Hit Aspect"
 hitStats.rendaLabel = "Renda"
+
+tokkunMode.playbackSpeedText = "Playback Speed: {0:F1}x"
+
+dressUpMod.rotateDonModelText = "Custom dress animation feature is enabled, press T/Y key to rotate don-chan"
 
 fumenLoader.error.mainText = "Chart load failed：{0}\nLoaded blank chart to avoid game freeze crash"
 fumenLoader.error.measuresExceed = "The number of measures exceeds 300 ({0})"

@@ -1,6 +1,7 @@
 // The patch is from https://github.com/Deathbloodjr/RF.SkipCoinAndRewardScreen
 // Under MIT License
 
+
 using HarmonyLib;
 #if BEPINEX
 using Scripts.CrownPoint;

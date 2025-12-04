@@ -4,7 +4,6 @@ using UnityEngine;
 #endif
 
 #if MELONLOADER
-using Il2CppSteamworks;
 #endif
 
 namespace TnTRFMod.Scenes;

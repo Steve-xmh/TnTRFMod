@@ -1,4 +1,5 @@
 ﻿using Il2CppInterop.Runtime;
+using TnTRFMod.Utils;
 using UnityEngine;
 using UnityEngine.Events;
 using Button = UnityEngine.UI.Button;
@@ -34,7 +35,7 @@ public class ButtonUi : BaseUi
 
         _label = new TextUi
         {
-            Text = "按钮",
+            Text = "Button",
             FontSize = 20,
             Alignment = TextAlignmentOptions.Center
         };
@@ -66,6 +67,11 @@ public class ButtonUi : BaseUi
     {
         get => _label.Text;
         set => _label.Text = value;
+    }
+
+    public I18n.I18nResult I18nText
+    {
+        set => _label.SetText(value);
     }
 
     public Color ButtonColor

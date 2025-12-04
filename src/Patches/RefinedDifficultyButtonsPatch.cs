@@ -14,7 +14,6 @@ using Il2CppScripts.OutGame.SongSelect;
 using Il2CppScripts.OutGame.SongSelect.DiffSetting;
 using Il2CppScripts.OutGame.Training;
 using SoundLabelClass = Il2CppSoundLabel.SoundLabel;
-
 #endif
 
 namespace TnTRFMod.Patches;

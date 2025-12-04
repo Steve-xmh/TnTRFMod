@@ -27,12 +27,19 @@ public class AutoDownloadSubscriptionSongs
     public static async Task StartAutoDownloadSubscriptionSongsAsync()
     {
         if (!TnTrfMod.Instance.enableAutoDownloadSubscriptionSongs.Value) return;
-        using var logText = LoggingScreenUi.NewThreadSafe(I18n.Get("autoDownloadSub.stepOne"));
+        using var logText = LoggingScreenUi.NewThreadSafe(I18n.Get("autoDownloadSub.stepOne").Text);
         Logger.Info("Download cache directory: " + PackedSongUtility.LocalStragePath);
 
         try
         {
             var res = await UTask.RunOnIl2Cpp(SubscriptionUtility.DownloadSubscriptionAvaliable);
+
+            if (res == null)
+            {
+                Logger.Error("Subscription check returned null");
+                logText.Text = I18n.Get("autoDownloadSub.networkIssue").Text;
+                return;
+            }
 
             Logger.Info(
                 $"Subscription Status: {res.result}, {res.errorText}, {res.responseBody.subscription}, {res.responseBody.expiration_datetime}");
@@ -44,11 +51,11 @@ public class AutoDownloadSubscriptionSongs
             if (curTime >= expirationTime)
             {
                 Logger.Warn("Subscription is not valid now, skip downloading songs");
-                logText.Text = I18n.Get("autoDownloadSub.notVaild");
+                logText.Text = I18n.Get("autoDownloadSub.notVaild").Text;
             }
             else
             {
-                logText.Text = I18n.Get("autoDownloadSub.stepTwo");
+                logText.Text = I18n.Get("autoDownloadSub.stepTwo").Text;
 
                 Logger.Info("Subscription is still valid, start downloading songs");
 
@@ -101,7 +108,7 @@ public class AutoDownloadSubscriptionSongs
                 if (previewFileSongUids.Length > 0)
                 {
                     var progressText = I18n.Get("autoDownloadSub.stepThree", previewFileSongUids.Length);
-                    logText.Text = progressText;
+                    logText.Text = progressText.Text;
 
                     Logger.Info($"Start downloading {previewFileSongUids.Length} song previews");
                     await UTask.RunOnIl2CppThreadPool(() => SubscriptionUtility.DownloadPreviewFiles(
@@ -118,7 +125,7 @@ public class AutoDownloadSubscriptionSongs
                 if (subSongFileSongUids.Length > 0)
                 {
                     var progressText = I18n.Get("autoDownloadSub.stepFour", subSongFileSongUids.Length);
-                    logText.Text = progressText;
+                    logText.Text = progressText.Text;
 
                     Logger.Info($"Start downloading {subSongFileSongUids.Length} song files");
                     await UTask.RunOnIl2CppThreadPool(() => SubscriptionUtility.DownloadSongFilesAsync(
@@ -137,7 +144,7 @@ public class AutoDownloadSubscriptionSongs
                 foreach (var uid in dlcSongFileSongUids)
                 {
                     var progressText = I18n.Get("autoDownloadSub.stepFive", i, dlcSongFileSongUids.Length);
-                    logText.Text = progressText;
+                    logText.Text = progressText.Text;
 
                     Logger.Info($"Start downloading dlc song {uid}");
                     await UTask.RunOnIl2CppThreadPool(() =>
@@ -162,15 +169,15 @@ public class AutoDownloadSubscriptionSongs
 
             Logger.Info("Finished download song files!");
 
-            logText.Text = I18n.Get("autoDownloadSub.finished");
+            logText.Text = I18n.Get("autoDownloadSub.finished").Text;
         }
         catch (Exception ex)
         {
-            logText.Text = I18n.Get("autoDownloadSub.otherError", ex.ToString());
+            logText.Text = I18n.Get("autoDownloadSub.otherError", ex.ToString()).Text;
             Logger.Error(ex.ToString());
         }
 
-        logText.Text += I18n.Get("autoDownloadSub.hideTip");
+        logText.Text += I18n.Get("autoDownloadSub.hideTip").Text;
         await Task.Delay(5000);
         TaikoSingletonMonoBehaviour<Connecting>.Instance.Deactive();
     }

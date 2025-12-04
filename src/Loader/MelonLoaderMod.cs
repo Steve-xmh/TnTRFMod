@@ -5,6 +5,7 @@ using MelonLoader;
 using UnityEngine;
 using Logger = TnTRFMod.Utils.Logger;
 using Il2CppIEnumerator = Il2CppSystem.Collections.IEnumerator;
+using Object = UnityEngine.Object;
 
 // ReSharper disable ClassNeverInstantiated.Global
 
@@ -13,7 +14,7 @@ namespace TnTRFMod.Loader;
 public class MelonLoaderMod : MelonMod
 {
     public static MelonLoaderMod Instance { get; private set; }
-    
+
     public override void OnInitializeMelon()
     {
         Instance = this;
@@ -21,10 +22,10 @@ public class MelonLoaderMod : MelonMod
         Logger._inner = LoggerInstance;
         var modGo = new GameObject("TnTrfMod_MelonCoroutineRunner");
         var runner = modGo.AddComponent<MelonCoroutineRunner>();
-        UnityEngine.Object.DontDestroyOnLoad(modGo);
+        Object.DontDestroyOnLoad(modGo);
         TnTrfMod.Instance = new TnTrfMod
         {
-            _runner = runner,
+            _runner = runner
         };
         TnTrfMod.Instance.Load(HarmonyInstance);
     }
@@ -37,8 +38,17 @@ public class MelonLoaderMod : MelonMod
     [RegisterTypeInIl2Cpp]
     private class MelonCoroutineRunner : MonoBehaviour, TnTrfMod.CoroutineRunner
     {
-        public MelonCoroutineRunner(IntPtr ptr) : base(ptr) {}
-        
+        public MelonCoroutineRunner(IntPtr ptr) : base(ptr)
+        {
+        }
+
+#pragma warning disable CA1822
+        public void Update()
+#pragma warning restore CA1822
+        {
+            TnTrfMod.Instance.OnUpdate();
+        }
+
         public void RunCoroutine(IEnumerator routine)
         {
             MelonCoroutines.Start(routine);
@@ -53,22 +63,15 @@ public class MelonLoaderMod : MelonMod
         {
             MelonCoroutines.Start(ExecCoroutineWithIEnumerable(routine));
         }
-        
+
         private static IEnumerator ExecCoroutineWithIEnumerable(Il2CppIEnumerator routine)
         {
             while (routine.MoveNext()) yield return routine.Current;
         }
-        
+
         private static IEnumerator ExecCoroutineWithIEnumerable(IEnumerable routine)
         {
             yield return routine;
-        }
-        
-#pragma warning disable CA1822
-        public void Update()
-#pragma warning restore CA1822
-        {
-            TnTrfMod.Instance.OnUpdate();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TnTRFMod.Utils;
+using UnityEngine;
 #if BEPINEX
 using Scripts.Common;
 using TMPro;
@@ -18,12 +19,16 @@ public class TextUi : BaseUi
     protected readonly TextMeshProUGUI _textTMP;
     protected readonly UiText _uitext;
 
+    private DataConst.LanguageType? targetLanguageType;
+
     public TextUi(bool useMainFont = false)
     {
         _textTMP = _go.AddComponent<TextMeshProUGUI>();
         _textTMP.enableWordWrapping = false;
+        _textTMP.extraPadding = true;
         _uitext = _go.AddComponent<UiText>();
         _uitext.tmpro = _textTMP;
+        _uitext.SetUseRawText(true);
         Color = Color.white;
         if (useMainFont) UseMainFont();
         else UseDescriptionFont();
@@ -32,7 +37,16 @@ public class TextUi : BaseUi
     public string Text
     {
         get => _uitext.rawText;
-        set => _uitext.SetTextRaw(value);
+        set
+        {
+            _uitext.SetTextRawOnly(value);
+            UpdateText();
+        }
+    }
+
+    public I18n.I18nResult I18nText
+    {
+        set => SetText(value);
     }
 
     public Color Color
@@ -44,6 +58,9 @@ public class TextUi : BaseUi
             _uitext.Refresh();
         }
     }
+
+    public float PreferredWidth => _uitext.GetPreferredWidth();
+    public float PreferredHeight => _uitext.GetPreferredHeight();
 
     public float FontSize
     {
@@ -86,6 +103,12 @@ public class TextUi : BaseUi
         set => _uitext.tmpro.alignment = value;
     }
 
+    public void SetText(I18n.I18nResult format)
+    {
+        SetTargetLanguageType(format.LanguageType);
+        Text = format.Text;
+    }
+
     public void SetText(string format, float value0)
     {
         _uitext.tmpro.SetText(format, value0);
@@ -99,24 +122,32 @@ public class TextUi : BaseUi
     private void UpdateText()
     {
         var color = Color.black;
+        _textTMP.fontSize = FontSize;
+        _uitext.font = GetFontType();
         _uitext.SetOutlineColor(ref color);
         _uitext.faceDilate = 0.25f;
         _uitext.outlineWidth = 0.25f;
-        _uitext.ApplyFont();
         _uitext.Refresh();
+    }
+
+    public void SetTargetLanguageType(DataConst.LanguageType? fontType)
+    {
+        if (targetLanguageType == fontType) return;
+        targetLanguageType = fontType;
+        UpdateText();
+    }
+
+    private DataConst.FontType GetFontType()
+    {
+        var fontMgr = Common.GetFontManager();
+        var fontType = fontMgr.GetFontTypeBySystemLanguage();
+
+        return targetLanguageType.HasValue ? fontMgr.GetFontType(targetLanguageType.Value) : fontType;
     }
 
     private void UseMainFont()
     {
-        var fontMgr = Common.GetFontManager();
-        var fontType = fontMgr.GetFontTypeBySystemLanguage();
-        // var fontAsset = fontMgr.GetDefaultFontAsset(fontType);
-        // var fontMat = fontMgr.GetDefaultFontMaterial(fontType, DataConst.DefaultFontMaterialType.OutlineBlack);
-        //
-        // _textTMP.font = fontAsset;
-        // _textTMP.material = fontMat;
-        // _uitext.tmpro = _textTMP;
-        _uitext.font = fontType;
+        _uitext.font = GetFontType();
         _uitext.fontSetting = UiText.FontSetting.TaikoMain;
         _uitext.SetCharacterSpacing(2f);
         UpdateText();
@@ -124,12 +155,7 @@ public class TextUi : BaseUi
 
     private void UseDescriptionFont()
     {
-        var fontMgr = Common.GetFontManager();
-        var fontType = fontMgr.GetFontTypeBySystemLanguage();
-        // var fontAsset = fontMgr.GetDescriptionFontAsset(fontType);
-        // var fontMat = fontMgr.GetDescriptionFontMaterial(fontType, DataConst.DescriptionFontMaterialType.OutlineBlack);
-
-        _uitext.font = fontType;
+        _uitext.font = GetFontType();
         _uitext.fontSetting = UiText.FontSetting.Description;
         _uitext.SetCharacterSpacing(6f);
         UpdateText();

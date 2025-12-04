@@ -1,4 +1,5 @@
 using Il2CppInterop.Runtime;
+using TnTRFMod.Utils;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -41,7 +42,7 @@ public class TextFieldUi : BaseUi
         {
             Name = "PlaceholderText",
             FontSize = 20,
-            Text = "请输入文本",
+            Text = "Please input text here...",
             Color = new Color(0.5f, 0.5f, 0.5f, 0.5f)
         };
         AddChild(_placeHolderText);
@@ -81,6 +82,11 @@ public class TextFieldUi : BaseUi
     {
         get => _placeHolderText.Text;
         set => _placeHolderText.Text = value;
+    }
+
+    public I18n.I18nResult I18nPlaceholder
+    {
+        set => _placeHolderText.SetText(value);
     }
 
     public Color TextColor

@@ -22,7 +22,7 @@ public class TitleScene : IScene
         };
 
         if (ConfigEntry.IsFirstConfig)
-            firstRunLogHandle = LoggingScreenUi.New(I18n.Get("title.firstRunTip", ConfigEntry.ConfigFilePath));
+            firstRunLogHandle = LoggingScreenUi.New(I18n.Get("title.firstRunTip", ConfigEntry.ConfigFilePath).Text);
 
         if (!isAutoSongDownloaded)
         {

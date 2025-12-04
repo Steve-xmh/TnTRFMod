@@ -98,11 +98,11 @@ public class SongSelectScene : IScene
             GetUiSongScroller().UiSongScroller.canvasGroup.alpha;
     }
 
-    private ButtonUi NewPanelButton(string text)
+    private ButtonUi NewPanelButton(I18n.I18nResult text)
     {
         var btn = new ButtonUi
         {
-            Text = text,
+            I18nText = text,
             Position = new Vector2(68f, CurrentPanelButtonPosY),
             Size = new Vector2(300f, 50f),
             ButtonColor = new Color(1, 0.4472f, 0.0968f, 1)
@@ -120,7 +120,7 @@ public class SongSelectScene : IScene
         {
             FrameColor = new Color32(255, 191, 1, 0xFF),
             Position = panelButton.Position + new Vector2(0, panelButton.Size.y + 8),
-            Size = new Vector2(500, 370f),
+            Size = new Vector2(500, 392f),
             Visible = false
         };
 
@@ -129,7 +129,7 @@ public class SongSelectScene : IScene
             Parent = fumenPostProcessingPanel,
             Position = new Vector2(15, 15),
             Size = new Vector2(fumenPostProcessingPanel.Size.x - 30, 20),
-            Text = I18n.Get("fumenPostProcessing.tip"),
+            I18nText = I18n.Get("fumenPostProcessing.tip"),
             WordWrap = true,
             FontSize = 20
         };
@@ -138,9 +138,9 @@ public class SongSelectScene : IScene
         {
             Parent = fumenPostProcessingPanel,
             Position =
-                fumenPostProcessingTipLabel.Position + new Vector2(0, 58),
+                fumenPostProcessingTipLabel.Position + new Vector2(0, 80),
             Size = new Vector2(fumenPostProcessingPanel.Size.x - 30, 50),
-            Text = I18n.Get("fumenPostProcessing.equalScrollSpeed"),
+            I18nText = I18n.Get("fumenPostProcessing.equalScrollSpeed"),
             ButtonColor = FumenPostProcessingPatch.EnableEqualScrollSpeed ? ToggleOnColor : ToggleOffColor
         };
 
@@ -149,7 +149,7 @@ public class SongSelectScene : IScene
             Parent = fumenPostProcessingPanel,
             Position = equalScrollSpeedBtn.Position + new Vector2(0, equalScrollSpeedBtn.Size.y + 8),
             Size = new Vector2(fumenPostProcessingPanel.Size.x - 30, 50),
-            Text = I18n.Get("fumenPostProcessing.superSlowScrollSpeed"),
+            I18nText = I18n.Get("fumenPostProcessing.superSlowScrollSpeed"),
             ButtonColor = FumenPostProcessingPatch.EnableSuperSlowSpeed ? ToggleOnColor : ToggleOffColor
         };
 
@@ -158,7 +158,7 @@ public class SongSelectScene : IScene
             Parent = fumenPostProcessingPanel,
             Position = superSlowScrollSpeedBtn.Position + new Vector2(0, superSlowScrollSpeedBtn.Size.y + 8),
             Size = new Vector2(fumenPostProcessingPanel.Size.x - 30, 50),
-            Text = I18n.Get("fumenPostProcessing.randomScrollSpeed"),
+            I18nText = I18n.Get("fumenPostProcessing.randomScrollSpeed"),
             ButtonColor = FumenPostProcessingPatch.EnableRandomSlowSpeed ? ToggleOnColor : ToggleOffColor
         };
 
@@ -167,7 +167,7 @@ public class SongSelectScene : IScene
             Parent = fumenPostProcessingPanel,
             Position = randomScrollSpeedBtn.Position + new Vector2(0, randomScrollSpeedBtn.Size.y + 8),
             Size = new Vector2(fumenPostProcessingPanel.Size.x - 30, 50),
-            Text = I18n.Get("fumenPostProcessing.reverseScrollSpeed"),
+            I18nText = I18n.Get("fumenPostProcessing.reverseScrollSpeed"),
             ButtonColor = FumenPostProcessingPatch.EnableReverseSlowSpeed ? ToggleOnColor : ToggleOffColor
         };
 
@@ -176,7 +176,7 @@ public class SongSelectScene : IScene
             Parent = fumenPostProcessingPanel,
             Position = reverseScrollSpeedBtn.Position + new Vector2(0, reverseScrollSpeedBtn.Size.y + 8),
             Size = new Vector2(fumenPostProcessingPanel.Size.x - 30, 50),
-            Text = I18n.Get("fumenPostProcessing.strictJudgeTiming"),
+            I18nText = I18n.Get("fumenPostProcessing.strictJudgeTiming"),
             ButtonColor = FumenPostProcessingPatch.EnableStrictJudgeTiming ? ToggleOnColor : ToggleOffColor
         };
 
@@ -248,7 +248,7 @@ public class SongSelectScene : IScene
         {
             Parent = advanceSearchPanel,
             Position = new Vector2(15, 15),
-            Text = I18n.Get("advanceSongSearch.keyword.label"),
+            I18nText = I18n.Get("advanceSongSearch.keyword.label"),
             FontSize = 20
         };
 
@@ -257,14 +257,14 @@ public class SongSelectScene : IScene
             Parent = advanceSearchPanel,
             Position = songKeywordLabel.Position + new Vector2(0, songKeywordLabel.Size.y + 8),
             Size = new Vector2(advanceSearchPanel.Size.x - 30, 50),
-            Placeholder = I18n.Get("advanceSongSearch.keyword.placeholder")
+            I18nPlaceholder = I18n.Get("advanceSongSearch.keyword.placeholder")
         };
 
         var diffFilterLabel = new TextUi
         {
             Parent = advanceSearchPanel,
             Position = songKeywordField.Position + new Vector2(0, songKeywordField.Size.y + 8),
-            Text = I18n.Get("advanceSongSearch.diffFilter.label"),
+            I18nText = I18n.Get("advanceSongSearch.diffFilter.label"),
             FontSize = 20
         };
 
@@ -324,7 +324,7 @@ public class SongSelectScene : IScene
             Parent = advanceSearchPanel,
             Position = diffTypeBtn.Position + new Vector2(diffTypeBtn.Size.x + 8, 0),
             Size = new Vector2(100, 50),
-            Placeholder = I18n.Get("advanceSongSearch.diffFilter.min-level-placeholder"),
+            I18nPlaceholder = I18n.Get("advanceSongSearch.diffFilter.min-level-placeholder"),
             Value = "0"
         };
 
@@ -333,7 +333,7 @@ public class SongSelectScene : IScene
             Parent = advanceSearchPanel,
             Position = diffMinLevelField.Position + new Vector2(diffMinLevelField.Size.x + 8, 0),
             Size = new Vector2(100, 50),
-            Placeholder = I18n.Get("advanceSongSearch.diffFilter.max-level-placeholder"),
+            I18nPlaceholder = I18n.Get("advanceSongSearch.diffFilter.max-level-placeholder"),
             Value = "10"
         };
 
@@ -341,7 +341,7 @@ public class SongSelectScene : IScene
         {
             Parent = advanceSearchPanel,
             Position = diffTypeBtn.Position + new Vector2(0, diffTypeBtn.Size.y + 8),
-            Text = I18n.Get("advanceSongSearch.sortMethod.label"),
+            I18nText = I18n.Get("advanceSongSearch.sortMethod.label"),
             FontSize = 20
         };
 
@@ -410,7 +410,7 @@ public class SongSelectScene : IScene
             Parent = advanceSearchPanel,
             Position = sortMethodSelect.Position + new Vector2(0, sortMethodSelect.Size.y + 8),
             Size = new Vector2(advanceSearchPanel.Size.x - 30, 50),
-            Text = I18n.Get("advanceSongSearch.confirm"),
+            I18nText = I18n.Get("advanceSongSearch.confirm"),
             ButtonColor = new Color32(0, 191, 1, 0xFF)
         };
 

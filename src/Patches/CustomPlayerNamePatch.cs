@@ -6,6 +6,7 @@ using Scripts.Common;
 #if MELONLOADER
 using Il2CppScripts.Common;
 #endif
+
 namespace TnTRFMod.Patches;
 
 [HarmonyPatch]

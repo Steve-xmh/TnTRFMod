@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TnTRFMod.Utils;
+using UnityEngine;
 
 namespace TnTRFMod.Ui.Widgets;
 
@@ -54,9 +55,9 @@ public class SelectUi<T> : ButtonUi
             _items.AddRange(value);
             RebuildDropDown();
             var selectedItem = _items.FirstOrDefault(item => EqualityComparer<T>.Default.Equals(item.Value, Value));
-            if (selectedItem.Text != null)
+            if (selectedItem.Text.Text != null)
             {
-                Text = selectedItem.Text;
+                I18nText = selectedItem.Text;
                 ButtonColor = selectedItem.ButtonColor ?? Color.white;
             }
             else
@@ -83,7 +84,7 @@ public class SelectUi<T> : ButtonUi
         {
             var itemUi = new ButtonUi
             {
-                Text = item.Text,
+                I18nText = item.Text,
                 Size = new Vector2(Size.x, 50),
                 ButtonColor = item.ButtonColor ?? Color.white
             };
@@ -91,7 +92,7 @@ public class SelectUi<T> : ButtonUi
             itemUi.AddListener(() =>
             {
                 Value = item.Value;
-                Text = item.Text;
+                I18nText = item.Text;
                 ButtonColor = item.ButtonColor ?? Color.white;
                 _dropDownContainer.Visible = false;
             });
@@ -101,7 +102,7 @@ public class SelectUi<T> : ButtonUi
     public struct SelectItem
     {
         public T Value;
-        public string Text;
+        public I18n.I18nResult Text;
         public Color? ButtonColor;
     }
 }

@@ -8,7 +8,7 @@ using I18nData = Dictionary<string, Dictionary<string, string>>;
 
 public static class I18n
 {
-    public const string FALLBACK_LANGUAGE = "zhs";
+    public static readonly string[] FALLBACK_LANGUAGES = ["en", "zhs"];
 
     private static I18nData _i18nData = new();
 
@@ -103,18 +103,48 @@ public static class I18n
         }
     }
 
-    public static string Get(string key, params object[] args)
+    public static I18nResult Get(string key, params object[] args)
     {
         if (_i18nData.TryGetValue(CurrentLanguageCode, out var dict))
             if (dict.TryGetValue(key, out var value))
-                return string.Format(value, args);
+                return new I18nResult(CurrentLanguage, key, string.Format(value, args));
 
-        if (_i18nData.TryGetValue(FALLBACK_LANGUAGE, out dict))
-            if (dict.TryGetValue(key, out var value))
-                return string.Format(value, args);
+        foreach (var FALLBACK_LANGUAGE in FALLBACK_LANGUAGES)
+            if (_i18nData.TryGetValue(FALLBACK_LANGUAGE, out dict))
+                if (dict.TryGetValue(key, out var value))
+                {
+                    var languageType = GetLanguageType(FALLBACK_LANGUAGE);
+                    Logger.Warn(
+                        $"Missing I18n key: {key} for language {CurrentLanguageCode}, using fallback language {FALLBACK_LANGUAGE} ({value}).");
+                    return new I18nResult(languageType, key, string.Format(value, args));
+                }
 
-        Logger.Warn($"Missing I18n key: {key}");
+        Logger.Warn($"Missing I18n key: {key} for language {CurrentLanguageCode}, using key as fallback.");
 
-        return key;
+        return new I18nResult(CurrentLanguage, key, key);
+    }
+
+    public struct I18nResult
+    {
+        public readonly DataConst.LanguageType LanguageType;
+        public readonly string Key;
+        public readonly string Text;
+
+        internal I18nResult(DataConst.LanguageType languageType, string key, string text)
+        {
+            LanguageType = languageType;
+            Key = key;
+            Text = text;
+        }
+
+        public static explicit operator DataConst.LanguageType(I18nResult result)
+        {
+            return result.LanguageType;
+        }
+
+        public static explicit operator string(I18nResult result)
+        {
+            return result.Text;
+        }
     }
 }

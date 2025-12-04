@@ -48,7 +48,7 @@ public class HitStatusPanel
 
         var hitAspectLabel = new TextUi(true)
         {
-            Text = I18n.Get("hitStats.hitAspectLabel"),
+            I18nText = I18n.Get("hitStats.hitAspectLabel"),
             FontSize = 50
         };
         trainCounterUi.AddChild(hitAspectLabel);
@@ -58,7 +58,7 @@ public class HitStatusPanel
 
         var rendaLabel = new TextUi(true)
         {
-            Text = I18n.Get("hitStats.rendaLabel"),
+            I18nText = I18n.Get("hitStats.rendaLabel"),
             FontSize = 40,
             Color = new Color32(255, 255, 35, 255)
         };

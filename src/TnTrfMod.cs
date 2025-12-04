@@ -21,7 +21,6 @@ using HarmonyInstance = HarmonyLib.Harmony;
 #endif
 
 #if MELONLOADER
-using MelonLoader;
 using HarmonyInstance = HarmonyLib.Harmony;
 #endif
 
@@ -31,7 +30,7 @@ public class TnTrfMod
 {
     public const string MOD_NAME = "TnTRFMod";
     public const string MOD_AUTHOR = "SteveXMH";
-    public const string MOD_VERSION = "0.8.0";
+    public const string MOD_VERSION = "0.8.1";
 #if BEPINEX
     public const string MOD_LOADER = "BepInEx";
 #endif

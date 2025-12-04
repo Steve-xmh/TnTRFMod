@@ -1,6 +1,7 @@
 using TnTRFMod.Patches;
 using TnTRFMod.Ui.Tokkun;
 using TnTRFMod.Ui.Widgets;
+using TnTRFMod.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
 #if BEPINEX
@@ -36,7 +37,7 @@ public class TokkunMode
         playbackSpeedText = new TextUi
         {
             Name = "PlaybackSpeedText",
-            Text = "速度: 1.0x",
+            I18nText = I18n.Get("tokkunMode.playbackSpeedText", 1.0f),
             FontSize = 40,
             Alignment = TextAlignmentOptions.TopRight,
             Position = new Vector2(1465, 547),
@@ -138,7 +139,8 @@ public class TokkunMode
                 SetResumeActions();
         }
 
-        playbackSpeedText.SetText("速度: {0:0.00}x", (float)TokkunGamePatch.PlaybackSpeed);
+        // playbackSpeedText.SetText("速度: {0:0.00}x", (float)TokkunGamePatch.PlaybackSpeed);
+        playbackSpeedText.I18nText = I18n.Get("tokkunMode.playbackSpeedText", (float)TokkunGamePatch.PlaybackSpeed);
 
         drumP1.Update();
         drumP2.Update();

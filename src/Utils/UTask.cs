@@ -15,7 +15,6 @@ using YieldAwaitable = Il2CppCysharp.Threading.Tasks.YieldAwaitable;
 using Object = Il2CppSystem.Object;
 using Exception = Il2CppSystem.Exception;
 using CancellationToken = Il2CppSystem.Threading.CancellationToken;
-
 #endif
 
 namespace TnTRFMod.Utils;

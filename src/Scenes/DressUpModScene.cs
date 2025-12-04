@@ -1,4 +1,5 @@
 ﻿using TnTRFMod.Ui.Widgets;
+using TnTRFMod.Utils;
 using UnityEngine;
 #if BEPINEX
 using TMPro;
@@ -48,7 +49,7 @@ public class DressUpModScene : IScene
 
         _ = new TextUi
         {
-            Text = "自定义动画功能已启用，按下 T/Y 键可旋转小咚",
+            I18nText = I18n.Get("dressUpMod.rotateDonModelText"),
             Position = new Vector2(1920 - 256, 32),
             Alignment = TextAlignmentOptions.Right
         };

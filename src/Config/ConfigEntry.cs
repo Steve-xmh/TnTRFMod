@@ -67,7 +67,7 @@ public class ConfigEntry<T>
         if (!defaultConfig.HasKey(section))
             defaultConfig[section] = new TomlTable();
 
-        var descriptionText = I18n.Get(description);
+        var descriptionText = I18n.Get(description).Text;
 
         defaultConfig[section][key] = defaultValue switch
         {
