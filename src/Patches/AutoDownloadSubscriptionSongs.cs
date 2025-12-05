@@ -51,7 +51,7 @@ public class AutoDownloadSubscriptionSongs
             if (curTime >= expirationTime)
             {
                 Logger.Warn("Subscription is not valid now, skip downloading songs");
-                logText.Text = I18n.Get("autoDownloadSub.notVaild").Text;
+                logText.Text = I18n.Get("autoDownloadSub.notValid").Text;
             }
             else
             {
