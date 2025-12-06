@@ -30,7 +30,7 @@ public class TnTrfMod
 {
     public const string MOD_NAME = "TnTRFMod";
     public const string MOD_AUTHOR = "SteveXMH";
-    public const string MOD_VERSION = "0.8.1";
+    public const string MOD_VERSION = "0.8.2";
 #if BEPINEX
     public const string MOD_LOADER = "BepInEx";
 #endif
