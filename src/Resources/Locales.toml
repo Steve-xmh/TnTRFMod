@@ -152,10 +152,10 @@ config.TokkunMode.P2RightDonKey = "P2 右侧鼓面键位"
 config.TokkunMode.P2RightKaKey = "P2 右侧鼓边键位"
 
 [en]
-title.firstRunTip = """Configuration file has been generated, please close the game and edit the config file to enable more features!
+title.firstRunTip = """Config file generated. Please close the game and edit the config file to enable more features!
 Configuration file path: {0}"""
 
-autoDownloadSub.stepOne = "Auto download songs is enabled\n(1/5) Checking Music Pass subscription..."
+autoDownloadSub.stepOne = "Auto download songs is enabled.\n(1/5) Checking Music Pass subscription..."
 autoDownloadSub.stepTwo = "(2/5) Music Pass subscription is available, checking song list"
 autoDownloadSub.stepThree = "(3/5) Downloading {0} songs preview"
 autoDownloadSub.stepFour = "(4/5) Downloading {0} subscription songs files"
@@ -165,17 +165,17 @@ autoDownloadSub.notValid = "Music Pass subscription is not available or expired.
 autoDownloadSub.networkIssue = "Failed to request server or network is unavailable"
 autoDownloadSub.errorOnCheck = "Failed to confirm Music Pass subscription availability, probably due to network error."
 autoDownloadSub.otherError = "An error occurred while auto downloading songs:\n{0}"
-autoDownloadSub.hideTip = "\nText message will disappear in 5 seconds"
+autoDownloadSub.hideTip = "\nText message will disappear in 5 seconds..."
 
-hitStats.hitAspectLabel = "Hit Aspect"
-hitStats.rendaLabel = "Renda"
+hitStats.hitAspectLabel = "Hit Rate"
+hitStats.rendaLabel = "Rolls"
 
 tokkunMode.playbackSpeedText = "Playback Speed: {0:F1}x"
 
 dressUpMod.rotateDonModelText = "Custom dress animation feature is enabled, press T/Y key to rotate don-chan"
 
 fumenLoader.error.mainText = "Chart load failed：{0}\nLoaded blank chart to avoid game freeze crash"
-fumenLoader.error.measuresExceed = "The number of measures exceeds 300 ({0})"
+fumenLoader.error.measuresExceed = "The number of measures exceeds 300! ({0})"
 fumenLoader.error.sourceError = "Music source failed to load chart\nDetail：{0}"
 
 advanceSongSearch.button = "Advanced Song Search"
@@ -200,40 +200,40 @@ advanceSongSearch.sortMethod.level-asc = "Level Ascending (Low to High)"
 advanceSongSearch.sortMethod.level-desc = "Level Descending (High to Low)"
 advanceSongSearch.sortMethod.score-asc = "Score Ascending (Low to High)"
 advanceSongSearch.sortMethod.score-desc = "Score Descending (High to Low)"
-advanceSongSearch.sortMethod.shinuti-score-asc = "Shinuti Score Ascending (Low to High)"
-advanceSongSearch.sortMethod.shinuti-score-desc = "Shinuti Score Descending (High to Low)"
+advanceSongSearch.sortMethod.shinuti-score-asc = "Shin-Uchi Score Ascending (Low to High)"
+advanceSongSearch.sortMethod.shinuti-score-desc = "Shin-Uchi Score Descending (High to Low)"
 advanceSongSearch.sortMethod.random = "Random"
 
 fumenPostProcessing.button = "Fumen Post Processing"
-fumenPostProcessing.tip = "Enabling any feature in this panel will not be recorded in the game save, and will be disabled after the game restarts."
-fumenPostProcessing.equalScrollSpeed = "Equal Scroll Speed"
-fumenPostProcessing.superSlowScrollSpeed = "Is that a sushi?"
+fumenPostProcessing.tip = "Enabling any feature here will not be recorded in your save data, and will be disabled after the game restarts."
+fumenPostProcessing.equalScrollSpeed = "x1.0 Scroll Speed"
+fumenPostProcessing.superSlowScrollSpeed = "Very Slow Scroll Speed"
 fumenPostProcessing.randomScrollSpeed = "Random Scroll Speed"
-fumenPostProcessing.reverseScrollSpeed = "omg they come from the left wth"
-fumenPostProcessing.strictJudgeTiming = "VERY STRICT Judge Timing"
+fumenPostProcessing.reverseScrollSpeed = "Reverse Scroll Speed"
+fumenPostProcessing.strictJudgeTiming = "Strict Judge Timing"
 
 config.Enabled = "Enables the mod."
-config.EnableBetterBigHitPatch = "Whether to enable better Big Hit Patch, which will treat one side hit as a big hit."
+config.EnableBetterBigHitPatch = "Enables better Big Hit Patch, which will treat a one side hit as a big hit."
 config.BetterBigHitSkipOnlineCheck = """Skip online-mode check in Big Hit patch
-(Warning: may be treated as online cheating, think twice!)"""
-config.EnableSkipBootScreenPatch = "Whether to enable Skip Boot Screen Patch."
-config.EnableSkipRewardPatch = "Whether to enable Skip Reward Dialog Patch."
-config.EnableBufferedInputPatch = "Whether to enable Buffered Input Patch."
-config.EnableMinimumLatencyAudioClient = "Whether to enable Minimum Latency Audio Client, which can reduce the audio latency if possible."
-config.EnableAutoDownloadSubscriptionSongs = "Enable auto download subscription songs. (NOT FULLY TESTED)"
-config.EnableOnpuTextRail = "Draw an nijiiro-like note text rail background."
-config.EnableHighPrecisionTimerPatch = "Whether to enable High Precision Timer Patch, which may benefits to hit time judging."
-config.EnableNearestNeighborOnpuPatch = "Whether to enable Nearest Neighbor Onpu/Note Patch, this may make the notes look more pixelated."
-config.EnableNoShadowOnpuPatch = "Whether to enable No Shadow Onpu/Note Patch, this may reduce motion blur effect when notes are scrolling, but may also reduce the performance."
-config.EnableCustomDressAnimationMod = "Enable a simple gui that can switch preview animation of don-chan when in dressing page."
-config.EnableOpenInviteFriendDialogButton = "Enable open invite friend dialog button when in online friend room lobby."
-config.EnableHitStatsPanelPatch = "Enable hit stats panel during music game."
-config.EnableLouderSongPatch = "Allow to play little louder song."
-config.EnableScoreRankIcon = "Enable score rank icon during music game."
-config.EnableTatakonKeyboardSongSelect = "Enable Tatakon keyboard song select. (Unstable)"
-config.AutoPlayRendaSpeed = "The speed of renda in auto play mode, the maximum speed is depend on the refresh rate of your display. Set it to 0 to disable playing renda when in auto play mode."
+(WARNING: This may be treated as online cheating, be careful!)"""
+config.EnableSkipBootScreenPatch = "Enables the Skip Boot Screen Patch."
+config.EnableSkipRewardPatch = "Enables the Skip Reward Dialog Patch."
+config.EnableBufferedInputPatch = "Enables the Buffered Input Patch."
+config.EnableMinimumLatencyAudioClient = "Enables Minimum Latency Audio Client, which can reduce the audio latency if possible."
+config.EnableAutoDownloadSubscriptionSongs = "Enables downloading of Music Pass songs automatically. (NOT FULLY TESTED)"
+config.EnableOnpuTextRail = "Draw an arcade-like note text rail background."
+config.EnableHighPrecisionTimerPatch = "Enables the High Precision Timer Patch, which may benefits to hit time judging."
+config.EnableNearestNeighborOnpuPatch = "Enables the Nearest Neighbor Onpu/Note Patch. This may make the notes look more pixelated."
+config.EnableNoShadowOnpuPatch = "Enables the No Shadow Onpu/Note Patch, this may reduce motion blur effect when notes are scrolling, but may also reduce performance."
+config.EnableCustomDressAnimationMod = "Enables a simple GUI that can switch the preview animation of DON-chan when in the Outfits Menu."
+config.EnableOpenInviteFriendDialogButton = "Enables an open invite friend dialog button when in online friend room lobby."
+config.EnableHitStatsPanelPatch = "Enables a Hit Rate status panel during play."
+config.EnableLouderSongPatch = "Allow to play songs slightly louder."
+config.EnableScoreRankIcon = "Enables the score rank icons during play."
+config.EnableTatakonKeyboardSongSelect = "Enables TaTaCon keyboard on song select. (Unstable)"
+config.AutoPlayRendaSpeed = "The speed of rolls in Auto-Play mode. the max speed depends on the refresh rate of your monitor. Setting it to 0 will make Auto-Play not hit any rolls."
 config.EnableInstantRelayPatch = "Enable instant relay loading screen patch."
-config.CustomTitleSceneEnterSceneName = """Custom the scene to enter when exit from the title scene.
+config.CustomTitleSceneEnterSceneName = """Controls the scene to enter when exiting the title screen.
 This value is the scene ID, if left empty, it will enter the main menu by default. Recommended values are:
 - `SongSelect`: Enter the single player song select scene
 - `TrainingEntrance`: Enter the training menu
@@ -242,18 +242,18 @@ config.Debug.SaveRawSaveData = "Save raw save data in plain text (for debugging)
 config.Debug.ExportGameData = "Export game data (for debugging)"
 config.Debug.ExportMusicNames = "Export built-in music names list (for debugging)"
 
-config.HitOffset.Enable = "Enable hit offset during music game."
+config.HitOffset.Enable = "Enable hit offset during play."
 config.HitOffset.InvertColor = "Invert color of fast/late hit offset text."
-config.HitOffset.RyoRange = "Define ryo judge range of note in positive milliseconds, set to -1f to follow difficulty of selected song course."
+config.HitOffset.RyoRange = "Define the GOOD judgement range of note in positive ms, set to -1f to follow the difficulty of selected song course."
 
 config.BilibiliLiveStreamSongRequest.Enable = "Enable Bilibili Live Stream Song Request."
-config.BilibiliLiveStreamSongRequest.RoomId = "Bilibili Live Stream Room Id."
+config.BilibiliLiveStreamSongRequest.RoomId = "Bilibili Live Stream Room ID."
 config.BilibiliLiveStreamSongRequest.Token = "Bilibili Live Stream Token. Commonly as a Cookie called 'SESSDATA'. If you don't provide this, you won't be able to get accurate sender info."
 
-config.ExclusiveModeAudio.Enable = "Enable exclusive mode audio. (Expermental)"
-config.ExclusiveModeAudio.SampleRate = "Sample Rate of the exclusive mode wave format. This should match the format of your audio output device. If set to 0, it will use the sample rate of the mix format of your audio output device."
-config.ExclusiveModeAudio.BitPerSample = "Bit size of the sample of exclusive mode wave format. This should match the format of your audio output device. If set to 0, it will use the bit size of the mix format of your audio output device."
-config.ExclusiveModeAudio.EnableCriWarePluginLogging = "Enable logging of CriWare Unity Plugin, if you meet some audio issues, you can turn this on to check problems."
+config.ExclusiveModeAudio.Enable = "Enables WASAPI Exclusive audio. (Experimental)"
+config.ExclusiveModeAudio.SampleRate = "Sample rate of WASAPI Exclusive. Should match your audio output device. If set to 0, it will use the sample rate of the mix format of your audio output device."
+config.ExclusiveModeAudio.BitPerSample = "Bitsize per sample of WASAPI Exclusive. Should match your audio output device. If set to 0, it will use the bit size of the mix format of your audio output device."
+config.ExclusiveModeAudio.EnableCriWarePluginLogging = "Enable logging of CriWare Unity Plugin. If audio issues occur, this can be turned on to check for errors."
 
 config.CustomPlayerName.Enable = "Enable custom player name."
 config.CustomPlayerName.Name = "Custom player name."
@@ -262,9 +262,9 @@ config.BufferedInput.Enable = "Enable buffered input patch."
 config.BufferedInput.MaxBufferedInputCount = "The maximum count of the buffered key input per side."
 
 config.CustomSongs.Enable = """Enable custom songs feature. (Highly experimental)
-This feature is not compatible with TekaTeka mod! Please do not install or enable this mod and TekaTeka mod at the same time!
-And this feature will permanently modify your save data to leave a trace of using the mod!
-(But theoretically you can still read the save data normally after disabling the feature/mod.)
+This feature is not compatible with TekaTeka mod! Please DO NOT install or enable this mod and TekaTeka at the same time!
+This feature will PERMANENTLY MODIFY YOUR SAVE to leave a trace of using the mod!
+(In theory, you can still read the save data normally after disabling the feature/mod.)
 Please ask the author for more information about this feature!"""
 
 config.TokkunMode.Enable = """Enable Tokun Mode (Highly experimental)
@@ -307,12 +307,12 @@ autoDownloadSub.errorOnCheck = "Music Pass の有効性を確認できません�
 autoDownloadSub.otherError = "自動ダウンロード中にエラーが発生しました：\n{0}"
 autoDownloadSub.hideTip = "\nこのメッセージは 5 秒後に消えます"
 
-hitStats.hitAspectLabel = "ノーツ精度"
+hitStats.hitAspectLabel = "音符精度"
 hitStats.rendaLabel = "連打"
 
 tokkunMode.playbackSpeedText = "再生速度: {0:F1}x"
 
-dressUpMod.rotateDonModelText = "きせかえモーションをカスタム中。T/Y キーでどんちゃんを回転できます"
+dressUpMod.rotateDonModelText = "着せ替えモーションをカスタム中。T/Y キーでどんちゃんを回転できます"
 
 fumenLoader.error.mainText = "譜面の読み込みに失敗しました：{0}\nフリーズ防止のため、空の譜面を読み込みました"
 fumenLoader.error.measuresExceed = "小節数が 300 を超えています ({0})"
@@ -327,8 +327,8 @@ advanceSongSearch.diffFilter.all = "すべて"
 advanceSongSearch.diffFilter.easy = "かんたん"
 advanceSongSearch.diffFilter.normal = "ふつう"
 advanceSongSearch.diffFilter.hard = "むずかしい"
-advanceSongSearch.diffFilter.oni = "おに"
-advanceSongSearch.diffFilter.ura = "裏おに"
+advanceSongSearch.diffFilter.oni = "おに（表）"
+advanceSongSearch.diffFilter.ura = "おに（裏）"
 advanceSongSearch.diffFilter.oni-ura = "おに + 裏おに"
 advanceSongSearch.diffFilter.min-level-placeholder = "最低★"
 advanceSongSearch.diffFilter.max-level-placeholder = "最高★"
@@ -347,12 +347,12 @@ advanceSongSearch.sortMethod.random = "ランダム"
 fumenPostProcessing.button = "譜面後処理"
 fumenPostProcessing.tip = "ここで有効化した機能はセーブされず、ゲーム再起動で自動的にオフになります。"
 fumenPostProcessing.equalScrollSpeed = "等速スクロール"
-fumenPostProcessing.superSlowScrollSpeed = "おすし並みに遅い!?"
-fumenPostProcessing.randomScrollSpeed = "小節ごとにランダム速度"
-fumenPostProcessing.reverseScrollSpeed = "左から流れてきた!?"
-fumenPostProcessing.strictJudgeTiming = "超シビア判定"
+fumenPostProcessing.superSlowScrollSpeed = "超遅スクロール"
+fumenPostProcessing.randomScrollSpeed = "ランダムスクロール"
+fumenPostProcessing.reverseScrollSpeed = "逆スクロール"
+fumenPostProcessing.strictJudgeTiming = "HARD判定"
 
-config.Enabled = "この Mod を有効にする"
+config.Enabled = "このMODを有効にする"
 config.EnableBetterBigHitPatch = "片側のドン/カも大打判定にするパッチ"
 config.BetterBigHitSkipOnlineCheck = """大打パッチのオンラインチェックをスキップ
 （チート扱いされる可能性があるため自己責任で！）"""
@@ -441,37 +441,37 @@ config.TokkunMode.P2RightDonKey = "P2 右ドンのキー"
 config.TokkunMode.P2RightKaKey = "P2 右カのキー"
 
 [fr]
-title.firstRunTip = """Le fichier de configuration a ete genere. Fermez le jeu puis modifiez-le pour activer plus de fonctions.
+title.firstRunTip = """Le fichier de configuration a été généré. Fermez le jeu et modifiez-le pour activer plus de fonctions.
 Chemin du fichier: {0}"""
 
-autoDownloadSub.stepOne = "Telechargement auto des morceaux active\n(1/5) Verification de la disponibilite du Music Pass"
-autoDownloadSub.stepTwo = "(2/5) Music Pass disponible, recuperation de la tracklist"
-autoDownloadSub.stepThree = "(3/5) Telechargement de l'aperçu de {0} morceaux"
-autoDownloadSub.stepFour = "(4/5) Telechargement des fichiers des morceaux d'abonnement ({0})"
-autoDownloadSub.stepFive = "(5/5) Telechargement du morceau DLC {0}/{1}"
-autoDownloadSub.finished = "Les morceaux ont ete telecharges !"
-autoDownloadSub.notValid = "Music Pass indisponible ou expire."
-autoDownloadSub.networkIssue = "Serveur inaccessible ou reseau indisponible"
-autoDownloadSub.errorOnCheck = "Impossible de verifier la disponibilite du Music Pass, probablement a cause du reseau."
-autoDownloadSub.otherError = "Erreur pendant le telechargement automatique :\n{0}"
-autoDownloadSub.hideTip = "\nLe message disparaitra dans 5 secondes"
+autoDownloadSub.stepOne = "Téléchargement auto des chansons active\n(1/5) Vérification du Music Pass"
+autoDownloadSub.stepTwo = "(2/5) Music Pass disponible, tracklist en récuperation"
+autoDownloadSub.stepThree = "(3/5) Téléchargement de l'aperçu de {0} morceaux"
+autoDownloadSub.stepFour = "(4/5) Téléchargement des fichiers des chansons de l'abonnement ({0})"
+autoDownloadSub.stepFive = "(5/5) Téléchargement des chansons DLC {0}/{1}"
+autoDownloadSub.finished = "Les chansons ont été téléchargés!"
+autoDownloadSub.notValid = "Music Pass indisponible ou expiré."
+autoDownloadSub.networkIssue = "Serveur inaccessible ou réseau indisponible"
+autoDownloadSub.errorOnCheck = "Impossible de vérifier la disponibilité du Music Pass, probablement à cause du réseau."
+autoDownloadSub.otherError = "Érreur pendant le téléchargement automatique:\n{0}"
+autoDownloadSub.hideTip = "\nCe message disparaitra dans 5 secondes"
 
-hitStats.hitAspectLabel = "Precision des coups"
-hitStats.rendaLabel = "Roulement"
+hitStats.hitAspectLabel = "Précision des coups"
+hitStats.rendaLabel = "Roul. tam."
 
-tokkunMode.playbackSpeedText = "Vitesse : {0:F1}x"
+tokkunMode.playbackSpeedText = "Vitesse: {0:F1}x"
 
-dressUpMod.rotateDonModelText = "Animation de Don-chan personnalisee activee. Touche T/Y pour le faire tourner"
+dressUpMod.rotateDonModelText = "Animation de DON-chan personnalisée activée. Appuyez sur T/Y pour le faire tourner."
 
-fumenLoader.error.mainText = "Echec du chargement de la partition : {0}\nPartition vide chargee pour eviter un freeze"
-fumenLoader.error.measuresExceed = "Nombre de mesures superieur a 300 ({0})"
-fumenLoader.error.sourceError = "Source musicale incapable de charger la partition\nDetail : {0}"
+fumenLoader.error.mainText = "Échec du chargement de la partition: {0}\nPartition vide chargée pour éviter un freeze"
+fumenLoader.error.measuresExceed = "Nombre de mesures supérieur à 300! ({0})"
+fumenLoader.error.sourceError = "Erreur de chanson, incapable de charger la partition.\nDétails: {0}"
 
-advanceSongSearch.button = "Recherche avancee"
+advanceSongSearch.button = "Recherche avancée"
 advanceSongSearch.confirm = "Rechercher"
-advanceSongSearch.keyword.label = "Mot-cle"
+advanceSongSearch.keyword.label = "Mot-clé"
 advanceSongSearch.keyword.placeholder = "Titre / Alias"
-advanceSongSearch.diffFilter.label = "Filtre de difficulte"
+advanceSongSearch.diffFilter.label = "Filtre de difficulté"
 advanceSongSearch.diffFilter.all = "Tout"
 advanceSongSearch.diffFilter.easy = "Facile"
 advanceSongSearch.diffFilter.normal = "Normal"
@@ -479,91 +479,91 @@ advanceSongSearch.diffFilter.hard = "Difficile"
 advanceSongSearch.diffFilter.oni = "Oni"
 advanceSongSearch.diffFilter.ura = "Ura Oni"
 advanceSongSearch.diffFilter.oni-ura = "Oni + Ura"
-advanceSongSearch.diffFilter.min-level-placeholder = "Niveau min"
-advanceSongSearch.diffFilter.max-level-placeholder = "Niveau max"
+advanceSongSearch.diffFilter.min-level-placeholder = "Niveau min."
+advanceSongSearch.diffFilter.max-level-placeholder = "Niveau max."
 advanceSongSearch.sortMethod.label = "Tri"
 advanceSongSearch.sortMethod.normal = "Ordre normal"
 advanceSongSearch.sortMethod.name-asc = "Nom croissant (A-Z)"
-advanceSongSearch.sortMethod.name-desc = "Nom decroissant (Z-A)"
+advanceSongSearch.sortMethod.name-desc = "Nom décroissant (Z-A)"
 advanceSongSearch.sortMethod.level-asc = "Niveau croissant (bas -> haut)"
-advanceSongSearch.sortMethod.level-desc = "Niveau decroissant (haut -> bas)"
+advanceSongSearch.sortMethod.level-desc = "Niveau décroissant (haut -> bas)"
 advanceSongSearch.sortMethod.score-asc = "Score croissant"
-advanceSongSearch.sortMethod.score-desc = "Score decroissant"
-advanceSongSearch.sortMethod.shinuti-score-asc = "Score Shin-uchi croissant"
-advanceSongSearch.sortMethod.shinuti-score-desc = "Score Shin-uchi decroissant"
-advanceSongSearch.sortMethod.random = "Aleatoire"
+advanceSongSearch.sortMethod.score-desc = "Score décroissant"
+advanceSongSearch.sortMethod.shinuti-score-asc = "Score Shin-Uchi croissant"
+advanceSongSearch.sortMethod.shinuti-score-desc = "Score Shin-Uchi décroissant"
+advanceSongSearch.sortMethod.random = "Aléatoire"
 
-fumenPostProcessing.button = "Post-traitement partition"
-fumenPostProcessing.tip = "Activer un element ici ne s'enregistrera pas dans la sauvegarde et sera desactive au prochain lancement."
-fumenPostProcessing.equalScrollSpeed = "Defilement constant"
-fumenPostProcessing.superSlowScrollSpeed = "C'est un sushi ?"
-fumenPostProcessing.randomScrollSpeed = "Defilement aleatoire par mesure"
-fumenPostProcessing.reverseScrollSpeed = "Ca arrive depuis la gauche ?!"
-fumenPostProcessing.strictJudgeTiming = "Fenetre de jugement ultra serree"
+fumenPostProcessing.button = "Mods post-traitement"
+fumenPostProcessing.tip = "L'utilisation d'une option dans ce menu ne sera pas réflecté dans votre fichier de sauv., et sera désactivé au prochaîn lancement du jeu."
+fumenPostProcessing.equalScrollSpeed = "Défilement constant"
+fumenPostProcessing.superSlowScrollSpeed = "Défilement lent"
+fumenPostProcessing.randomScrollSpeed = "Défilement aléatoire"
+fumenPostProcessing.reverseScrollSpeed = "Défilement inversé"
+fumenPostProcessing.strictJudgeTiming = "Jugement très dur"
 
-config.Enabled = "Activer ce mod"
-config.EnableBetterBigHitPatch = "Traiter un seul cote comme gros coup (Big Hit)"
-config.BetterBigHitSkipOnlineCheck = """Ignorer la verification online pour le patch Big Hit
-(Attention : risque de detection comme triche en ligne)"""
-config.EnableSkipBootScreenPatch = "Passer l'ecran de boot"
-config.EnableSkipRewardPatch = "Passer la pop-up de recompense"
-config.EnableBufferedInputPatch = "Activer le patch de buffer d'entree"
-config.EnableMinimumLatencyAudioClient = "Client audio a latence minimale (peut reduire le retard sonore)"
-config.EnableAutoDownloadSubscriptionSongs = "Telecharger automatiquement les morceaux d'abonnement (beta)"
-config.EnableOnpuTextRail = "Rail de texte facon Nijiiro sous les onpu"
-config.EnableHighPrecisionTimerPatch = "Timer haute precision (peut aider la fenetre de jugement)"
-config.EnableNearestNeighborOnpuPatch = "Onpu en mode nearest neighbor (look plus pixel)"
-config.EnableNoShadowOnpuPatch = "Onpu sans ombre (moins de motion blur, charge variable)"
-config.EnableCustomDressAnimationMod = "UI simple pour changer l'animation de Don-chan dans l'habillage"
+config.Enabled = "Active le mod."
+config.EnableBetterBigHitPatch = "Traiter un seul côté comme un gros coup (Big Hit)"
+config.BetterBigHitSkipOnlineCheck = """Ignorer la vérification online pour le patch Big Hit
+(ATTENTION: Ceci pourrait être considéré comme tricher en ligne. Soyez prudents!)"""
+config.EnableSkipBootScreenPatch = "Passer l'écran de démarrage"
+config.EnableSkipRewardPatch = "Passer le pop-up de récompenses"
+config.EnableBufferedInputPatch = "Active le patch Buffered Input"
+config.EnableMinimumLatencyAudioClient = "Client audio à latence minimale (peut réduire le retard sonore)"
+config.EnableAutoDownloadSubscriptionSongs = "Télécharge automatiquement les chansons du Music Pass (béta)"
+config.EnableOnpuTextRail = "Rail de texte style arcade sous les notes"
+config.EnableHighPrecisionTimerPatch = "Timer haute precision (peut aider la fenêtre de jugement)"
+config.EnableNearestNeighborOnpuPatch = "Notes en mode Nearest Neighbor (pourrait rendre les notes plus pixéllisés)"
+config.EnableNoShadowOnpuPatch = "Notes sans ombre (moins de motion blur, mais peut réduire la performance)"
+config.EnableCustomDressAnimationMod = "UI simple pour changer l'animation de DON-chan dans le menu des Tenues"
 config.EnableOpenInviteFriendDialogButton = "Bouton d'invitation dans le lobby online entre amis"
 config.EnableHitStatsPanelPatch = "Afficher le panneau de stats pendant la session"
-config.EnableLouderSongPatch = "Autoriser un mix un peu plus fort"
-config.EnableScoreRankIcon = "Afficher l'icone de rang de score en jeu"
-config.EnableTatakonKeyboardSongSelect = "Selection des morceaux au Tatacon/clavier (instable)"
-config.AutoPlayRendaSpeed = """Vitesse des roulements en auto-play
-La vitesse max depend du taux de rafraichissement de l'ecran
-0 pour ne pas auto-rouler"""
-config.EnableInstantRelayPatch = "Patch de transition rapide entre ecrans"
-config.CustomTitleSceneEnterSceneName = """Scene cible en sortie de l'ecran titre
+config.EnableLouderSongPatch = "Autoriser les chansons de jouer un peu plus fort"
+config.EnableScoreRankIcon = "Afficher l'icône du Score Rank en jeu"
+config.EnableTatakonKeyboardSongSelect = "Sélection des chansons au TaTaCon/Clavier (instable)"
+config.AutoPlayRendaSpeed = """Vitesse des roul. tam. en mode Auto
+La vitesse max depend du taux de rafraîchissement de l'ecran.
+Mettre cette valeur à 0 désactive les roul. tam. en mode Auto."""
+config.EnableInstantRelayPatch = "Patch de transition rapide entre écrans"
+config.CustomTitleSceneEnterSceneName = """Scene ciblé en sortie de l'écran titre
 Vide = menu principal. Valeurs conseillees :
-- `SongSelect` : selection 1P
-- `TrainingEntrance` : menu d'entrainement
+- `SongSelect` : sélection 1P
+- `TrainingEntrance` : menu d'entraînement
 """
-config.Debug.SaveRawSaveData = "Sauvegarder les datas en clair (debug)"
-config.Debug.ExportGameData = "Exporter les datas du jeu (debug)"
-config.Debug.ExportMusicNames = "Exporter la liste interne des morceaux (debug)"
+config.Debug.SaveRawSaveData = "Sauvegarder les données en brute (débug)"
+config.Debug.ExportGameData = "Exporter les données du jeu (débug)"
+config.Debug.ExportMusicNames = "Exporter la liste interne des chansons (débug)"
 
 config.HitOffset.Enable = "Afficher l'indicateur d'avance/retard"
 config.HitOffset.InvertColor = "Inverser les couleurs rapide/lent"
-config.HitOffset.RyoRange = "Fenetre de Ryo en ms (+/-). -1f pour suivre la difficulte."
+config.HitOffset.RyoRange = "Fenetre de BONs en ms (+/-). -1f pour suivre la difficulté."
 
-config.BilibiliLiveStreamSongRequest.Enable = "Activer les requetes de morceaux Bilibili Live"
+config.BilibiliLiveStreamSongRequest.Enable = "Activer les requêtes de morceaux Bilibili Live"
 config.BilibiliLiveStreamSongRequest.RoomId = "ID de salon Bilibili Live"
 config.BilibiliLiveStreamSongRequest.Token = """Token Bilibili Live
-Souvent le cookie SESSDATA
-Sans token, impossible d'identifier correctement l'expediteur"""
+Souvent le cookie SESSDATA.
+Avec aucun token, il sera impossible d'identifier correctement l'expéditeur"""
 
-config.ExclusiveModeAudio.Enable = """Mode audio exclusif (experimental)
-Donne une latence tres basse et un defilement plus stable
+config.ExclusiveModeAudio.Enable = """Mode WASAPI Exclusive (expérimental)
+Donne une latence très basse et un défilement plus stable
 Peut toutefois causer des soucis sonores ou des crashs selon la machine"""
-config.ExclusiveModeAudio.SampleRate = """Frequence d'echantillonnage en mode exclusif
+config.ExclusiveModeAudio.SampleRate = """Fréquence d'échantillons pour WASAPI Exclusive
 Doit correspondre au format de sortie
-0 pour utiliser le format mixe du peripherique"""
-config.ExclusiveModeAudio.BitPerSample = "Bits par echantillon en mode exclusif (souvent 16 ou 24)"
-config.ExclusiveModeAudio.EnableCriWarePluginLogging = """Activer les logs du plugin CriWare
+0 pour utiliser le format par défaut du périphérique"""
+config.ExclusiveModeAudio.BitPerSample = "Bits par échantillon en WASAPI Exclusive (souvent 16 ou 24)"
+config.ExclusiveModeAudio.EnableCriWarePluginLogging = """Active les logs du plugin CriWare
 Utile pour diagnostiquer les soucis audio"""
 
-config.CustomPlayerName.Enable = "Activer le pseudo personnalise"
-config.CustomPlayerName.Name = "Pseudo personnalise"
+config.CustomPlayerName.Enable = "Activer le pseudo personnalisé"
+config.CustomPlayerName.Name = "Pseudo personnalisé"
 
-config.BufferedInput.Enable = "Activer le buffer d'entree"
-config.BufferedInput.MaxBufferedInputCount = "Nombre maximal d'entrées tamponnees par cote"
+config.BufferedInput.Enable = "Activer le mode Buffered Input"
+config.BufferedInput.MaxBufferedInputCount = "Nombre maximal d'entrées tamponnées par côté"
 
-config.CustomSongs.Enable = """Activer les morceaux persos (tres experimental)
-Incompatible avec le mod TekaTeka ! Ne les utilisez pas ensemble !
-L'usage laisse une trace definitive dans votre sauvegarde !
-(La sauvegarde reste normalement lisible apres desactivation)
-Demandez a l'auteur pour plus d'infos."""
+config.CustomSongs.Enable = """Activer les chansons pers. (très experimental)
+Cette option est INCOMPATIBLE avec le mod TekaTeka! NE PAS les utiliser ensemble!
+L'usage laisse une trace DÉFINITIVE dans votre sauvegarde!
+(La sauvegarde reste normalement lisible après désactivation)
+Demandez à l'auteur pour plus d'infos!"""
 
 config.TokkunMode.Enable = """Activer le mode Tokkun-like (tres experimental)
 En solo, X/C pour pause/reprise de la musique
