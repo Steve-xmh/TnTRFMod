@@ -2,8 +2,10 @@
 using System.Collections;
 using BepInEx;
 using BepInEx.Unity.IL2CPP;
+using BepInEx.Unity.IL2CPP.Utils;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
 using HarmonyLib;
+using Il2CppInterop.Runtime.Attributes;
 using UnityEngine;
 using Il2CppIEnumerator = Il2CppSystem.Collections.IEnumerator;
 using Logger = TnTRFMod.Utils.Logger;
@@ -39,21 +41,25 @@ public class BepInExPlugin : BasePlugin
             TnTrfMod.Instance.OnUpdate();
         }
 
+        [HideFromIl2Cpp]
         public void RunCoroutine(Il2CppIEnumerator routine)
         {
             StartCoroutine(routine);
         }
 
+        [HideFromIl2Cpp]
         public void RunCoroutine(IEnumerable routine)
         {
-            StartCoroutine(ExecCoroutineWithIEnumerable(routine).WrapToIl2Cpp());
+            this.StartCoroutine(ExecCoroutineWithIEnumerable(routine));
         }
 
+        [HideFromIl2Cpp]
         public void RunCoroutine(IEnumerator routine)
         {
-            StartCoroutine(routine.WrapToIl2Cpp());
+            this.StartCoroutine(routine);
         }
 
+        [HideFromIl2Cpp]
         private static IEnumerator ExecCoroutineWithIEnumerable(IEnumerable routine)
         {
             yield return routine;

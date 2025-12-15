@@ -10,7 +10,6 @@ using Logger = TnTRFMod.Utils.Logger;
 using Cysharp.Threading.Tasks;
 using Scripts.OutGame.Common;
 using Scripts.OutGame.SongSelect;
-
 #elif MELONLOADER
 using Il2CppCysharp.Threading.Tasks;
 using Il2CppScripts.OutGame.Common;

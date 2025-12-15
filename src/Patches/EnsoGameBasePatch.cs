@@ -1,9 +1,12 @@
 #if BEPINEX
+using Blittables;
 using Cysharp.Threading.Tasks;
 #elif MELONLOADER
+using Il2CppBlittables;
 using Il2CppCysharp.Threading.Tasks;
 #endif
 using HarmonyLib;
+using Il2CppInterop.Runtime;
 using TnTRFMod.Utils;
 using TnTRFMod.Utils.Fumen;
 using UnityEngine;
@@ -214,6 +217,90 @@ public class EnsoGameBasePatch
             }
         }
     }
+
+    private static unsafe bool GetCurrentOnpuFixed(
+        OnpuPlayer instance,
+        ref GameDrawInfo drawInfo,
+        int prefabType,
+        ref OnpuBase onpu)
+    {
+        var instancePtr = IL2CPP.Il2CppObjectBaseToPtrNotNull(instance);
+
+        // 获取 GameDrawInfo 的数据指针（通过 unbox）
+        var drawInfoObjPtr = IL2CPP.Il2CppObjectBaseToPtrNotNull(drawInfo);
+        var drawInfoDataPtr = IL2CPP.il2cpp_object_unbox(drawInfoObjPtr);
+
+        var args = stackalloc IntPtr[3];
+        args[0] = drawInfoDataPtr; // 传递 unbox 后的数据指针
+        args[1] = (IntPtr)(&prefabType);
+
+        var onpuPtr = IL2CPP.Il2CppObjectBaseToPtr(onpu);
+        args[2] = (IntPtr)(&onpuPtr);
+
+        var NativeMethodInfoPtr_GetCurrentOnpu_Private_Boolean_byref_GameDrawInfo_Int32_byref_OnpuBase_0 =
+            IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<OnpuPlayer>.NativeClassPtr, 100668180);
+
+        var exc = IntPtr.Zero;
+        var result = IL2CPP.il2cpp_runtime_invoke(
+            NativeMethodInfoPtr_GetCurrentOnpu_Private_Boolean_byref_GameDrawInfo_Int32_byref_OnpuBase_0,
+            instancePtr,
+            (void**)args,
+            ref exc);
+
+        Il2CppException.RaiseExceptionIfNecessary(exc);
+
+        // 更新 onpu 输出参数
+        onpu = onpuPtr == IntPtr.Zero ? null : new OnpuBase(onpuPtr);
+
+        return *(bool*)IL2CPP.il2cpp_object_unbox(result);
+    }
+
+    // [HarmonyPatch(typeof(OnpuPlayer))]
+    // [HarmonyPatch(nameof(OnpuPlayer.UpdateOnpu))]
+    // [HarmonyPostfix]
+    // private static void OnpuPlayer_UpdateOnpu_Postfix(OnpuPlayer __instance)
+    // {
+    //     var frameResults = __instance.ensoParam.GetFrameResults();
+    //     if (frameResults == null || frameResults.gameDrawInfoNum == null || frameResults.WasCollected)
+    //         return;
+    //
+    //     var count = (int)frameResults.gameDrawInfoNum[__instance.playerNo];
+    //
+    //     for (var i = count - 1; i >= 0; i--)
+    //     {
+    //         var gameDrawInfo = frameResults.gameDrawInfo[__instance.playerNo]?[i];
+    //
+    //         if (gameDrawInfo == null || gameDrawInfo.WasCollected) continue;
+    //
+    //         var onpuCategory = gameDrawInfo.type switch
+    //         {
+    //             -1 => OnpuBase.PrefabTypes.Bar,
+    //             6 or 9 => OnpuBase.PrefabTypes.Renda,
+    //             12 => OnpuBase.PrefabTypes.Imo,
+    //             _ => OnpuBase.PrefabTypes.Normal
+    //         };
+    //
+    //         var onpuType = (TaikoCoreTypes.OnpuTypes)gameDrawInfo.onpu.onpuType;
+    //
+    //         // OnpuBase.PrefabTypes.Renda
+    //
+    //         if (onpuType is not (TaikoCoreTypes.OnpuTypes.Renda or TaikoCoreTypes.OnpuTypes.DaiRenda or TaikoCoreTypes.OnpuTypes.GekiRenda))
+    //             continue;
+    //
+    //         OnpuBase? onpu = null;
+    //         OnpuBase? tailOnpu = null;
+    //         var isExistingOnpu = GetCurrentOnpuFixed(__instance, ref gameDrawInfo, (int)onpuCategory, ref onpu);
+    //
+    //         if (!isExistingOnpu)
+    //             continue;
+    //
+    //         var sr = onpu.spriteRenderer;
+    //         if (sr != null)
+    //             sr.color = new Color(1f, 0f, 0f, 1f);
+    //
+    //         // __instance.GetCurrentOnpu(ref gameDrawInfo,)
+    //     }
+    // }
 
     // [HarmonyPatch(typeof(EnsoGameManager))]
     // [HarmonyPatch(nameof(EnsoGameManager.Update))]

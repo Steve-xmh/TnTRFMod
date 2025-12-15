@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Runtime;
 using System.Runtime.InteropServices;
 using Il2CppInterop.Runtime;
@@ -30,7 +31,7 @@ public class TnTrfMod
 {
     public const string MOD_NAME = "TnTRFMod";
     public const string MOD_AUTHOR = "SteveXMH";
-    public const string MOD_VERSION = "0.8.2";
+    public const string MOD_VERSION = "0.8.3";
 #if BEPINEX
     public const string MOD_LOADER = "BepInEx";
 #endif
@@ -398,6 +399,9 @@ public class TnTrfMod
 
     public readonly ConcurrentQueue<Action> RunOnMainThread = new();
 
+    private double AverageGCTimeMs;
+    private int GCSampleCount;
+
     public void OnUpdate()
     {
         if (!enableMod.Value) return;
@@ -413,7 +417,15 @@ public class TnTrfMod
             shouldInvokeLowLatencyGC |= scene.LowLatencyMode;
         }
 
-        if (shouldInvokeLowLatencyGC) GC.Collect(0, GCCollectionMode.Forced);
+        if (shouldInvokeLowLatencyGC)
+        {
+            var stopwatch = Stopwatch.StartNew();
+            GC.Collect(0, GCCollectionMode.Forced);
+            stopwatch.Stop();
+            AverageGCTimeMs = (AverageGCTimeMs * GCSampleCount + stopwatch.Elapsed.TotalMilliseconds) /
+                              (GCSampleCount + 1);
+            GCSampleCount += 1;
+        }
     }
 
     private void OnSceneWasLoaded(Scene scene, LoadSceneMode mode)
@@ -439,6 +451,8 @@ public class TnTrfMod
             GC.Collect(0, GCCollectionMode.Forced, true, true);
             GC.Collect(1, GCCollectionMode.Forced, true, true);
             GC.Collect(2, GCCollectionMode.Forced, true, true);
+            AverageGCTimeMs = 0;
+            GCSampleCount = 0;
         }
 
         Logger.Info($"OnSceneWasLoaded {sceneName} ended, took {(DateTime.Now - time).TotalMilliseconds:N0}ms");
@@ -466,6 +480,8 @@ public class TnTrfMod
             GC.Collect(0, GCCollectionMode.Forced, true, true);
             GC.Collect(1, GCCollectionMode.Forced, true, true);
             GC.Collect(2, GCCollectionMode.Forced, true, true);
+            Logger.Info("Average GC Time during this scene: " +
+                        $"{(GCSampleCount == 0 ? 0 : AverageGCTimeMs):N2}ms over {GCSampleCount} collections");
         }
 
         Logger.Info(

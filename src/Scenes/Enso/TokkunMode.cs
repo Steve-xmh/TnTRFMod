@@ -1,15 +1,14 @@
+#if BEPINEX
+using TMPro;
+#elif MELONLOADER
+using Il2CppTMPro;
+#endif
 using TnTRFMod.Patches;
 using TnTRFMod.Ui.Tokkun;
 using TnTRFMod.Ui.Widgets;
 using TnTRFMod.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
-#if BEPINEX
-using TMPro;
-
-#elif MELONLOADER
-using Il2CppTMPro;
-#endif
 
 namespace TnTRFMod.Scenes.Enso;
 

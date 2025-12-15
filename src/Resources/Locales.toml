@@ -17,7 +17,7 @@ autoDownloadSub.hideTip = "\n文字信息将在 5 秒后消失"
 hitStats.hitAspectLabel = "音符命中率"
 hitStats.rendaLabel = "连打"
 
-tokkunMode.playbackSpeedText = "速度: {0:F1}x"
+tokkunMode.playbackSpeedText = "速度: {0:F2}x"
 
 dressUpMod.rotateDonModelText = "自定义动画功能已启用，按下 T/Y 键可旋转小咚"
 
@@ -170,7 +170,7 @@ autoDownloadSub.hideTip = "\nText message will disappear in 5 seconds..."
 hitStats.hitAspectLabel = "Hit Rate"
 hitStats.rendaLabel = "Rolls"
 
-tokkunMode.playbackSpeedText = "Playback Speed: {0:F1}x"
+tokkunMode.playbackSpeedText = "Playback Speed: {0:F2}x"
 
 dressUpMod.rotateDonModelText = "Custom dress animation feature is enabled, press T/Y key to rotate don-chan"
 
@@ -310,7 +310,7 @@ autoDownloadSub.hideTip = "\nこのメッセージは 5 秒後に消えます"
 hitStats.hitAspectLabel = "音符精度"
 hitStats.rendaLabel = "連打"
 
-tokkunMode.playbackSpeedText = "再生速度: {0:F1}x"
+tokkunMode.playbackSpeedText = "再生速度: {0:F2}x"
 
 dressUpMod.rotateDonModelText = "着せ替えモーションをカスタム中。T/Y キーでどんちゃんを回転できます"
 
@@ -459,7 +459,7 @@ autoDownloadSub.hideTip = "\nCe message disparaitra dans 5 secondes"
 hitStats.hitAspectLabel = "Précision des coups"
 hitStats.rendaLabel = "Roul. tam."
 
-tokkunMode.playbackSpeedText = "Vitesse: {0:F1}x"
+tokkunMode.playbackSpeedText = "Vitesse: {0:F2}x"
 
 dressUpMod.rotateDonModelText = "Animation de DON-chan personnalisée activée. Appuyez sur T/Y pour le faire tourner."
 
@@ -608,7 +608,7 @@ autoDownloadSub.hideTip = "\nIl messaggio scomparira tra 5 secondi"
 hitStats.hitAspectLabel = "Precisione colpi"
 hitStats.rendaLabel = "Rullo"
 
-tokkunMode.playbackSpeedText = "Velocita: {0:F1}x"
+tokkunMode.playbackSpeedText = "Velocita: {0:F2}x"
 
 dressUpMod.rotateDonModelText = "Animazione di Don-chan personalizzata attiva: premi T/Y per ruotarlo"
 
@@ -757,7 +757,7 @@ autoDownloadSub.hideTip = "\nText verschwindet in 5 Sekunden"
 hitStats.hitAspectLabel = "Trefferquote"
 hitStats.rendaLabel = "Trommelwirbel"
 
-tokkunMode.playbackSpeedText = "Tempo: {0:F1}x"
+tokkunMode.playbackSpeedText = "Tempo: {0:F2}x"
 
 dressUpMod.rotateDonModelText = "Don-chan-Animation angepasst, mit T/Y drehen"
 
@@ -906,7 +906,7 @@ autoDownloadSub.hideTip = "\nEl mensaje desaparecera en 5 segundos"
 hitStats.hitAspectLabel = "Precision de golpes"
 hitStats.rendaLabel = "Redoble"
 
-tokkunMode.playbackSpeedText = "Velocidad: {0:F1}x"
+tokkunMode.playbackSpeedText = "Velocidad: {0:F2}x"
 
 dressUpMod.rotateDonModelText = "Animacion personalizada activa; pulsa T/Y para girar a Don-chan"
 
@@ -1055,7 +1055,7 @@ autoDownloadSub.hideTip = "\n文字訊息將在 5 秒後消失"
 hitStats.hitAspectLabel = "音符命中率"
 hitStats.rendaLabel = "連打"
 
-tokkunMode.playbackSpeedText = "速度：{0:F1}x"
+tokkunMode.playbackSpeedText = "速度：{0:F2}x"
 
 dressUpMod.rotateDonModelText = "客製服裝動作已啟用，按下 T/Y 鍵可轉動小咚"
 
@@ -1208,7 +1208,7 @@ autoDownloadSub.hideTip = "\n메시지는 5초 후 사라집니다"
 hitStats.hitAspectLabel = "노트 명중률"
 hitStats.rendaLabel = "연타"
 
-tokkunMode.playbackSpeedText = "속도: {0:F1}x"
+tokkunMode.playbackSpeedText = "속도: {0:F2}x"
 
 dressUpMod.rotateDonModelText = "맞춤 의상 모션 활성화, T/Y 키로 동짱을 회전"
 

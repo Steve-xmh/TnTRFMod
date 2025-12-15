@@ -6,7 +6,7 @@
         <TargetFramework>net6.0</TargetFramework>
         <AssemblyName>net.stevexmh.$(ModName)</AssemblyName>
         <Product>TnTRFMod</Product>
-        <Version>0.8.2</Version>
+        <Version>0.8.3</Version>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <Nullable>enable</Nullable>
         <RestoreAdditionalProjectSources>
@@ -26,6 +26,7 @@
         <DebugType>embedded</DebugType>
         <Optimize>true</Optimize>
         <LangVersion>default</LangVersion>
+        <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
     <Target Name="UserFile" AfterTargets="PreBuildEvent">

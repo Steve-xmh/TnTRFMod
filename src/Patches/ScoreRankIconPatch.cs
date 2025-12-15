@@ -6,7 +6,6 @@ using Logger = TnTRFMod.Utils.Logger;
 
 #if BEPINEX
 using Scripts.OutGame.SongSelect;
-
 #elif MELONLOADER
 using Il2CppScripts.OutGame.SongSelect;
 #endif

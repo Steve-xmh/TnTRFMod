@@ -1,11 +1,11 @@
-﻿using System.Runtime.InteropServices;
-using HarmonyLib;
-using UnityEngine;
-using UnityEngine.InputSystem;
-#if BEPINEX
+﻿#if BEPINEX
 using Scripts.OutGame.SongSelect;
 #endif
 
+using System.Runtime.InteropServices;
+using HarmonyLib;
+using UnityEngine;
+using UnityEngine.InputSystem;
 #if MELONLOADER
 using Il2CppScripts.OutGame.SongSelect;
 #endif

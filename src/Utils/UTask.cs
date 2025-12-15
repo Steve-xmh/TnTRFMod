@@ -1,13 +1,16 @@
 using System.Collections;
 using System.Runtime.CompilerServices;
+using TnTRFMod.Loader;
+using Il2CppIEnumerator = Il2CppSystem.Collections.IEnumerator;
+
 #if BEPINEX
 using Il2CppInterop.Runtime;
+using BepInEx.Unity.IL2CPP.Utils.Collections;
 using CancellationToken = Il2CppSystem.Threading.CancellationToken;
 using Exception = Il2CppSystem.Exception;
 using Object = Il2CppSystem.Object;
 using YieldAwaitable = Cysharp.Threading.Tasks.YieldAwaitable;
 using Cysharp.Threading.Tasks;
-
 #elif MELONLOADER
 using Il2CppCysharp.Threading.Tasks;
 using Il2CppInterop.Runtime;
@@ -266,6 +269,15 @@ public static class UTaskExt
             });
         });
         return source.Task;
+    }
+
+    public static Il2CppIEnumerator ToIl2CppIEnumerator(this IEnumerator enumerator)
+    {
+#if BEPINEX
+        return enumerator.WrapToIl2Cpp();
+#else
+        return MelonLoaderMod.ConvertToIl2CppIEnumerator(enumerator);
+#endif
     }
 
     public static UniTask<T> ToUniTask<T>(this Task<T> thisTask) where T : Object

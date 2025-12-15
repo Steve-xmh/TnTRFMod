@@ -1,15 +1,14 @@
-﻿using HarmonyLib;
-using TnTRFMod.Utils;
-#if BEPINEX
+﻿#if BEPINEX
 using Scripts.Common.LoadingScreen;
 using Scripts.Common.Sound;
 using Scripts.OutGame.SongSelect;
-
 #elif MELONLOADER
 using Il2CppScripts.Common.LoadingScreen;
 using Il2CppScripts.Common.Sound;
 using Il2CppScripts.OutGame.SongSelect;
 #endif
+using HarmonyLib;
+using TnTRFMod.Utils;
 
 namespace TnTRFMod.Patches;
 

@@ -1,12 +1,11 @@
-using HarmonyLib;
 #if BEPINEX
 using Cysharp.Threading.Tasks;
 using Scripts.OutGame.Title;
-
 #elif MELONLOADER
 using Il2CppCysharp.Threading.Tasks;
 using Il2CppScripts.OutGame.Title;
 #endif
+using HarmonyLib;
 
 namespace TnTRFMod.Patches;
 

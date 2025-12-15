@@ -1,8 +1,8 @@
-﻿using HarmonyLib;
-#if BEPINEX
+﻿#if BEPINEX
 using Scripts.EnsoGame.Network;
 #endif
 
+using HarmonyLib;
 #if MELONLOADER
 using Il2CppScripts.EnsoGame.Network;
 #endif

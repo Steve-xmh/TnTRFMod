@@ -6,7 +6,6 @@ using Logger = TnTRFMod.Utils.Logger;
 #if BEPINEX
 using Cysharp.Threading.Tasks;
 using TMPro;
-
 #elif MELONLOADER
 using Il2CppCysharp.Threading.Tasks;
 using Il2CppTMPro;

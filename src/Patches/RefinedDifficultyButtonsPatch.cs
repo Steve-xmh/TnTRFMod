@@ -1,13 +1,9 @@
-using HarmonyLib;
-using UnityEngine;
-using UnityEngine.UI;
 #if BEPINEX
 using Scripts.Common;
 using Scripts.OutGame.SongSelect;
 using Scripts.OutGame.SongSelect.DiffSetting;
 using Scripts.OutGame.Training;
 using SoundLabelClass = SoundLabel.SoundLabel;
-
 #elif MELONLOADER
 using Il2CppScripts.Common;
 using Il2CppScripts.OutGame.SongSelect;
@@ -15,6 +11,9 @@ using Il2CppScripts.OutGame.SongSelect.DiffSetting;
 using Il2CppScripts.OutGame.Training;
 using SoundLabelClass = Il2CppSoundLabel.SoundLabel;
 #endif
+using HarmonyLib;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace TnTRFMod.Patches;
 

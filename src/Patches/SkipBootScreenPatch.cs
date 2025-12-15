@@ -1,11 +1,11 @@
-﻿using HarmonyLib;
-using UnityEngine;
-using UnityEngine.SceneManagement;
-#if BEPINEX
+﻿#if BEPINEX
 using Scripts.OutGame.Boot;
 using Scripts.OutGame.Common;
 #endif
 
+using HarmonyLib;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 #if MELONLOADER
 using Il2CppScripts.OutGame.Boot;
 using Il2CppScripts.OutGame.Common;
