@@ -3,7 +3,6 @@ using System.Collections;
 using BepInEx;
 using BepInEx.Unity.IL2CPP;
 using BepInEx.Unity.IL2CPP.Utils;
-using BepInEx.Unity.IL2CPP.Utils.Collections;
 using HarmonyLib;
 using Il2CppInterop.Runtime.Attributes;
 using UnityEngine;

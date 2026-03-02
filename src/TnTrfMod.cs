@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Runtime;
 using System.Runtime.InteropServices;
 using Il2CppInterop.Runtime;
@@ -74,6 +73,7 @@ public class TnTrfMod
     public ConfigEntry<bool> enableTatakonKeyboardSongSelect = ConfigEntry<bool>.Noop;
     public ConfigEntry<bool> enableInstantRelayPatch = ConfigEntry<bool>.Noop;
     public ConfigEntry<string> customTitleSceneEnterSceneName = ConfigEntry<string>.Noop;
+    public ConfigEntry<int> modifyMeasuresCapacity = ConfigEntry<int>.Noop;
 
     // 特训模式
     public ConfigEntry<bool> enableTokkunGamePatch = ConfigEntry<bool>.Noop;
@@ -154,6 +154,9 @@ public class TnTrfMod
             false);
         enableTatakonKeyboardSongSelect = ConfigEntry.Register("General", "EnableTatakonKeyboardSongSelect",
             "config.EnableTatakonKeyboardSongSelect", false);
+        // 小节线容量扩张功能
+        modifyMeasuresCapacity =
+            ConfigEntry.Register("General", "ModifyMeasuresCapacity", "config.ModifyMeasuresCapacity", 65536);
         // 敲击时差功能
         enableHitOffset = ConfigEntry.Register("HitOffset", "Enable",
             "config.HitOffset.Enable",
@@ -252,6 +255,8 @@ public class TnTrfMod
             var msg = Marshal.PtrToStringAnsi(buffer);
             Console.Out.Write(msg);
         });
+        if (modifyMeasuresCapacity.Value > 300)
+            LibTaikoPatches.InitExpandCSyousetsu(modifyMeasuresCapacity.Value);
         _ = SongAliasTable.ReloadAliasTable();
 
         SceneManager.sceneLoaded +=
@@ -328,7 +333,7 @@ public class TnTrfMod
         result &= PatchClass<AutoDownloadSubscriptionSongs>(enableAutoDownloadSubscriptionSongs);
         result &= PatchClass<EnsoGameBasePatch>();
         result &= PatchClass<LibTaikoPatches>();
-        result &= PatchClass<SmoothEnsoGamePatch>();
+        // result &= PatchClass<SmoothEnsoGamePatch>();
         result &= PatchClass<RefinedDifficultyButtonsPatch>();
         result &= PatchClass<FumenPostProcessingPatch>();
         result &= PatchClass<CustomTitleSceneEnterPatch>();
@@ -410,22 +415,18 @@ public class TnTrfMod
                 action?.Invoke();
 
         if (!_scenes.TryGetValue(sceneName, out var scenes)) return;
-        var shouldInvokeLowLatencyGC = false;
-        foreach (var scene in scenes)
-        {
-            scene.Update();
-            shouldInvokeLowLatencyGC |= scene.LowLatencyMode;
-        }
-
-        if (shouldInvokeLowLatencyGC)
-        {
-            var stopwatch = Stopwatch.StartNew();
-            GC.Collect(0, GCCollectionMode.Forced);
-            stopwatch.Stop();
-            AverageGCTimeMs = (AverageGCTimeMs * GCSampleCount + stopwatch.Elapsed.TotalMilliseconds) /
-                              (GCSampleCount + 1);
-            GCSampleCount += 1;
-        }
+        // var shouldInvokeLowLatencyGC = false;
+        foreach (var scene in scenes) scene.Update();
+        // shouldInvokeLowLatencyGC |= scene.LowLatencyMode;
+        // if (shouldInvokeLowLatencyGC)
+        // {
+        //     var stopwatch = Stopwatch.StartNew();
+        //     GC.Collect(0, GCCollectionMode.Forced);
+        //     stopwatch.Stop();
+        //     AverageGCTimeMs = (AverageGCTimeMs * GCSampleCount + stopwatch.Elapsed.TotalMilliseconds) /
+        //                       (GCSampleCount + 1);
+        //     GCSampleCount += 1;
+        // }
     }
 
     private void OnSceneWasLoaded(Scene scene, LoadSceneMode mode)
@@ -448,6 +449,7 @@ public class TnTrfMod
 
         if (shouldInvokeLowLatencyGC)
         {
+            // GCSettings.LatencyMode = GCLatencyMode.LowLatency;
             GC.Collect(0, GCCollectionMode.Forced, true, true);
             GC.Collect(1, GCCollectionMode.Forced, true, true);
             GC.Collect(2, GCCollectionMode.Forced, true, true);

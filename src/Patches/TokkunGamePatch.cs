@@ -7,6 +7,7 @@ using Logger = TnTRFMod.Utils.Logger;
 
 #if BEPINEX
 using SoundLabelClass = SoundLabel.SoundLabel;
+
 #elif MELONLOADER
 using SoundLabelClass = Il2CppSoundLabel.SoundLabel;
 #endif

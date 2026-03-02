@@ -10,6 +10,7 @@ using Logger = TnTRFMod.Utils.Logger;
 using Cysharp.Threading.Tasks;
 using Scripts.OutGame.Common;
 using Scripts.OutGame.SongSelect;
+
 #elif MELONLOADER
 using Il2CppCysharp.Threading.Tasks;
 using Il2CppScripts.OutGame.Common;
@@ -116,7 +117,7 @@ public class AutoDownloadSubscriptionSongs
                             {
                                 var prog = (result * 100).ToString("F1");
                                 Logger.Info($"Downloading song previews: {prog}%");
-                                logText.Text = $"{progressText} ({prog}%)";
+                                logText.Text = $"{progressText.Text} ({prog}%)";
                             }
                         )));
                 }
@@ -133,7 +134,7 @@ public class AutoDownloadSubscriptionSongs
                             {
                                 var prog = (result * 100).ToString("F1");
                                 Logger.Info($"Downloading song files: {prog}%");
-                                logText.Text = $"{progressText} ({prog}%)";
+                                logText.Text = $"{progressText.Text} ({prog}%)";
                             }
                         )));
                 }
@@ -154,7 +155,7 @@ public class AutoDownloadSubscriptionSongs
                                 {
                                     var prog = (result * 100).ToString("F1");
                                     Logger.Info($"Downloading dlc song files: {prog}%");
-                                    logText.Text = $"{progressText} ({prog}%)";
+                                    logText.Text = $"{progressText.Text} ({prog}%)";
                                 }
                             ), true);
                         return task;

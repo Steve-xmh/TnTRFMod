@@ -22,7 +22,7 @@ tokkunMode.playbackSpeedText = "速度: {0:F2}x"
 dressUpMod.rotateDonModelText = "自定义动画功能已启用，按下 T/Y 键可旋转小咚"
 
 fumenLoader.error.mainText = "谱面加载错误：{0}\n已加载空白谱面以避免游戏卡死崩溃"
-fumenLoader.error.measuresExceed = "小节数量超过 300 ({0})"
+fumenLoader.error.measuresExceed = "小节数量超过 {0} ({1})"
 fumenLoader.error.sourceError = "歌曲数据源加载歌曲时出错\n错误详情：{0}"
 
 advanceSongSearch.button = "高级歌曲搜索"
@@ -78,6 +78,10 @@ config.EnableHitStatsPanelPatch = "启用游戏中音符统计面板"
 config.EnableLouderSongPatch = "允许播放更响亮的歌曲"
 config.EnableScoreRankIcon = "启用游戏中分数排名图标"
 config.EnableTatakonKeyboardSongSelect = "启用太鼓键盘歌曲选择（不稳定）"
+config.ModifyMeasuresCapacity = """
+通过补丁手段提高小节线的容量以支持加载超过 300 小节的谱面（未完全测试）
+理论上可以设置为近乎无限，仅当设置为大于 300 时启用。
+"""
 config.AutoPlayRendaSpeed = """自动演奏模式下的连打速度
 最大速度取决于显示器刷新率
 设置为 0 可禁用自动演奏模式下的连打"""
@@ -175,7 +179,7 @@ tokkunMode.playbackSpeedText = "Playback Speed: {0:F2}x"
 dressUpMod.rotateDonModelText = "Custom dress animation feature is enabled, press T/Y key to rotate don-chan"
 
 fumenLoader.error.mainText = "Chart load failed：{0}\nLoaded blank chart to avoid game freeze crash"
-fumenLoader.error.measuresExceed = "The number of measures exceeds 300! ({0})"
+fumenLoader.error.measuresExceed = "The number of measures exceeds {0}! ({1})"
 fumenLoader.error.sourceError = "Music source failed to load chart\nDetail：{0}"
 
 advanceSongSearch.button = "Advanced Song Search"
@@ -231,6 +235,10 @@ config.EnableHitStatsPanelPatch = "Enables a Hit Rate status panel during play."
 config.EnableLouderSongPatch = "Allow to play songs slightly louder."
 config.EnableScoreRankIcon = "Enables the score rank icons during play."
 config.EnableTatakonKeyboardSongSelect = "Enables TaTaCon keyboard on song select. (Unstable)"
+config.ModifyMeasuresCapacity = """
+Apply patches to expand measures limit from 300 to higher capacity. (NOT FULLY TESTED)
+In theory this can be set almost unlimited, only apply when set higher than 300.
+"""
 config.AutoPlayRendaSpeed = "The speed of rolls in Auto-Play mode. the max speed depends on the refresh rate of your monitor. Setting it to 0 will make Auto-Play not hit any rolls."
 config.EnableInstantRelayPatch = "Enable instant relay loading screen patch."
 config.CustomTitleSceneEnterSceneName = """Controls the scene to enter when exiting the title screen.
@@ -315,7 +323,7 @@ tokkunMode.playbackSpeedText = "再生速度: {0:F2}x"
 dressUpMod.rotateDonModelText = "着せ替えモーションをカスタム中。T/Y キーでどんちゃんを回転できます"
 
 fumenLoader.error.mainText = "譜面の読み込みに失敗しました：{0}\nフリーズ防止のため、空の譜面を読み込みました"
-fumenLoader.error.measuresExceed = "小節数が 300 を超えています ({0})"
+fumenLoader.error.measuresExceed = "小節数が {0} を超えています ({1})"
 fumenLoader.error.sourceError = "楽曲データから譜面を読み込めませんでした\n詳細：{0}"
 
 advanceSongSearch.button = "詳細曲検索"
@@ -464,7 +472,7 @@ tokkunMode.playbackSpeedText = "Vitesse: {0:F2}x"
 dressUpMod.rotateDonModelText = "Animation de DON-chan personnalisée activée. Appuyez sur T/Y pour le faire tourner."
 
 fumenLoader.error.mainText = "Échec du chargement de la partition: {0}\nPartition vide chargée pour éviter un freeze"
-fumenLoader.error.measuresExceed = "Nombre de mesures supérieur à 300! ({0})"
+fumenLoader.error.measuresExceed = "Nombre de mesures supérieur à {0}! ({1})"
 fumenLoader.error.sourceError = "Erreur de chanson, incapable de charger la partition.\nDétails: {0}"
 
 advanceSongSearch.button = "Recherche avancée"
@@ -613,7 +621,7 @@ tokkunMode.playbackSpeedText = "Velocita: {0:F2}x"
 dressUpMod.rotateDonModelText = "Animazione di Don-chan personalizzata attiva: premi T/Y per ruotarlo"
 
 fumenLoader.error.mainText = "Caricamento chart fallito: {0}\nCaricata una chart vuota per evitare freeze"
-fumenLoader.error.measuresExceed = "Numero di battute oltre 300 ({0})"
+fumenLoader.error.measuresExceed = "Numero di battute oltre {0} ({1})"
 fumenLoader.error.sourceError = "Sorgente brano non riesce a caricare la chart\nDettaglio: {0}"
 
 advanceSongSearch.button = "Ricerca avanzata"
@@ -762,7 +770,7 @@ tokkunMode.playbackSpeedText = "Tempo: {0:F2}x"
 dressUpMod.rotateDonModelText = "Don-chan-Animation angepasst, mit T/Y drehen"
 
 fumenLoader.error.mainText = "Chart konnte nicht geladen werden: {0}\nLeere Chart geladen, um Einfrieren zu vermeiden"
-fumenLoader.error.measuresExceed = "Anzahl der Takte uber 300 ({0})"
+fumenLoader.error.measuresExceed = "Anzahl der Takte uber {0} ({1})"
 fumenLoader.error.sourceError = "Songquelle konnte die Chart nicht laden\nDetails: {0}"
 
 advanceSongSearch.button = "Erweiterte Suche"
@@ -911,7 +919,7 @@ tokkunMode.playbackSpeedText = "Velocidad: {0:F2}x"
 dressUpMod.rotateDonModelText = "Animacion personalizada activa; pulsa T/Y para girar a Don-chan"
 
 fumenLoader.error.mainText = "Fallo al cargar la chart: {0}\nSe cargo una chart vacia para evitar bloqueos"
-fumenLoader.error.measuresExceed = "Los compases superan 300 ({0})"
+fumenLoader.error.measuresExceed = "Los compases superan {0} ({1})"
 fumenLoader.error.sourceError = "La fuente del tema no pudo cargar la chart\nDetalle: {0}"
 
 advanceSongSearch.button = "Busqueda avanzada"
@@ -1060,7 +1068,7 @@ tokkunMode.playbackSpeedText = "速度：{0:F2}x"
 dressUpMod.rotateDonModelText = "客製服裝動作已啟用，按下 T/Y 鍵可轉動小咚"
 
 fumenLoader.error.mainText = "譜面載入錯誤：{0}\n已載入空白譜面避免卡死或閃退"
-fumenLoader.error.measuresExceed = "小節數量超過 300 ({0})"
+fumenLoader.error.measuresExceed = "小節數量超過 {0} ({1})"
 fumenLoader.error.sourceError = "從歌曲資料來源載入譜面時發生錯誤\n錯誤詳情：{0}"
 
 advanceSongSearch.button = "進階曲目搜尋"
@@ -1213,7 +1221,7 @@ tokkunMode.playbackSpeedText = "속도: {0:F2}x"
 dressUpMod.rotateDonModelText = "맞춤 의상 모션 활성화, T/Y 키로 동짱을 회전"
 
 fumenLoader.error.mainText = "채보 로드 실패: {0}\n게임 멈춤을 막기 위해 빈 채보를 불러왔습니다"
-fumenLoader.error.measuresExceed = "마디 수가 300을 초과했습니다 ({0})"
+fumenLoader.error.measuresExceed = "마디 수가 {0}을 초과했습니다 ({1})"
 fumenLoader.error.sourceError = "곡 소스에서 채보를 불러오지 못했습니다\n자세한 내용: {0}"
 
 advanceSongSearch.button = "고급 곡 검색"

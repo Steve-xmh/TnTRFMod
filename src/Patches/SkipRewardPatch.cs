@@ -2,12 +2,13 @@
 // Under MIT License
 
 
+using HarmonyLib;
 #if BEPINEX
 using Scripts.CrownPoint;
+
 #elif MELONLOADER
 using Il2CppScripts.CrownPoint;
 #endif
-using HarmonyLib;
 
 namespace TnTRFMod.Patches;
 

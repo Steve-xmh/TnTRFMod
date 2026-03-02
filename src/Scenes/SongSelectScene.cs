@@ -13,6 +13,7 @@ using Random = UnityEngine.Random;
 using Scripts.OutGame.SongSelect;
 using Scripts.OutGame.Common;
 using SoundLabelClass = SoundLabel.SoundLabel;
+
 #elif MELONLOADER
 using Il2CppScripts.OutGame.SongSelect;
 using Il2CppScripts.OutGame.Common;

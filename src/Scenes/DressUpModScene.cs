@@ -1,10 +1,10 @@
-﻿#if BEPINEX
+﻿using TnTRFMod.Ui.Widgets;
+using TnTRFMod.Utils;
+using UnityEngine;
+#if BEPINEX
 using TMPro;
 #endif
 
-using TnTRFMod.Ui.Widgets;
-using TnTRFMod.Utils;
-using UnityEngine;
 #if MELONLOADER
 using Il2CppTMPro;
 #endif
