@@ -11,6 +11,7 @@ using TnTRFMod.Utils;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using System.Reflection;
 using UnityEngine.SceneManagement;
 using Exception = System.Exception;
 using Logger = TnTRFMod.Utils.Logger;

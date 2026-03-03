@@ -51,25 +51,25 @@ public class LiveStreamSongSelectPanel
         {
             while (!NeedUpdateNotify)
                 await UniTask.WaitForEndOfFrame().ToTask();
-            await text.Clear();
+            text.Clear();
             foreach (var info in NotifySongList)
             {
-                await text.AppendLine($"用户 {info.DammakuMessage.SenderName} ({info.DammakuMessage.SenderUid}) 点歌");
+                text.AppendLine($"用户 {info.DammakuMessage.SenderName} ({info.DammakuMessage.SenderUid}) 点歌");
                 var curLangName = "";
 
                 if (I18n.CurrentLanguage != DataConst.LanguageType.Japanese)
                 {
-                    await text.Append("  ");
+                    text.Append("  ");
                     curLangName = info.SongInfo.SongNames[(int)I18n.CurrentLanguage];
                     curLangName = curLangName[(curLangName.IndexOf('>') + 1)..];
-                    await text.AppendLine(curLangName);
+                    text.AppendLine(curLangName);
                 }
 
                 var jpName = info.SongInfo.SongNames[(int)DataConst.LanguageType.Japanese];
                 jpName = jpName[(jpName.IndexOf('>') + 1)..];
                 if (curLangName == jpName) continue;
-                await text.Append("  ");
-                await text.AppendLine(jpName);
+                text.Append("  ");
+                text.AppendLine(jpName);
             }
 
             notifyText.Text = text.ToString();
@@ -179,7 +179,7 @@ public class LiveStreamSongSelectPanel
         NotifySongList.Add(info);
         NeedUpdateNotify = true;
         await Task.Delay(TimeSpan.FromSeconds(5));
-        await NotifySongList.Remove(info);
+        NotifySongList.Remove(info);
         NeedUpdateNotify = true;
     }
 

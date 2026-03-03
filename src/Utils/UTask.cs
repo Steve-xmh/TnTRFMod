@@ -120,21 +120,43 @@ public readonly struct UTask(UniTask uniTask)
         return taskCompletionSource.Task;
     }
 
-    public static async Task<T> RunOnIl2Cpp<T>(Func<UniTask<T>> action)
+    public static Task<T> RunOnIl2Cpp<T>(Func<UniTask<T>> action)
     {
-        var taskCompletionSource = new TaskCompletionSource<UniTask<T>>();
+        var tcs = new TaskCompletionSource<T>();
+
         TnTrfMod.Instance.RunOnMainThread.Enqueue(() =>
         {
             try
             {
-                taskCompletionSource.SetResult(action.Invoke());
+                var awaiter = action.Invoke().GetAwaiter();
+
+                void Complete()
+                {
+                    try
+                    {
+                        tcs.SetResult(awaiter.GetResult());
+                    }
+                    catch (System.Exception e)
+                    {
+                        tcs.SetException(e);
+                    }
+                }
+
+                if (awaiter.IsCompleted)
+                    Complete();
+                else
+                {
+                    Action completeAction = () => Complete();
+                    awaiter.UnsafeOnCompleted(completeAction);
+                }
             }
             catch (System.Exception e)
             {
-                taskCompletionSource.SetException(e);
+                tcs.SetException(e);
             }
         });
-        return await await taskCompletionSource.Task;
+
+        return tcs.Task;
     }
 
     public static async Task<T> RunOnIl2CppThreadPool<T>(Func<T> action,
@@ -165,24 +187,50 @@ public readonly struct UTask(UniTask uniTask)
         return task.Result;
     }
 
-    public static async Task<T> RunOnIl2CppThreadPool<T>(Func<UniTask<T>> action)
+    public static Task<T> RunOnIl2CppThreadPool<T>(Func<UniTask<T>> action)
     {
-        var taskCompletionSource = new TaskCompletionSource<UniTask<T>>();
-        await RunOnIl2Cpp(() =>
+        var tcs = new TaskCompletionSource<T>();
+
+        TnTrfMod.Instance.RunOnMainThread.Enqueue(() =>
         {
-            UniTask.RunOnThreadPool(DelegateSupport.ConvertDelegate<Il2CppSystem.Action>(() =>
+            try
             {
-                try
+                UniTask.RunOnThreadPool(DelegateSupport.ConvertDelegate<Il2CppSystem.Action>(() =>
                 {
-                    taskCompletionSource.SetResult(action.Invoke());
-                }
-                catch (System.Exception e)
-                {
-                    taskCompletionSource.SetException(e);
-                }
-            }), true, CancellationToken.None).Forget();
+                    try
+                    {
+                        var awaiter = action.Invoke().GetAwaiter();
+
+                        void Complete()
+                        {
+                            try
+                            {
+                                tcs.SetResult(awaiter.GetResult());
+                            }
+                            catch (System.Exception e)
+                            {
+                                tcs.SetException(e);
+                            }
+                        }
+
+                        if (awaiter.IsCompleted)
+                            Complete();
+                        else
+                            awaiter.UnsafeOnCompleted(DelegateSupport.ConvertDelegate<Il2CppSystem.Action>(Complete));
+                    }
+                    catch (System.Exception e)
+                    {
+                        tcs.SetException(e);
+                    }
+                }), true, CancellationToken.None).Forget();
+            }
+            catch (System.Exception e)
+            {
+                tcs.SetException(e);
+            }
         });
-        return await await taskCompletionSource.Task;
+
+        return tcs.Task;
     }
 
     public static T RunOnIl2CppThreadPoolBlocking<T>(Func<UniTask<T>> action)

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <Configuration Condition=" '$(Configuration)' == '' ">BepInEx</Configuration>
@@ -41,13 +41,13 @@
 
     <!-- BepInEx -->
     <ItemGroup Condition="'$(Configuration)' == 'BepInEx'">
-        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile"/>
-        <Reference Include="$(GameDir)\BepInEx\interop\*.dll" Private="false"/>
+      <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile"/>
+      <Reference Include="$(GameDir)\BepInEx\interop\*.dll" Private="false"/>
     </ItemGroup>
     <PropertyGroup Condition="'$(Configuration)' == 'BepInEx'">
-        <DefineConstants>$(DefineConstants);BEPINEX</DefineConstants>
-        <PlatformTarget>x64</PlatformTarget>
-        <DebugSymbols>true</DebugSymbols>
+      <DefineConstants>$(DefineConstants);BEPINEX</DefineConstants>
+      <PlatformTarget>x64</PlatformTarget>
+      <DebugSymbols>true</DebugSymbols>
     </PropertyGroup>
 
     <!-- MelonLoader -->
