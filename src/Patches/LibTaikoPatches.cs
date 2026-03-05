@@ -210,4 +210,5 @@ internal class LibTaikoPatches
         public uint SizeOfImage;
         public IntPtr EntryPoint;
     }
+    
 }
