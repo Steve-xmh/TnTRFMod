@@ -106,17 +106,26 @@ public class RefinedDifficultyButtonsPatch
     private static SongSelectSceneUiControllerBase GetUiSongControllerBase()
     {
         var sceneName = TnTrfMod.Instance.GetSceneName();
-        if (sceneName == "SongSelectTrainingFree")
+        switch (sceneName)
         {
-            var sceneObj = GameObject.Find("SongSelectTrainingFreeSceneObjects")
-                .GetComponent<SongSelectTrainingFreeSceneObjects>();
-            return sceneObj.UiController!;
-        }
-        else
-        {
-            var sceneObj = GameObject.Find("SongSelectSceneObjects")
-                .GetComponent<SongSelectThunderShrineSceneObjects>();
-            return sceneObj.UiController!;
+            case "SongSelectTrainingFree":
+            {
+                var sceneObj = GameObject.Find("SongSelectTrainingFreeSceneObjects")
+                    .GetComponent<SongSelectTrainingFreeSceneObjects>();
+                return sceneObj.UiController!;
+            }
+            case "SongSelectWar":
+            {
+                var sceneObj = GameObject.Find("SongSelectSceneObjects")
+                    .GetComponent<SongSelectWarSceneObjects>();
+                return sceneObj.UiController!;
+            }
+            default:
+            {
+                var sceneObj = GameObject.Find("SongSelectSceneObjects")
+                    .GetComponent<SongSelectThunderShrineSceneObjects>();
+                return sceneObj.UiController!;
+            }
         }
     }
 
@@ -133,6 +142,9 @@ public class RefinedDifficultyButtonsPatch
             switch (uiSongControllerBase)
             {
                 case SongSelectSceneUiController uiController
+                    when uiController.selectedSong.Stars[(int)uiController.diffSelect.GetHightlightedType()] != 0:
+                    return true;
+                case SongSelectWarSceneUiController uiController
                     when uiController.selectedSong.Stars[(int)uiController.diffSelect.GetHightlightedType()] != 0:
                     return true;
                 case SongSelectSceneUiController uiController:

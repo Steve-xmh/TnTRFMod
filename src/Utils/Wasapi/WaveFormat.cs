@@ -36,7 +36,10 @@ public class WaveFormat
     /// <returns></returns>
     public static WaveFormat MarshalFromPtr(IntPtr pointer)
     {
-        var waveFormat = Marshal.PtrToStructure<WaveFormat>(pointer);
+        var waveFormat = Marshal.PtrToStructure<WaveFormat>(pointer)!;
+        if (waveFormat.waveFormatTag == WaveFormatEncoding.Extensible &&
+            waveFormat.extraSize >= 22)
+            return Marshal.PtrToStructure<WaveFormatExtensible>(pointer)!;
 
         return waveFormat;
     }
@@ -61,6 +64,20 @@ public class WaveFormat
                $"AverageBytesPerSecond: {averageBytesPerSecond}, BlockAlign: {blockAlign}, BitsPerSample: {bitsPerSample}, " +
                $"ExtraSize: {extraSize}";
     }
+
+    public virtual WaveFormat Clone()
+    {
+        return new WaveFormat
+        {
+            waveFormatTag = waveFormatTag,
+            channels = channels,
+            sampleRate = sampleRate,
+            averageBytesPerSecond = averageBytesPerSecond,
+            blockAlign = blockAlign,
+            bitsPerSample = bitsPerSample,
+            extraSize = extraSize
+        };
+    }
 }
 
 [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 2)]
@@ -69,4 +86,27 @@ public class WaveFormatExtensible : WaveFormat
     public short wValidBitsPerSample; // bits of precision, or is wSamplesPerBlock if wBitsPerSample==0
     public int dwChannelMask; // which channels are present in stream
     public Guid subFormat;
+
+    public override string ToString()
+    {
+        return base.ToString() +
+               $", ValidBitsPerSample: {wValidBitsPerSample}, ChannelMask: 0x{dwChannelMask:X}, SubFormat: {subFormat}";
+    }
+
+    public override WaveFormat Clone()
+    {
+        return new WaveFormatExtensible
+        {
+            waveFormatTag = waveFormatTag,
+            channels = channels,
+            sampleRate = sampleRate,
+            averageBytesPerSecond = averageBytesPerSecond,
+            blockAlign = blockAlign,
+            bitsPerSample = bitsPerSample,
+            extraSize = extraSize,
+            wValidBitsPerSample = wValidBitsPerSample,
+            dwChannelMask = dwChannelMask,
+            subFormat = subFormat
+        };
+    }
 }

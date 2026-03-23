@@ -11,7 +11,6 @@ using TnTRFMod.Utils;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
-using System.Reflection;
 using UnityEngine.SceneManagement;
 using Exception = System.Exception;
 using Logger = TnTRFMod.Utils.Logger;
@@ -54,6 +53,7 @@ public class TnTrfMod
     public ConfigEntry<bool> enableBetterBigHitPatch = ConfigEntry<bool>.Noop;
     public ConfigEntry<bool> betterBigHitSkipOnlineCheck = ConfigEntry<bool>.Noop;
     public ConfigEntry<bool> enableBufferedInputPatch = ConfigEntry<bool>.Noop;
+    public ConfigEntry<bool> enableCriWareExclusiveModePatch = ConfigEntry<bool>.Noop;
     public ConfigEntry<bool> enableCustomDressAnimationMod = ConfigEntry<bool>.Noop;
     public ConfigEntry<bool> enableMinimumLatencyAudioClient = ConfigEntry<bool>.Noop;
     public ConfigEntry<bool> enableHitStatsPanelPatch = ConfigEntry<bool>.Noop;
@@ -128,6 +128,8 @@ public class TnTrfMod
             "config.EnableSkipBootScreenPatch", true);
         enableSkipRewardPatch = ConfigEntry.Register("General", "EnableSkipRewardPatch",
             "config.EnableSkipRewardPatch", true);
+        enableCriWareExclusiveModePatch = ConfigEntry.Register("General", "EnableCriWareExclusiveModePatch",
+            "config.EnableCriWareExclusiveModePatch", false);
         enableMinimumLatencyAudioClient = ConfigEntry.Register("General", "EnableMinimumLatencyAudioClient",
             "config.EnableMinimumLatencyAudioClient", true);
         enableAutoDownloadSubscriptionSongs = ConfigEntry.Register("General", "EnableAutoDownloadSubscriptionSongs",
@@ -272,7 +274,24 @@ public class TnTrfMod
 
         try
         {
-            if (enableMinimumLatencyAudioClient.Value) _minimumLatencyAudioClient.Start();
+            if (enableCriWareExclusiveModePatch.Value) CriWareEnableExclusiveModePatch.Apply();
+        }
+        catch (Exception e)
+        {
+            Logger.Error("Failed to apply CriWareEnableExclusiveModePatch:");
+            Logger.Error(e);
+        }
+
+        try
+        {
+            if (enableCriWareExclusiveModePatch.Value)
+            {
+                Logger.Info("Skipping MinimumLatencyAudioClient because CriWare exclusive mode hook is enabled.");
+            }
+            else if (enableMinimumLatencyAudioClient.Value)
+            {
+                _minimumLatencyAudioClient.Start();
+            }
         }
         catch (Exception e)
         {
@@ -284,6 +303,7 @@ public class TnTrfMod
     public bool Unload()
     {
         _minimumLatencyAudioClient.Stop();
+        CriWareEnableExclusiveModePatch.Reset();
         return false;
     }
 
