@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Project>
-  <Target Name="CopyToPlugins" AfterTargets="Build">
-    <ItemGroup>
-      <FilesToCopy Include="$(TargetPath)"/>
-      <FilesToCopy Include="$(TargetDir)$(TargetName).pdb" Condition="Exists('$(TargetDir)$(TargetName).pdb')"/>
-	    <FilesToCopy Include="$(TargetDir)$(TargetName).dll" Condition="Exists('$(TargetDir)$(TargetName).dll')"/>
-    </ItemGroup>
+    <Target Name="CopyToPlugins" AfterTargets="Build">
+        <ItemGroup>
+            <FilesToCopy Include="$(TargetPath)"/>
+            <FilesToCopy Include="$(TargetDir)$(TargetName).pdb" Condition="Exists('$(TargetDir)$(TargetName).pdb')"/>
+            <FilesToCopy Include="$(TargetDir)$(TargetName).dll" Condition="Exists('$(TargetDir)$(TargetName).dll')"/>
+        </ItemGroup>
 
-    <Copy SourceFiles="@(FilesToCopy)" DestinationFiles="@(FilesToCopy->'$(GameDir)\BepInEx\plugins\%(Filename)%(Extension)')"/>
-    <Message Text="Copied $(TargetFileName) and $(TargetName).pdb to Plugins" Importance="high"/>
-  </Target>
+        <Copy SourceFiles="@(FilesToCopy)" DestinationFiles="@(FilesToCopy->'$(GameDir)\BepInEx\plugins\%(Filename)%(Extension)')"/>
+        <Message Text="Copied $(TargetFileName) and $(TargetName).pdb to Plugins" Importance="high"/>
+    </Target>
 </Project>

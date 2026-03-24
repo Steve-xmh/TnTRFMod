@@ -87,15 +87,11 @@ public static class CriWareEnableExclusiveModePatch
         ApplyCriWareWasapiSettings(targetFormat, bufferDuration);
 
         if (skipInitializeHook)
-        {
             Logger.Info(
                 "Skipping global IAudioClient::Initialize hook because CriWare is using standard-mode WASAPI initialization.");
-        }
         else
-        {
             AudioClientInitializeHook_Original = engine.CreateHook(audioClientInitializeFuncPtr,
                 new CriWarePluginNative.IAudioClientInitializeHook(AudioClientInitializeHook));
-        }
 
         engine.EnableHooks();
 
@@ -233,7 +229,7 @@ public static class CriWareEnableExclusiveModePatch
         IAudioClient3? audioClient = null;
         IMMDevice? device = null;
         IMMDeviceEnumerator? enumerator = null;
-        IntPtr mixFormatPtr = IntPtr.Zero;
+        var mixFormatPtr = IntPtr.Zero;
         try
         {
             var IID_IAudioClient = typeof(IAudioClient3).GUID;
@@ -376,10 +372,8 @@ public static class CriWareEnableExclusiveModePatch
                 $"Exclusive automatic event buffer initialization failed with 0x{automaticResult:X8}, retrying with manual buffer duration.");
 
             if (automaticResult != E_INVALIDARG && automaticResult != AUDCLNT_E_BUFFER_SIZE_NOT_ALIGNED)
-            {
                 Logger.Warn(
                     "Driver rejected CriWare's native automatic event-buffer sizing; falling back to fixed exclusive buffer duration.");
-            }
         }
 
         var duration = calibratedBufferDuration ?? bufferDuration;
@@ -415,7 +409,7 @@ public static class CriWareEnableExclusiveModePatch
                 Logger.Warn(
                     $"Retrying exclusive initialization with aligned buffer duration {bufferDuration.TotalMilliseconds:F3}ms");
 
-                result = AudioClientInitializeHook_Original!(audioClient, shareMode,
+                result = AudioClientInitializeHook_Original(audioClient, shareMode,
                     streamFlags, bufferDuration, bufferDuration, pFormat,
                     ref audioSessionGuid);
                 if (result == 0)
@@ -430,7 +424,7 @@ public static class CriWareEnableExclusiveModePatch
         }
 
         if (showedUnsupportedError)
-            return AudioClientInitializeHook_Original!(audioClient, AudioClientShareMode.Shared,
+            return AudioClientInitializeHook_Original(audioClient, AudioClientShareMode.Shared,
                 streamFlags, TimeSpan.Zero, TimeSpan.Zero, pFormat,
                 ref audioSessionGuid);
 
@@ -456,7 +450,7 @@ public static class CriWareEnableExclusiveModePatch
 
         ResetCriWareWasapiSettings();
 
-        return AudioClientInitializeHook_Original!(audioClient, AudioClientShareMode.Shared,
+        return AudioClientInitializeHook_Original(audioClient, AudioClientShareMode.Shared,
             streamFlags, TimeSpan.Zero, TimeSpan.Zero, pFormat,
             ref audioSessionGuid);
     }
@@ -512,11 +506,8 @@ public static class CriWareEnableExclusiveModePatch
         // format.sampleRate = TnTrfMod.Instance.exclusiveModeAudioSampleRate.Value;
         // format.bitsPerSample = TnTrfMod.Instance.exclusiveModeAudioBitPerSample.Value;
 
-        if (format is WaveFormatExtensible extensible)
-        {
-            if (extensible.wValidBitsPerSample == 0)
-                extensible.wValidBitsPerSample = extensible.bitsPerSample;
-        }
+        if (format is WaveFormatExtensible { wValidBitsPerSample: 0 } extensible)
+            extensible.wValidBitsPerSample = extensible.bitsPerSample;
 
         format.blockAlign = (short)(format.bitsPerSample * format.channels / 8);
         format.averageBytesPerSecond = format.sampleRate * format.blockAlign;
@@ -586,20 +577,19 @@ public static class CriWareEnableExclusiveModePatch
         if (source.waveFormatTag == WaveFormatEncoding.Pcm || source.waveFormatTag == WaveFormatEncoding.IeeeFloat)
             return CreateSimpleWaveFormat(source.waveFormatTag, source.sampleRate, source.bitsPerSample, 2);
 
-        if (source is WaveFormatExtensible extensible)
-        {
-            if (extensible.subFormat == KSDATAFORMAT_SUBTYPE_PCM && extensible.bitsPerSample == 32 &&
-                extensible.wValidBitsPerSample == 24)
-                return Create24BitIn32ContainerWaveFormat(extensible.sampleRate, 2);
+        if (source is not WaveFormatExtensible extensible) return null;
 
-            if (extensible.subFormat == KSDATAFORMAT_SUBTYPE_PCM)
-                return CreateSimpleWaveFormat(WaveFormatEncoding.Pcm, extensible.sampleRate, extensible.bitsPerSample,
-                    2);
+        if (extensible.subFormat == KSDATAFORMAT_SUBTYPE_PCM &&
+            extensible is { bitsPerSample: 32, wValidBitsPerSample: 24 })
+            return Create24BitIn32ContainerWaveFormat(extensible.sampleRate, 2);
 
-            if (extensible.subFormat == KSDATAFORMAT_SUBTYPE_IEEE_FLOAT)
-                return CreateSimpleWaveFormat(WaveFormatEncoding.IeeeFloat, extensible.sampleRate,
-                    extensible.bitsPerSample, 2);
-        }
+        if (extensible.subFormat == KSDATAFORMAT_SUBTYPE_PCM)
+            return CreateSimpleWaveFormat(WaveFormatEncoding.Pcm, extensible.sampleRate, extensible.bitsPerSample,
+                2);
+
+        if (extensible.subFormat == KSDATAFORMAT_SUBTYPE_IEEE_FLOAT)
+            return CreateSimpleWaveFormat(WaveFormatEncoding.IeeeFloat, extensible.sampleRate,
+                extensible.bitsPerSample, 2);
 
         return null;
     }

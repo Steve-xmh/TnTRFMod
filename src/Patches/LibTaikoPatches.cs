@@ -11,7 +11,7 @@ internal class LibTaikoPatches
     [DllImport("kernel32.dll", SetLastError = true)]
     public static extern IntPtr GetCurrentProcess();
 
-    [DllImport("kernel32.dll", SetLastError = true)]
+    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
     private static extern IntPtr GetModuleHandle(string lpModuleName);
 
     [DllImport("kernel32.dll", SetLastError = true)]
@@ -54,7 +54,7 @@ internal class LibTaikoPatches
         }
     }
 
-    internal static unsafe void InitExpandCSyousetsu(int N)
+    internal static void InitExpandCSyousetsu(int N)
     {
         var moduleBase = GetModuleHandle("LibTaiko.dll");
         if (moduleBase == IntPtr.Zero)

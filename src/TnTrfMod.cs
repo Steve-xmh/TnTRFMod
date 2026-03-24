@@ -285,13 +285,9 @@ public class TnTrfMod
         try
         {
             if (enableCriWareExclusiveModePatch.Value)
-            {
                 Logger.Info("Skipping MinimumLatencyAudioClient because CriWare exclusive mode hook is enabled.");
-            }
             else if (enableMinimumLatencyAudioClient.Value)
-            {
                 _minimumLatencyAudioClient.Start();
-            }
         }
         catch (Exception e)
         {

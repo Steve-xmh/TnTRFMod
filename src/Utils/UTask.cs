@@ -143,10 +143,12 @@ public readonly struct UTask(UniTask uniTask)
                 }
 
                 if (awaiter.IsCompleted)
+                {
                     Complete();
+                }
                 else
                 {
-                    Action completeAction = () => Complete();
+                    var completeAction = Complete;
                     awaiter.UnsafeOnCompleted(completeAction);
                 }
             }
