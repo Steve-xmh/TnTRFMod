@@ -69,7 +69,7 @@ internal class LibTaikoPatches
         if (crc == 0x1E5B3CFF)
             InitExpandCSyousetsu_Ver1E5B3CFF(N);
         else
-            Logger.Error(
+            Logger.Warn(
                 "LibTaiko.dll crc mismatch, maybe it's updated and the mod isn't supported this, aborting CSyousetsu expansion.");
     }
 
@@ -188,19 +188,6 @@ internal class LibTaikoPatches
         Logger.Info($"Applied all CSyousetsu patches, CSyousetsu limit is now {N}.");
     }
 
-    // ── 现有补丁 ──────────────────────────────────────────────────────────────
-
-    [HarmonyPatch(typeof(LibTaikoWrapper))]
-    [HarmonyPatch(nameof(LibTaikoWrapper.SetFumen))]
-    [HarmonyPrefix]
-    private static unsafe void SetFumenPostfix(ref int player, ref void* data, ref int size)
-    {
-        var buffer = new byte[size];
-        Marshal.Copy((IntPtr)data, buffer, 0, size);
-        var debugOutputPath = Path.Combine(TnTrfMod.Dir, $"FumenData_P{player + 1}.bin");
-        File.WriteAllBytes(debugOutputPath, buffer);
-        Logger.Info($"Wrote fumen data to {debugOutputPath}");
-    }
     // ── Win32 API ──────────────────────────────────────────────────────────────
 
     [StructLayout(LayoutKind.Sequential)]
