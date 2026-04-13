@@ -32,6 +32,17 @@ internal class SkipBootScreenPatch
         skippable = true;
     }
 
+    [HarmonyPatch(typeof(BootImage))]
+    [HarmonyPatch(nameof(BootImage.PlayMovieAsync))]
+    [HarmonyPatch(MethodType.Normal)]
+    [HarmonyPrefix]
+    private static void BootImage_PlayMovieAsync_Prefix(BootImage __instance, ref bool skippable)
+    {
+        if (!TnTrfMod.Instance.enableSkipBootScreenPatch.Value) return;
+        skippable = true;
+        __instance.MovieController.player.SetVolume(0);
+    }
+
     [HarmonyPatch(typeof(FadeCover))]
     [HarmonyPatch(nameof(FadeCover.FadeOutAsync))]
     [HarmonyPatch(MethodType.Normal)]

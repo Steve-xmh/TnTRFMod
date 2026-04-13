@@ -1,4 +1,5 @@
 using System.Text;
+using Scripts.OutGame.Boot;
 using TnTRFMod.Scenes.Enso;
 using TnTRFMod.Ui;
 using UnityEngine;
@@ -13,18 +14,21 @@ public class BootScene : IScene
 
     public void Start()
     {
-        var blackGo = new GameObject("BlackGo");
-        var transform = blackGo.AddComponent<RectTransform>();
-        var texture = new Texture2D(1, 1, TextureFormat.RGBA32, false);
-        texture.SetPixel(0, 0, Color.black);
-        texture.Apply();
-        transform.SetParent(Common.GetDrawCanvasForScene());
-        transform.pivot = new Vector2(0, 1);
-        transform.anchoredPosition =
-            new Vector2(Common.ScreenWidth / -2f, Common.ScreenHeight / 2f);
-        transform.sizeDelta = new Vector2(1920, 1080);
-        var image = blackGo.AddComponent<Image>();
-        image.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero, 1f);
+        if (TnTrfMod.Instance.enableSkipBootScreenPatch.Value)
+        {
+            var blackGo = new GameObject("BlackGo");
+            var transform = blackGo.AddComponent<RectTransform>();
+            var texture = new Texture2D(1, 1, TextureFormat.RGBA32, false);
+            texture.SetPixel(0, 0, Color.black);
+            texture.Apply();
+            transform.SetParent(Common.GetDrawCanvasForScene());
+            transform.pivot = new Vector2(0, 1);
+            transform.anchoredPosition =
+                new Vector2(Common.ScreenWidth / -2f, Common.ScreenHeight / 2f);
+            transform.sizeDelta = new Vector2(1920, 1080);
+            var image = blackGo.AddComponent<Image>();
+            image.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero, 1f);
+        }
 
         if (TnTrfMod.Instance.enableBilibiliLiveStreamSongRequest.Value)
             LiveStreamSongSelectPanel.StartLiveStreamDanmaku();
@@ -42,6 +46,15 @@ public class BootScene : IScene
         //     else
         //         SRDebug.Instance.ShowDebugPanel(DefaultTabs.Profiler, false);
         // };
+    }
+
+    public void Update()
+    {
+        if (!TnTrfMod.Instance.enableSkipBootScreenPatch.Value) return;
+        var objs = TaikoSingletonMonoBehaviour<BootSceneObjects>.Instance;
+        if (objs == null) return;
+        if (!objs.uiController.bootImage.skipped)
+            objs.uiController.bootImage.Skip();
     }
 
     private void DumpAllAssets()
