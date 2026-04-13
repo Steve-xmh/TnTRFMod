@@ -1,10 +1,16 @@
 using System.Text;
-using Scripts.OutGame.Boot;
 using TnTRFMod.Scenes.Enso;
 using TnTRFMod.Ui;
 using UnityEngine;
 using UnityEngine.UI;
 using Logger = TnTRFMod.Utils.Logger;
+
+#if BEPINEX
+using Scripts.OutGame.Boot;
+
+#elif MELONLOADER
+using Il2CppScripts.OutGame.Boot;
+#endif
 
 namespace TnTRFMod.Scenes;
 

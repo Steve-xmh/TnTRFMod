@@ -326,7 +326,7 @@ public static class UTaskExt
 #if BEPINEX
         return enumerator.WrapToIl2Cpp();
 #else
-        return MelonLoaderMod.ConvertToIl2CppIEnumerator(enumerator);
+        return Loader.MelonLoaderMod.ConvertToIl2CppIEnumerator(enumerator);
 #endif
     }
 

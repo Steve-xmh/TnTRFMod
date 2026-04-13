@@ -99,12 +99,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="MinHook.NET" Version="1.1.1">
-            <NoWarn>NU1701</NoWarn>
-        </PackageReference>
-    </ItemGroup>
-
-    <ItemGroup>
         <Folder Include="src\Resources\Tokkun\"/>
     </ItemGroup>
 </Project>

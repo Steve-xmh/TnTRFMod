@@ -301,19 +301,9 @@ public class TnTrfMod
     public bool Unload()
     {
         _minimumLatencyAudioClient.Stop();
-        CriWareEnableExclusiveModePatch.Reset();
+        // CriWareEnableExclusiveModePatch.Reset();
         return false;
     }
-
-//     public void StartCoroutine(Task task)
-//     {
-// #if BEPINEX
-//         _updater.StartCoroutine();
-// #endif
-// #if MELONLOADER
-//         MelonCoroutines.Start(routine);
-// #endif
-//     }
 
     public void StartCoroutine(IEnumerator routine)
     {
