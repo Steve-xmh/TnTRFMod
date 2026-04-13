@@ -423,9 +423,6 @@ public class TnTrfMod
 
     public readonly ConcurrentQueue<Action> RunOnMainThread = new();
 
-    private double AverageGCTimeMs;
-    private int GCSampleCount;
-
     public void OnUpdate()
     {
         if (!enableMod.Value) return;
@@ -434,18 +431,8 @@ public class TnTrfMod
                 action?.Invoke();
 
         if (!_scenes.TryGetValue(sceneName, out var scenes)) return;
-        // var shouldInvokeLowLatencyGC = false;
+
         foreach (var scene in scenes) scene.Update();
-        // shouldInvokeLowLatencyGC |= scene.LowLatencyMode;
-        // if (shouldInvokeLowLatencyGC)
-        // {
-        //     var stopwatch = Stopwatch.StartNew();
-        //     GC.Collect(0, GCCollectionMode.Forced);
-        //     stopwatch.Stop();
-        //     AverageGCTimeMs = (AverageGCTimeMs * GCSampleCount + stopwatch.Elapsed.TotalMilliseconds) /
-        //                       (GCSampleCount + 1);
-        //     GCSampleCount += 1;
-        // }
     }
 
     private void OnSceneWasLoaded(Scene scene, LoadSceneMode mode)
@@ -468,12 +455,10 @@ public class TnTrfMod
 
         if (shouldInvokeLowLatencyGC)
         {
-            // GCSettings.LatencyMode = GCLatencyMode.LowLatency;
+            GCSettings.LatencyMode = GCLatencyMode.LowLatency;
             GC.Collect(0, GCCollectionMode.Forced, true, true);
             GC.Collect(1, GCCollectionMode.Forced, true, true);
             GC.Collect(2, GCCollectionMode.Forced, true, true);
-            AverageGCTimeMs = 0;
-            GCSampleCount = 0;
         }
 
         Logger.Info($"OnSceneWasLoaded {sceneName} ended, took {(DateTime.Now - time).TotalMilliseconds:N0}ms");
@@ -501,8 +486,6 @@ public class TnTrfMod
             GC.Collect(0, GCCollectionMode.Forced, true, true);
             GC.Collect(1, GCCollectionMode.Forced, true, true);
             GC.Collect(2, GCCollectionMode.Forced, true, true);
-            Logger.Info("Average GC Time during this scene: " +
-                        $"{(GCSampleCount == 0 ? 0 : AverageGCTimeMs):N2}ms over {GCSampleCount} collections");
         }
 
         Logger.Info(
