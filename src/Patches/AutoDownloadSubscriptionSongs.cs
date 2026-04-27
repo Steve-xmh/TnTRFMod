@@ -32,17 +32,17 @@ public class AutoDownloadSubscriptionSongs
 
         try
         {
-            var res = await UTask.RunOnIl2Cpp(SubscriptionUtility.DownloadSubscriptionAvaliable);
-
-            if (res == null)
-            {
-                Logger.Error("Subscription check returned null");
-                logText.Text = I18n.Get("autoDownloadSub.networkIssue").Text;
-                return;
-            }
+            var res = CheckResponse(await UTask.RunOnIl2Cpp(SubscriptionUtility.DownloadSubscriptionAvaliable));
 
             Logger.Info(
-                $"Subscription Status: {res.result}, {res.errorText}, {res.responseBody.subscription}, {res.responseBody.expiration_datetime}");
+                $"Subscription Status:       {res.result}, {res.responseCode}, {res.errorText}");
+
+            if (res.responseBody == null)
+                throw new NetworkIssueException(res.result,
+                    $"response body is empty when checking subscription");
+
+            Logger.Info(
+                $"Subscription responseBody: {res.responseBody.subscription}, {res.responseBody.expiration_datetime}");
 
             var curTime = DateTime.Now;
             var expirationTime = DateTimeOffset.FromUnixTimeMilliseconds(res.responseBody.expiration_datetime).DateTime;
@@ -111,7 +111,7 @@ public class AutoDownloadSubscriptionSongs
                     logText.Text = progressText.Text;
 
                     Logger.Info($"Start downloading {previewFileSongUids.Length} song previews");
-                    await UTask.RunOnIl2CppThreadPool(() => SubscriptionUtility.DownloadPreviewFiles(
+                    CheckResponse(await UTask.RunOnIl2CppThreadPool(() => SubscriptionUtility.DownloadPreviewFiles(
                         previewFileSongUids, CancellationToken.None,
                         DelegateSupport.ConvertDelegate<UnityAction<float>>((float result) =>
                             {
@@ -119,7 +119,7 @@ public class AutoDownloadSubscriptionSongs
                                 Logger.Info($"Downloading song previews: {prog}%");
                                 logText.Text = $"{progressText.Text} ({prog}%)";
                             }
-                        )));
+                        ))));
                 }
 
                 if (subSongFileSongUids.Length > 0)
@@ -128,7 +128,7 @@ public class AutoDownloadSubscriptionSongs
                     logText.Text = progressText.Text;
 
                     Logger.Info($"Start downloading {subSongFileSongUids.Length} song files");
-                    await UTask.RunOnIl2CppThreadPool(() => SubscriptionUtility.DownloadSongFilesAsync(
+                    CheckResponse(await UTask.RunOnIl2CppThreadPool(() => SubscriptionUtility.DownloadSongFilesAsync(
                         subSongFileSongUids, CancellationToken.None,
                         DelegateSupport.ConvertDelegate<UnityAction<float>>((float result) =>
                             {
@@ -136,7 +136,7 @@ public class AutoDownloadSubscriptionSongs
                                 Logger.Info($"Downloading song files: {prog}%");
                                 logText.Text = $"{progressText.Text} ({prog}%)";
                             }
-                        )));
+                        ))));
                 }
 
                 Logger.Info($"Start downloading {dlcSongFileSongUids.Length} dlc song files");
@@ -147,29 +147,28 @@ public class AutoDownloadSubscriptionSongs
                     logText.Text = progressText.Text;
 
                     Logger.Info($"Start downloading dlc song {uid}");
-                    await UTask.RunOnIl2CppThreadPool(() =>
-                    {
-                        var task = SubscriptionUtility.DownloadSongFile(
-                            uid, CancellationToken.None,
-                            DelegateSupport.ConvertDelegate<UnityAction<float>>((float result) =>
-                                {
-                                    var prog = (result * 100).ToString("F1");
-                                    Logger.Info($"Downloading dlc song files: {prog}%");
-                                    logText.Text = $"{progressText.Text} ({prog}%)";
-                                }
-                            ), true);
-                        return task;
-                    });
+                    CheckResponse(await UTask.RunOnIl2CppThreadPool(() => SubscriptionUtility.DownloadSongFile(
+                        uid, CancellationToken.None,
+                        DelegateSupport.ConvertDelegate<UnityAction<float>>((float result) =>
+                            {
+                                var prog = (result * 100).ToString("F1");
+                                Logger.Info($"Downloading dlc song files: {prog}%");
+                                logText.Text = $"{progressText.Text} ({prog}%)";
+                            }
+                        ), true)));
 
                     i += 1;
                 }
             }
 
-            // SubscriptionUtility.DownloadSongFile()
-
             Logger.Info("Finished download song files!");
 
             logText.Text = I18n.Get("autoDownloadSub.finished").Text;
+        }
+        catch (NetworkIssueException ex)
+        {
+            Logger.Error("AutoDownloadSubscriptionSongs failed: " + ex);
+            logText.Text = I18n.Get("autoDownloadSub.networkIssue", ex.Message).Text;
         }
         catch (Exception ex)
         {
@@ -192,6 +191,31 @@ public class AutoDownloadSubscriptionSongs
         return $"{songUid:D4}_trail_{version:D3}.zip";
     }
 
+    private static T CheckResponse<T>(T result)
+        where T : SubscriptionGateway.ResponseDataBase
+    {
+        var errorText = result.errorText;
+        if (errorText != null || result.isNetworkError || result.isCanceled || result.isTimeout)
+            throw new NetworkIssueException(result.responseCode, errorText ?? "unknown error");
+
+        return result;
+    }
+
+    // 配置下载线程数量
+    [HarmonyPatch(MethodType.Normal)]
+    [HarmonyPatch(typeof(SubscriptionUtility.__c__DisplayClass29_0))]
+    [HarmonyPatch(nameof(SubscriptionUtility.__c__DisplayClass29_0._DownloadPreviewsInternal_b__2))]
+    [HarmonyPrefix]
+    private static bool SongSelectSceneUiControllerBase_LoadSubscriptionAsync_Prefix(
+        SubscriptionUtility.__c__DisplayClass29_0 __instance, ref bool __result)
+    {
+        if (!TnTrfMod.Instance.enableAutoDownloadSubscriptionSongs.Value) return true;
+
+        __result = __instance.runningCount <= 32;
+
+        return false;
+    }
+
     [HarmonyPatch(MethodType.Normal)]
     [HarmonyPatch(typeof(SongSelectSceneUiControllerBase))]
     [HarmonyPatch(nameof(SongSelectSceneUiControllerBase.LoadSubscriptionAsync))]
@@ -209,5 +233,10 @@ public class AutoDownloadSubscriptionSongs
         Logger.Warn("Skip downloading songs");
         __result = UniTask.CompletedTask;
         return false;
+    }
+
+    private class NetworkIssueException(int result, string errorText) : Exception
+    {
+        public override string Message => $"{result}: {errorText}";
     }
 }
