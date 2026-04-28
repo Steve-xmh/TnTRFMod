@@ -1,3 +1,4 @@
+using TnTRFMod.Config;
 using TnTRFMod.Patches;
 
 namespace TnTRFMod.Scenes;
@@ -12,6 +13,6 @@ public class EnsoNetworkScene : IScene
         NoShadowOnpuPatch.CheckOrInitializePatch();
         BufferedNoteInputPatch.ResetCounts();
 
-        if (TnTrfMod.Instance.enableNearestNeighborOnpuPatch.Value) NearestNeighborOnpuPatch.PatchLaneTarget();
+        if (ModConfig.EnableNearestNeighborOnpuPatch.Value) NearestNeighborOnpuPatch.PatchLaneTarget();
     }
 }

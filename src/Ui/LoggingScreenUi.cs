@@ -10,6 +10,8 @@ public static class LoggingScreenUi
     private static TextUi? _textUi;
     private static readonly StringBuilder _textBuilder = new(1024);
     private static readonly List<LogHandleBase> _handles = new(16);
+    private static readonly object _handlesLock = new();
+    private static bool _isDirty;
 
     private static void Init()
     {
@@ -22,18 +24,28 @@ public static class LoggingScreenUi
         _textUi.MoveToNoDestroyCanvas();
     }
 
+    private static void MarkDirty()
+    {
+        _isDirty = true;
+    }
+
     private static void Update()
     {
+        if (!_isDirty) return;
         if (_textUi == null) Init();
 
         _textBuilder.Clear();
-        for (var i = 0; i < _handles.Count; i++)
+        lock (_handlesLock)
         {
-            var handle = _handles[i];
-            _textBuilder.AppendLine(handle.Text);
+            for (var i = 0; i < _handles.Count; i++)
+            {
+                var handle = _handles[i];
+                _textBuilder.AppendLine(handle.Text);
+            }
         }
 
         _textUi!.Text = _textBuilder.ToString();
+        _isDirty = false;
     }
 
     private static async Task SafeUpdate()
@@ -68,7 +80,12 @@ public static class LoggingScreenUi
         internal LogHandle(string text)
         {
             _text = text;
-            _handles.Add(this);
+            lock (_handlesLock)
+            {
+                _handles.Add(this);
+            }
+
+            MarkDirty();
             Update();
         }
 
@@ -78,13 +95,19 @@ public static class LoggingScreenUi
             set
             {
                 _text = value;
+                MarkDirty();
                 Update();
             }
         }
 
         public void Dispose()
         {
-            _handles.Remove(this);
+            lock (_handlesLock)
+            {
+                _handles.Remove(this);
+            }
+
+            MarkDirty();
             Update();
         }
     }
@@ -96,7 +119,12 @@ public static class LoggingScreenUi
         internal ThreadSafeLogHandle(string text)
         {
             _text = text;
-            _handles.Add(this);
+            lock (_handlesLock)
+            {
+                _handles.Add(this);
+            }
+
+            MarkDirty();
             UTask.RunOnIl2CppBlocking(Update);
         }
 
@@ -106,13 +134,19 @@ public static class LoggingScreenUi
             set
             {
                 _text = value;
+                MarkDirty();
                 UTask.RunOnIl2CppBlocking(Update);
             }
         }
 
         public void Dispose()
         {
-            _handles.Remove(this);
+            lock (_handlesLock)
+            {
+                _handles.Remove(this);
+            }
+
+            MarkDirty();
             UTask.RunOnIl2CppBlocking(Update);
         }
     }
@@ -123,7 +157,12 @@ public static class LoggingScreenUi
 
         internal AsyncLogHandle()
         {
-            _handles.Add(this);
+            lock (_handlesLock)
+            {
+                _handles.Add(this);
+            }
+
+            MarkDirty();
         }
 
         public override string Text
@@ -134,13 +173,19 @@ public static class LoggingScreenUi
 
         public async ValueTask DisposeAsync()
         {
-            _handles.Remove(this);
+            lock (_handlesLock)
+            {
+                _handles.Remove(this);
+            }
+
+            MarkDirty();
             await SafeUpdate();
         }
 
         public async Task SetTextAsync(string text)
         {
             _text = text;
+            MarkDirty();
             await SafeUpdate();
         }
     }

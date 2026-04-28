@@ -4,7 +4,6 @@ using TnTRFMod.Utils;
 using Scripts.Common.LoadingScreen;
 using Scripts.Common.Sound;
 using Scripts.OutGame.SongSelect;
-
 #elif MELONLOADER
 using Il2CppScripts.Common.LoadingScreen;
 using Il2CppScripts.Common.Sound;

@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using TnTRFMod.Config;
 #if BEPINEX
 using Scripts.EnsoGame.Network;
 #endif
@@ -20,9 +21,9 @@ internal class BetterBigHitPatch
         ref TaikoCoreTypes.UserInputType __result,
         int player)
     {
-        if (!TnTrfMod.Instance.enableBetterBigHitPatch.Value) return;
+        if (!ModConfig.EnableBetterBigHitPatch.Value) return;
         // 在线模式下不对输入进行修改
-        if (!TnTrfMod.Instance.betterBigHitSkipOnlineCheck.Value &&
+        if (!ModConfig.BetterBigHitSkipOnlineCheck.Value &&
             __instance.ensoParam.networkGameMode != NetworkGameMode.None) return;
         switch (__result)
         {

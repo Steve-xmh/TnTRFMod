@@ -6,6 +6,7 @@ using Il2CppBlittables;
 using Il2CppCysharp.Threading.Tasks;
 #endif
 using HarmonyLib;
+using TnTRFMod.Config;
 using Il2CppInterop.Runtime;
 using TnTRFMod.Utils;
 using TnTRFMod.Utils.Fumen;
@@ -109,7 +110,7 @@ public class EnsoGameBasePatch
     private static bool EnsoInput_CheckAutoRenda_Prefix(EnsoInput __instance, ref bool __result, int player,
         int rendaFrame)
     {
-        var speed = TnTrfMod.Instance.autoPlayRendaSpeed.Value;
+        var speed = ModConfig.AutoPlayRendaSpeed.Value;
         if (speed == 0f)
         {
             __result = false;
@@ -141,7 +142,14 @@ public class EnsoGameBasePatch
     private static bool ShouldSkipProcessExecMain(EnsoGameManager __instance)
     {
         return !IsPlaying || __instance.state != EnsoGameManager.State.Exec || TokkunGamePatch.Paused ||
-               TnTrfMod.Instance.GetSceneName() != "Enso";
+               !IsEnsoLikeScene();
+    }
+
+    private static string[] _ensoLikeScenes = ["Enso", "EnsoTest"];
+
+    private static bool IsEnsoLikeScene()
+    {
+        return _ensoLikeScenes.Contains(TnTrfMod.Instance.GetSceneName());
     }
 
     // EnsoGameManager__ProcExecMain
@@ -192,10 +200,19 @@ public class EnsoGameBasePatch
                 case TaikoCoreTypes.OnpuTypes.WDon:
                 case TaikoCoreTypes.OnpuTypes.DaiDon:
                 case TaikoCoreTypes.OnpuTypes.DaiKatsu:
-                    // 音符判定调整： __instance.settings.noteDelay
-                    // 太鼓控制器判定调整： __instance.settings.tatakonDelay
+                    // 音符判定调整： __instance.settings.noteDelay (单位: 5ms/step, 范围 -60~+60 即 -300ms~+300ms)
+                    // 太鼓控制器判定调整： __instance.settings.tatakonDelay (单位: 5ms/step, 范围 -60~+8 即 -300ms~+40ms)
+                    //   （通过 NoteAdjustmentSlider 构造函数逆向确认 tatakonDelay Max=8）
+                    // noteDelay: 调整音符的判定基准时间。正值 = 音符延后出现，需延迟击打
+                    //   hit.onpu.justTime 不含 noteDelay 偏移，需手动减去以归一化
+                    // tatakonDelay: 调整太鼓控制器的输入识别时间。正值 = 延迟识别输入×5ms
+                    //   如果 LibTaiko 原生层延迟了输入识别，则 TotalTime 已包含此偏移，
+                    //   需加回以还原玩家物理击打的时间差
+                    var noteDelayMs = __instance.settings.noteDelay * 5;
+                    // var tatakonDelayMs = __instance.settings.tatakonDelay * 5;
                     var onpuJustTime = hit.onpu.justTime - __instance.ensoParam.TotalTime -
-                                       __instance.settings.noteDelay * 5;
+                                       noteDelayMs;
+                    // noteDelayMs + tatakonDelayMs;
                     // Console.Out.WriteLine($"Onpu Type: {hitResult} noteDelay: {__instance.settings.noteDelay} tatakonDelay: {__instance.settings.tatakonDelay}");
                     OnSimpleHit(hit.player, hitResult, onpuJustTime);
                     __instance.taikoCorePlayer.GetRyo((TaikoCoreTypes.BranchTypes)hit.onpu.branchType);

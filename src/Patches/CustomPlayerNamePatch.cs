@@ -1,4 +1,5 @@
 using HarmonyLib;
+using TnTRFMod.Config;
 #if BEPINEX
 using Scripts.Common;
 #endif
@@ -16,6 +17,6 @@ internal class CustomPlayerNamePatch
     [HarmonyPostfix]
     private static void UiPlayerNameplate_UpdateNameplate_Prefix(ref UiPlayerNameplate __instance)
     {
-        __instance.playerName.SetTextRaw(TnTrfMod.Instance.customPlayerName.Value, __instance.playerName.font);
+        __instance.playerName.SetTextRaw(ModConfig.CustomPlayerName.Value, __instance.playerName.font);
     }
 }

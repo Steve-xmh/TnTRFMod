@@ -1,8 +1,8 @@
 using HarmonyLib;
+using TnTRFMod.Config;
 #if BEPINEX
 using Cysharp.Threading.Tasks;
 using Scripts.OutGame.Title;
-
 #elif MELONLOADER
 using Il2CppCysharp.Threading.Tasks;
 using Il2CppScripts.OutGame.Title;
@@ -25,7 +25,7 @@ public class CustomTitleSceneEnterPatch
         // SceneName.TrainingEntrance
         // SceneName.SongSelectTraining
         // SceneName.SongSelectTrainingFree
-        var sceneName = TnTrfMod.Instance.customTitleSceneEnterSceneName.Value;
+        var sceneName = ModConfig.CustomTitleSceneEnterSceneName.Value;
         if (string.IsNullOrEmpty(sceneName))
             return true;
 

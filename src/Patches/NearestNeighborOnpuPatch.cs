@@ -1,4 +1,5 @@
 using HarmonyLib;
+using TnTRFMod.Config;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,7 +24,7 @@ internal class NearestNeighborOnpuPatch
     private static void SpriteAnimation_ChangeAnimation_Postfix(SpriteAnimation __instance, ref AnimationData data,
         ref float time)
     {
-        if (!TnTrfMod.Instance.enableNearestNeighborOnpuPatch.Value) return;
+        if (!ModConfig.EnableNearestNeighborOnpuPatch.Value) return;
         for (var i = 0; i < data.spriteList.Count; i++)
             data.spriteList._items[i].sprite.texture.filterMode = FilterMode.Point;
     }

@@ -1,3 +1,4 @@
+using TnTRFMod.Config;
 using TnTRFMod.Patches;
 using TnTRFMod.Scenes.Enso;
 
@@ -20,14 +21,14 @@ public class EnsoTestScene : IScene
         NoShadowOnpuPatch.CheckOrInitializePatch();
         BufferedNoteInputPatch.ResetCounts();
 
-        if (TnTrfMod.Instance.enableNearestNeighborOnpuPatch.Value) NearestNeighborOnpuPatch.PatchLaneTarget();
-        if (TnTrfMod.Instance.enableHitStatsPanelPatch.Value) HitStatusPanel.Start();
-        if (TnTrfMod.Instance.enableHitOffset.Value) HitOffsetTip.Start();
+        if (ModConfig.EnableNearestNeighborOnpuPatch.Value) NearestNeighborOnpuPatch.PatchLaneTarget();
+        if (ModConfig.EnableHitStatsPanelPatch.Value) HitStatusPanel.Start();
+        if (ModConfig.EnableHitOffset.Value) HitOffsetTip.Start();
     }
 
     public void Update()
     {
-        if (TnTrfMod.Instance.enableHitStatsPanelPatch.Value) HitStatusPanel.Update();
-        if (TnTrfMod.Instance.enableHitOffset.Value) HitOffsetTip.Update();
+        if (ModConfig.EnableHitStatsPanelPatch.Value) HitStatusPanel.Update();
+        if (ModConfig.EnableHitOffset.Value) HitOffsetTip.Update();
     }
 }

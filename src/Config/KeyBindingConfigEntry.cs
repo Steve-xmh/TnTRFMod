@@ -19,6 +19,8 @@ public class KeyBindingConfigEntry
     };
 
     private static FileSystemWatcher? configFileWatcher;
+    private static DateTime _lastConfigReload;
+    private const int ConfigReloadDebounceMs = 250;
 
     private Key defaultValue;
 
@@ -156,6 +158,10 @@ public class KeyBindingConfigEntry
 
     private static void OnConfigFileChanged(object sender, FileSystemEventArgs e)
     {
+        var now = DateTime.UtcNow;
+        if ((now - _lastConfigReload).TotalMilliseconds < ConfigReloadDebounceMs) return;
+        _lastConfigReload = now;
+
         if (!File.Exists(ConfigFilePath)) return;
         try
         {

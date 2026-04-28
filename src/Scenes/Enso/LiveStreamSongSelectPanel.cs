@@ -1,4 +1,5 @@
 using System.Text;
+using TnTRFMod.Config;
 using TnTRFMod.Ui.Widgets;
 using TnTRFMod.Utils;
 using UnityEngine;
@@ -6,7 +7,6 @@ using Logger = TnTRFMod.Utils.Logger;
 #if BEPINEX
 using Cysharp.Threading.Tasks;
 using TMPro;
-
 #elif MELONLOADER
 using Il2CppCysharp.Threading.Tasks;
 using Il2CppTMPro;
@@ -79,16 +79,16 @@ public class LiveStreamSongSelectPanel
 
     private static async Task InitLiveStreamDanmaku()
     {
-        if (!TnTrfMod.Instance.enableBilibiliLiveStreamSongRequest.Value) return;
-        if (TnTrfMod.Instance.bilibiliLiveStreamSongRoomId.Value == 0)
+        if (!ModConfig.EnableBilibiliLiveStreamSongRequest.Value) return;
+        if (ModConfig.BilibiliLiveStreamSongRoomId.Value == 0)
         {
             Logger.Error("Bilibili Live Stream Song Room Id is unset or invalid.");
             return;
         }
 
         Logger.Warn("Starting Bilibili Live Stream Song Request...");
-        var crawer = new BilibiliLiveCommentCrawer(TnTrfMod.Instance.bilibiliLiveStreamSongRoomId.Value,
-            TnTrfMod.Instance.bilibiliLiveStreamSongToken.Value);
+        var crawer = new BilibiliLiveCommentCrawer(ModConfig.BilibiliLiveStreamSongRoomId.Value,
+            ModConfig.BilibiliLiveStreamSongToken.Value);
         crawer.OnDanmakuMessage += (_, msg) =>
         {
             var message = msg.Message;
@@ -124,7 +124,7 @@ public class LiveStreamSongSelectPanel
                 }
             }
         };
-        while (TnTrfMod.Instance.enableBilibiliLiveStreamSongRequest.Value)
+        while (ModConfig.EnableBilibiliLiveStreamSongRequest.Value)
         {
             try
             {

@@ -75,9 +75,11 @@ public class MinimumLatencyAudioClient
     {
         Logger.Info("Stopping MinimumLatencyAudioClient");
         audioClient?.Stop();
-#if WINDOWS
-        Marshal.ReleaseComObject(device);
-        Marshal.ReleaseComObject(audioClient);
-#endif
+        if (device != null && Marshal.IsComObject(device))
+            Marshal.FinalReleaseComObject(device);
+        if (audioClient != null && Marshal.IsComObject(audioClient))
+            Marshal.FinalReleaseComObject(audioClient);
+        device = null;
+        audioClient = null;
     }
 }

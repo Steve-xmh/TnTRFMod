@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using HarmonyLib;
+using TnTRFMod.Config;
 using UnityEngine;
 using Logger = TnTRFMod.Utils.Logger;
 
@@ -107,7 +108,7 @@ internal class NoShadowOnpuPatch
     private static void SpriteAnimation_ChangeAnimation_Prefix(SpriteAnimation __instance, ref AnimationData data,
         ref float time)
     {
-        if (!TnTrfMod.Instance.enableNoShadowOnpuPatch.Value) return;
+        if (!ModConfig.EnableNoShadowOnpuPatch.Value) return;
         CheckOrInitializePatch();
 
         // if (_loggedSets.Contains(__instance.spriteAnimationData.name)) return;

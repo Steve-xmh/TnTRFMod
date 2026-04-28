@@ -1,9 +1,9 @@
+using TnTRFMod.Config;
 using TnTRFMod.Patches;
 using TnTRFMod.Ui.Widgets;
 using UnityEngine;
 #if BEPINEX
 using TMPro;
-
 #elif MELONLOADER
 using Il2CppTMPro;
 #endif
@@ -15,15 +15,15 @@ public class HitOffsetTip
     private EnsoGameManager _ensoGameManager;
     private TextUi hitOffset;
 
-    private static float JudgeRange => Mathf.Approximately(TnTrfMod.Instance.hitOffsetRyoRange.Value, -1)
+    private static float JudgeRange => Mathf.Approximately(ModConfig.HitOffsetRyoRange.Value, -1)
         ? EnsoGameBasePatch.PlayerStates[0].RyoJudgeRange
-        : TnTrfMod.Instance.hitOffsetRyoRange.Value;
+        : ModConfig.HitOffsetRyoRange.Value;
 
-    private static Color FastColor => TnTrfMod.Instance.hitOffsetInvertColor.Value
+    private static Color FastColor => ModConfig.HitOffsetInvertColor.Value
         ? new Color32(248, 72, 40, 255)
         : new Color32(104, 192, 192, 255);
 
-    private static Color LateColor => TnTrfMod.Instance.hitOffsetInvertColor.Value
+    private static Color LateColor => ModConfig.HitOffsetInvertColor.Value
         ? new Color32(104, 192, 192, 255)
         : new Color32(248, 72, 40, 255);
 

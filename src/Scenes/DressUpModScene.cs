@@ -1,4 +1,5 @@
-﻿using TnTRFMod.Ui.Widgets;
+﻿using TnTRFMod.Config;
+using TnTRFMod.Ui.Widgets;
 using TnTRFMod.Utils;
 using UnityEngine;
 #if BEPINEX
@@ -17,7 +18,7 @@ public class DressUpModScene : IScene
 
     public void Start()
     {
-        if (!TnTrfMod.Instance.enableCustomDressAnimationMod.Value) return;
+        if (!ModConfig.EnableCustomDressAnimationMod.Value) return;
         var switchAnimationBtn = new ButtonUi
         {
             Text = "切换动画",
@@ -57,7 +58,7 @@ public class DressUpModScene : IScene
 
     public void Update()
     {
-        if (!TnTrfMod.Instance.enableCustomDressAnimationMod.Value) return;
+        if (!ModConfig.EnableCustomDressAnimationMod.Value) return;
         ControllerManager.GetKeyboard(out var keyboard);
 
         if (keyboard.yKey.isPressed)
@@ -74,7 +75,7 @@ public class DressUpModScene : IScene
 
     public void Destroy()
     {
-        if (!TnTrfMod.Instance.enableCustomDressAnimationMod.Value) return;
+        if (!ModConfig.EnableCustomDressAnimationMod.Value) return;
         var donModel = DonModel.GetInstance(0);
         donModel._rootModels.transform.rotation = Quaternion.Euler(0, 180, 0);
     }

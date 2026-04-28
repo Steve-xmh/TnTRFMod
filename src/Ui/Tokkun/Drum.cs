@@ -5,6 +5,11 @@ namespace TnTRFMod.Ui.Tokkun;
 
 public class Drum : BaseUi
 {
+    private const float DefaultButtonScale = 0.75f;
+    private const float HitButtonScale = 0.9f;
+    private const float ScaleDecaySpeed = 2f;
+    private const float FadeSpeed = 5f;
+
     public enum Action
     {
         None,
@@ -28,6 +33,22 @@ public class Drum : BaseUi
     private readonly ImageUi drumImage;
 
     private readonly Sprite?[] iconSprites = new Sprite[4];
+
+    // Cached mutable state to avoid per-frame allocations
+    private Color _donEffectColor = new(1f, 1f, 1f, 0f);
+    private Color _leftEffectColor = new(1f, 1f, 1f, 0f);
+    private Color _rightEffectColor = new(1f, 1f, 1f, 0f);
+    private Vector3 _donButtonScale = new(DefaultButtonScale, DefaultButtonScale, DefaultButtonScale);
+    private Vector3 _leftButtonScale = new(DefaultButtonScale, DefaultButtonScale, DefaultButtonScale);
+    private Vector3 _rightButtonScale = new(DefaultButtonScale, DefaultButtonScale, DefaultButtonScale);
+
+    // Layout positions (design-time 1920x1080 coordinates)
+    private static readonly Vector2 HitEffectDonPos = new(71f, 64f);
+    private static readonly Vector2 HitEffectLeftKatsuPos = new(-10f, -18f);
+    private static readonly Vector2 HitEffectRightKatsuPos = new(298f, -18f);
+    private static readonly Vector2 ButtonDonPos = new(317f, 270f);
+    private static readonly Vector2 ButtonLeftKatsuPos = new(0f, 130f);
+    private static readonly Vector2 ButtonRightKatsuPos = new(634f, 130f);
 
     public Drum()
     {
@@ -65,64 +86,73 @@ public class Drum : BaseUi
         drumButtonLeftKatsu._transform.pivot = new Vector2(1f, 0f);
         drumButtonRightKatsu._transform.pivot = new Vector2(1f, 0f);
 
-        drumHitEffectDonImage.Position = new Vector2(71f, 64f);
-        drumHitEffectLeftKatsuImage.Position = new Vector2(-10f, -18f);
-        drumHitEffectRightKatsuImage.Position = new Vector2(-10f + 308f, -18f);
+        drumHitEffectDonImage.Position = HitEffectDonPos;
+        drumHitEffectLeftKatsuImage.Position = HitEffectLeftKatsuPos;
+        drumHitEffectRightKatsuImage.Position = HitEffectRightKatsuPos;
 
-        drumHitEffectLeftKatsuImage.Image.color = Color.white.AlphaMultiplied(0f);
-        drumHitEffectRightKatsuImage.Image.color = Color.white.AlphaMultiplied(0f);
-        drumHitEffectDonImage.Image.color = Color.white.AlphaMultiplied(0f);
+        drumHitEffectLeftKatsuImage.Image.color = _leftEffectColor;
+        drumHitEffectRightKatsuImage.Image.color = _rightEffectColor;
+        drumHitEffectDonImage.Image.color = _donEffectColor;
 
-        drumButtonDon.Position = new Vector2(217f + 100f, 140f + 130f);
-        drumButtonLeftKatsu.Position = new Vector2(-100f + 100f, 0f + 130f);
-        drumButtonRightKatsu.Position = new Vector2(634f - 100f + 100f, 0f + 130f);
+        drumButtonDon.Position = ButtonDonPos;
+        drumButtonLeftKatsu.Position = ButtonLeftKatsuPos;
+        drumButtonRightKatsu.Position = ButtonRightKatsuPos;
 
-        drumButtonDon._transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
-        drumButtonLeftKatsu._transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
-        drumButtonRightKatsu._transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
+        drumButtonDon._transform.localScale = _donButtonScale;
+        drumButtonLeftKatsu._transform.localScale = _leftButtonScale;
+        drumButtonRightKatsu._transform.localScale = _rightButtonScale;
 
-        _transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
+        _transform.localScale = new Vector3(DefaultButtonScale, DefaultButtonScale, DefaultButtonScale);
 
         drumButtonDon.SetActionIcon(LoadImage(Resources.TokkunIconPause));
     }
 
     public void Update()
     {
-        drumHitEffectDonImage.Image.color =
-            Color.white.AlphaMultiplied(Math.Max(0f, drumHitEffectDonImage.Image.color.a - Time.deltaTime * 5f));
-        drumHitEffectLeftKatsuImage.Image.color =
-            Color.white.AlphaMultiplied(Math.Max(0f, drumHitEffectLeftKatsuImage.Image.color.a - Time.deltaTime * 5f));
-        drumHitEffectRightKatsuImage.Image.color =
-            Color.white.AlphaMultiplied(Math.Max(0f, drumHitEffectRightKatsuImage.Image.color.a - Time.deltaTime * 5f));
-        drumButtonDon._transform.localScale =
-            Scale(Math.Max(0.75f, drumButtonDon._transform.localScale.x - Time.deltaTime * 2f));
-        drumButtonLeftKatsu._transform.localScale =
-            Scale(Math.Max(0.75f, drumButtonLeftKatsu._transform.localScale.x - Time.deltaTime * 2f));
-        drumButtonRightKatsu._transform.localScale =
-            Scale(Math.Max(0.75f, drumButtonRightKatsu._transform.localScale.x - Time.deltaTime * 2f));
+        var dt = Time.deltaTime;
+
+        _donEffectColor.a = Math.Max(0f, _donEffectColor.a - dt * FadeSpeed);
+        drumHitEffectDonImage.Image.color = _donEffectColor;
+        _leftEffectColor.a = Math.Max(0f, _leftEffectColor.a - dt * FadeSpeed);
+        drumHitEffectLeftKatsuImage.Image.color = _leftEffectColor;
+        _rightEffectColor.a = Math.Max(0f, _rightEffectColor.a - dt * FadeSpeed);
+        drumHitEffectRightKatsuImage.Image.color = _rightEffectColor;
+
+        var ss = dt * ScaleDecaySpeed;
+        _donButtonScale.x =
+            _donButtonScale.y = _donButtonScale.z = Math.Max(DefaultButtonScale, _donButtonScale.x - ss);
+        drumButtonDon._transform.localScale = _donButtonScale;
+        _leftButtonScale.x = _leftButtonScale.y =
+            _leftButtonScale.z = Math.Max(DefaultButtonScale, _leftButtonScale.x - ss);
+        drumButtonLeftKatsu._transform.localScale = _leftButtonScale;
+        _rightButtonScale.x = _rightButtonScale.y =
+            _rightButtonScale.z = Math.Max(DefaultButtonScale, _rightButtonScale.x - ss);
+        drumButtonRightKatsu._transform.localScale = _rightButtonScale;
     }
 
-    private static Vector3 Scale(float v)
-    {
-        return new Vector3(v, v, v);
-    }
 
     public void InvokeDon()
     {
-        drumHitEffectDonImage.Image.color = Color.white.AlphaMultiplied(1f);
-        drumButtonDon._transform.localScale = Scale(0.9f);
+        _donEffectColor.a = 1f;
+        drumHitEffectDonImage.Image.color = _donEffectColor;
+        _donButtonScale.x = _donButtonScale.y = _donButtonScale.z = HitButtonScale;
+        drumButtonDon._transform.localScale = _donButtonScale;
     }
 
     public void InvokeLeftKatsu()
     {
-        drumHitEffectLeftKatsuImage.Image.color = Color.white.AlphaMultiplied(1f);
-        drumButtonLeftKatsu._transform.localScale = Scale(0.9f);
+        _leftEffectColor.a = 1f;
+        drumHitEffectLeftKatsuImage.Image.color = _leftEffectColor;
+        _leftButtonScale.x = _leftButtonScale.y = _leftButtonScale.z = HitButtonScale;
+        drumButtonLeftKatsu._transform.localScale = _leftButtonScale;
     }
 
     public void InvokeRightKatsu()
     {
-        drumHitEffectRightKatsuImage.Image.color = Color.white.AlphaMultiplied(1f);
-        drumButtonRightKatsu._transform.localScale = Scale(0.9f);
+        _rightEffectColor.a = 1f;
+        drumHitEffectRightKatsuImage.Image.color = _rightEffectColor;
+        _rightButtonScale.x = _rightButtonScale.y = _rightButtonScale.z = HitButtonScale;
+        drumButtonRightKatsu._transform.localScale = _rightButtonScale;
     }
 
     public void SetDonAction(Action action)

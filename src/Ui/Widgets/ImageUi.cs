@@ -11,7 +11,6 @@ public class ImageUi : BaseUi
     public ImageUi(TextureManager.TexHandle handle)
     {
         imageTex = TextureManager.LoadTexture(handle);
-        imageTex = LoadImage(handle.Data);
         imageSprite =
             Sprite.Create(imageTex, new Rect(0, 0, imageTex.width, imageTex.height), Vector2.zero,
                 1f);

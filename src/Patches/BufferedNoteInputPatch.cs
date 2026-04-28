@@ -1,8 +1,15 @@
 using HarmonyLib;
 using Il2CppInterop.Runtime;
+using TnTRFMod.Config;
 using TnTRFMod.Utils;
+using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
+#if BEPINEX
+using SoundLabelClass = SoundLabel.SoundLabel;
+#elif MELONLOADER
+using SoundLabelClass = Il2CppSoundLabel.SoundLabel;
+#endif
 
 namespace TnTRFMod.Patches;
 
@@ -23,7 +30,7 @@ internal class BufferedNoteInputPatch
         new(ControllerManager.ControllerPlayerNo.Player4)
     ];
 
-    private static bool Disabled => !TnTrfMod.Instance.enableBufferedInputPatch.Value;
+    private static bool Disabled => !ModConfig.EnableBufferedInputPatch.Value;
 
     public static event OnKeyPressEventHandler OnKeyPressEvent = delegate { };
 
@@ -33,8 +40,8 @@ internal class BufferedNoteInputPatch
             playerInputStates[i].Reset();
 
         if (Injected) return;
-        // InputSystem.onEvent +=
-        //     DelegateSupport.ConvertDelegate<Il2CppSystem.Action<InputEventPtr, InputDevice>>(OnInputSystemEvent);
+        InputSystem.onEvent +=
+            DelegateSupport.ConvertDelegate<Il2CppSystem.Action<InputEventPtr, InputDevice>>(OnInputSystemEvent);
         Keyboard.current.add_onTextInput(
             DelegateSupport.ConvertDelegate<Il2CppSystem.Action<char>>(OnTextInput));
 
@@ -89,10 +96,10 @@ internal class BufferedNoteInputPatch
         // 玩家 2 的额外键盘适配
         if (mgr.IsPlayerControllerConnected(ControllerManager.ControllerPlayerNo.Player2))
         {
-            if (charKey == TnTrfMod.Instance.p2LeftDonKey.Value) playerInputStates[1].InvokeDonL();
-            else if (charKey == TnTrfMod.Instance.p2RightDonKey.Value) playerInputStates[1].InvokeDonR();
-            else if (charKey == TnTrfMod.Instance.p2LeftKaKey.Value) playerInputStates[1].InvokeKatsuL();
-            else if (charKey == TnTrfMod.Instance.p2RightKaKey.Value) playerInputStates[1].InvokeKatsuR();
+            if (charKey == ModConfig.P2LeftDonKey.Value) playerInputStates[1].InvokeDonL();
+            else if (charKey == ModConfig.P2RightDonKey.Value) playerInputStates[1].InvokeDonR();
+            else if (charKey == ModConfig.P2LeftKaKey.Value) playerInputStates[1].InvokeKatsuL();
+            else if (charKey == ModConfig.P2RightKaKey.Value) playerInputStates[1].InvokeKatsuR();
         }
     }
 
@@ -117,7 +124,7 @@ internal class BufferedNoteInputPatch
         private int KatsuR;
         private bool prevInput;
 
-        private int MaxBufferedInputCount => TnTrfMod.Instance.maxBufferedInputCount.Value;
+        private int MaxBufferedInputCount => ModConfig.MaxBufferedInputCount.Value;
 
         public void Scan(Gamepad gamepad, InputEventPtr eventPtr)
         {
@@ -142,24 +149,29 @@ internal class BufferedNoteInputPatch
         {
             // Logger.Info($"Player {PlayerNo} DonL");
             DonL = Math.Clamp(DonL + 1, 0, MaxBufferedInputCount);
+            // CommonObjects.instance.MySoundManager.PlayCommonSe(SoundLabelClass.Common.don);
         }
 
         public void InvokeDonR()
         {
             // Logger.Info($"Player {PlayerNo} DonR");
             DonR = Math.Clamp(DonR + 1, 0, MaxBufferedInputCount);
+            // CommonObjects.instance.MySoundManager.PlayCommonSe(SoundLabelClass.Common.don);
+            // DOTweenSettings.
         }
 
         public void InvokeKatsuL()
         {
             // Logger.Info($"Player {PlayerNo} KatsuL");
             KatsuL = Math.Clamp(KatsuL + 1, 0, MaxBufferedInputCount);
+            // CommonObjects.instance.MySoundManager.PlayCommonSe(SoundLabelClass.Common.katsu);
         }
 
         public void InvokeKatsuR()
         {
             // Logger.Info($"Player {PlayerNo} KatsuR");
             KatsuR = Math.Clamp(KatsuR + 1, 0, MaxBufferedInputCount);
+            // CommonObjects.instance.MySoundManager.PlayCommonSe(SoundLabelClass.Common.katsu);
         }
 
         public void Reset()

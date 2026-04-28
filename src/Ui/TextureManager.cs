@@ -1,7 +1,5 @@
 using UnityEngine;
-using UnityEngine.UI;
 using Logger = TnTRFMod.Utils.Logger;
-using Object = UnityEngine.Object;
 
 namespace TnTRFMod.Ui;
 
@@ -10,7 +8,6 @@ public static class TextureManager
     private static int TextureIdCounter = 1;
     private static readonly object TextureIdCounterLock = new();
     private static readonly Il2CppSystem.Collections.Generic.Dictionary<int, Texture2D> Cache = new(32);
-    private static GameObject? keeperGameObject;
 
     private static int AcquireTexId()
     {
@@ -29,22 +26,12 @@ public static class TextureManager
     {
         if (Cache.TryGetValue(texHandle.Id, out var cachedTex) && cachedTex != null && !cachedTex.WasCollected)
             return cachedTex;
-        if (keeperGameObject == null)
-        {
-            keeperGameObject = new GameObject("TnTRFMod_TextureManagerKeeper");
-            Object.DontDestroyOnLoad(keeperGameObject);
-        }
 
         Logger.Info($"Loading texture with id {texHandle.Id}");
         var imageTex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
         imageTex.LoadImage(overrideImageData ?? texHandle.Data);
         imageTex.filterMode = FilterMode.Trilinear;
         imageTex.name = $"TnTRFMod_Texture_{texHandle.Id}";
-        var texObj = new GameObject(imageTex.name);
-        texObj.transform.SetParent(keeperGameObject.transform);
-        var img = texObj.AddComponent<Image>();
-        img.sprite = Sprite.Create(imageTex, new Rect(0, 0, imageTex.width, imageTex.height), Vector2.zero, 1f);
-        img.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
         Cache[texHandle.Id] = imageTex;
         return imageTex;
     }

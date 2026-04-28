@@ -107,7 +107,7 @@ public static class I18n
     {
         if (_i18nData.TryGetValue(CurrentLanguageCode, out var dict))
             if (dict.TryGetValue(key, out var value))
-                return new I18nResult(CurrentLanguage, key, string.Format(value, args));
+                return new I18nResult(CurrentLanguage, key, SafeFormat(value, args));
 
         foreach (var FALLBACK_LANGUAGE in FALLBACK_LANGUAGES)
             if (_i18nData.TryGetValue(FALLBACK_LANGUAGE, out dict))
@@ -116,7 +116,7 @@ public static class I18n
                     var languageType = GetLanguageType(FALLBACK_LANGUAGE);
                     Logger.Warn(
                         $"Missing I18n key: {key} for language {CurrentLanguageCode}, using fallback language {FALLBACK_LANGUAGE} ({value}).");
-                    return new I18nResult(languageType, key, string.Format(value, args));
+                    return new I18nResult(languageType, key, SafeFormat(value, args));
                 }
 
         Logger.Warn($"Missing I18n key: {key} for language {CurrentLanguageCode}, using key as fallback.");
@@ -145,6 +145,19 @@ public static class I18n
         public static explicit operator string(I18nResult result)
         {
             return result.Text;
+        }
+    }
+
+    private static string SafeFormat(string format, object[] args)
+    {
+        if (args.Length == 0) return format;
+        try
+        {
+            return string.Format(format, args);
+        }
+        catch (FormatException)
+        {
+            return format;
         }
     }
 }

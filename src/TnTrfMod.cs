@@ -48,63 +48,6 @@ public class TnTrfMod
 
     internal CoroutineRunner _runner;
 
-    public ConfigEntry<bool> enableAutoDownloadSubscriptionSongs = ConfigEntry<bool>.Noop;
-
-    public ConfigEntry<bool> enableBetterBigHitPatch = ConfigEntry<bool>.Noop;
-    public ConfigEntry<bool> betterBigHitSkipOnlineCheck = ConfigEntry<bool>.Noop;
-
-    public ConfigEntry<bool> enableBufferedInputPatch = ConfigEntry<bool>.Noop;
-
-    // public ConfigEntry<bool> enableCriWareExclusiveModePatch = ConfigEntry<bool>.Noop;
-    public ConfigEntry<bool> enableCustomDressAnimationMod = ConfigEntry<bool>.Noop;
-    public ConfigEntry<bool> enableMinimumLatencyAudioClient = ConfigEntry<bool>.Noop;
-    public ConfigEntry<bool> enableHitStatsPanelPatch = ConfigEntry<bool>.Noop;
-    public ConfigEntry<bool> enableHighPrecisionTimerPatch = ConfigEntry<bool>.Noop;
-    public ConfigEntry<bool> enableHitOffset = ConfigEntry<bool>.Noop;
-    public ConfigEntry<bool> hitOffsetInvertColor = ConfigEntry<bool>.Noop;
-    public ConfigEntry<float> hitOffsetRyoRange = ConfigEntry<float>.Noop;
-    public ConfigEntry<bool> enableScoreRankIcon = ConfigEntry<bool>.Noop;
-    public ConfigEntry<bool> enableOnpuTextRail = ConfigEntry<bool>.Noop;
-    public ConfigEntry<bool> enableMod = ConfigEntry<bool>.Noop;
-    public ConfigEntry<bool> enableNearestNeighborOnpuPatch = ConfigEntry<bool>.Noop;
-    public ConfigEntry<bool> enableNoShadowOnpuPatch = ConfigEntry<bool>.Noop;
-    public ConfigEntry<bool> enableSkipBootScreenPatch = ConfigEntry<bool>.Noop;
-    public ConfigEntry<bool> enableSkipRewardPatch = ConfigEntry<bool>.Noop;
-    public ConfigEntry<bool> enableLouderSongPatch = ConfigEntry<bool>.Noop;
-    public ConfigEntry<int> maxBufferedInputCount = ConfigEntry<int>.Noop;
-    public ConfigEntry<float> autoPlayRendaSpeed = ConfigEntry<float>.Noop;
-    public ConfigEntry<bool> enableTatakonKeyboardSongSelect = ConfigEntry<bool>.Noop;
-    public ConfigEntry<bool> enableInstantRelayPatch = ConfigEntry<bool>.Noop;
-    public ConfigEntry<string> customTitleSceneEnterSceneName = ConfigEntry<string>.Noop;
-    public ConfigEntry<int> modifyMeasuresCapacity = ConfigEntry<int>.Noop;
-
-    // 特训模式
-    public ConfigEntry<bool> enableTokkunGamePatch = ConfigEntry<bool>.Noop;
-    public ConfigEntry<string> tokkunGameOnSongEndBehaviour = ConfigEntry<string>.Noop;
-    public ConfigEntry<string> tokkunGameOnPauseBehaviour = ConfigEntry<string>.Noop;
-    public ConfigEntry<double> tokkunGameSlowTimeOffset = ConfigEntry<double>.Noop;
-    public ConfigEntry<double> tokkunGameFastTimeOffset = ConfigEntry<double>.Noop;
-
-    // 调试功能
-    public ConfigEntry<bool> debugSaveRawSaveData = ConfigEntry<bool>.Noop;
-    public ConfigEntry<bool> debugExportGameData = ConfigEntry<bool>.Noop;
-    public ConfigEntry<bool> debugExportMusicNames = ConfigEntry<bool>.Noop;
-
-    // 自定义玩家名称功能
-    public ConfigEntry<bool> enableCustomPlayerName = ConfigEntry<bool>.Noop;
-    public ConfigEntry<string> customPlayerName = ConfigEntry<string>.Noop;
-
-    // 直播点歌功能
-    public ConfigEntry<bool> enableBilibiliLiveStreamSongRequest = ConfigEntry<bool>.Noop;
-    public ConfigEntry<uint> bilibiliLiveStreamSongRoomId = ConfigEntry<uint>.Noop;
-    public ConfigEntry<string> bilibiliLiveStreamSongToken = ConfigEntry<string>.Noop;
-
-    // 按键映射
-    public KeyBindingConfigEntry p2LeftDonKey = KeyBindingConfigEntry.Noop;
-    public KeyBindingConfigEntry p2LeftKaKey = KeyBindingConfigEntry.Noop;
-    public KeyBindingConfigEntry p2RightDonKey = KeyBindingConfigEntry.Noop;
-    public KeyBindingConfigEntry p2RightKaKey = KeyBindingConfigEntry.Noop;
-
     public static TnTrfMod Instance { get; internal set; }
 
     private string sceneName { get; set; }
@@ -117,136 +60,18 @@ public class TnTrfMod
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     private delegate void OnLibTaikoLog(IntPtr msgBuffer);
 
-    private void SetupConfigs()
+    private static void SetupConfigs()
     {
-        // 默认启用的功能
-        enableMod = ConfigEntry.Register("General", "Enabled",
-            "config.Enabled", true);
-        enableBetterBigHitPatch = ConfigEntry.Register("General", "EnableBetterBigHitPatch",
-            "config.EnableBetterBigHitPatch", true);
-        betterBigHitSkipOnlineCheck = ConfigEntry.Register("General", "BetterBigHitSkipOnlineCheck",
-            "config.BetterBigHitSkipOnlineCheck", false);
-        enableSkipBootScreenPatch = ConfigEntry.Register("General", "EnableSkipBootScreenPatch",
-            "config.EnableSkipBootScreenPatch", true);
-        enableSkipRewardPatch = ConfigEntry.Register("General", "EnableSkipRewardPatch",
-            "config.EnableSkipRewardPatch", true);
-        // enableCriWareExclusiveModePatch = ConfigEntry.Register("General", "EnableCriWareExclusiveModePatch",
-        //     "config.EnableCriWareExclusiveModePatch", false);
-        enableMinimumLatencyAudioClient = ConfigEntry.Register("General", "EnableMinimumLatencyAudioClient",
-            "config.EnableMinimumLatencyAudioClient", true);
-        enableAutoDownloadSubscriptionSongs = ConfigEntry.Register("General", "EnableAutoDownloadSubscriptionSongs",
-            "config.EnableAutoDownloadSubscriptionSongs", true);
-        enableOnpuTextRail = ConfigEntry.Register("General", "EnableOnpuTextRail",
-            "config.EnableOnpuTextRail", true);
-        enableHighPrecisionTimerPatch = ConfigEntry.Register("General", "EnableHighPrecisionTimerPatch",
-            "config.EnableHighPrecisionTimerPatch", true);
-        // 默认禁用的功能
-        enableNearestNeighborOnpuPatch = ConfigEntry.Register("General", "EnableNearestNeighborOnpuPatch",
-            "config.EnableNearestNeighborOnpuPatch", false);
-        enableNoShadowOnpuPatch = ConfigEntry.Register("General", "EnableNoShadowOnpuPatch",
-            "config.EnableNoShadowOnpuPatch",
-            false);
-        enableCustomDressAnimationMod = ConfigEntry.Register("General", "EnableCustomDressAnimationMod",
-            "config.EnableCustomDressAnimationMod", false);
-        enableHitStatsPanelPatch = ConfigEntry.Register("General", "EnableHitStatsPanelPatch",
-            "config.EnableHitStatsPanelPatch",
-            false);
-        enableLouderSongPatch = ConfigEntry.Register("General", "EnableLouderSongPatch",
-            "config.EnableLouderSongPatch",
-            false);
-        enableScoreRankIcon = ConfigEntry.Register("General", "EnableScoreRankIcon",
-            "config.EnableScoreRankIcon",
-            false);
-        enableTatakonKeyboardSongSelect = ConfigEntry.Register("General", "EnableTatakonKeyboardSongSelect",
-            "config.EnableTatakonKeyboardSongSelect", false);
-        // 小节线容量扩张功能
-        modifyMeasuresCapacity =
-            ConfigEntry.Register("General", "ModifyMeasuresCapacity", "config.ModifyMeasuresCapacity", 65536);
-        // 敲击时差功能
-        enableHitOffset = ConfigEntry.Register("HitOffset", "Enable",
-            "config.HitOffset.Enable",
-            false);
-        hitOffsetInvertColor = ConfigEntry.Register("HitOffset", "InvertColor",
-            "config.HitOffset.InvertColor",
-            false);
-        hitOffsetRyoRange = ConfigEntry.Register("HitOffset", "RyoRange",
-            "config.HitOffset.RyoRange",
-            -1f);
-        // 直播点歌功能
-        enableBilibiliLiveStreamSongRequest = ConfigEntry.Register("BilibiliLiveStreamSongRequest", "Enable",
-            "config.BilibiliLiveStreamSongRequest.Enable", false);
-        bilibiliLiveStreamSongRoomId = ConfigEntry.Register("BilibiliLiveStreamSongRequest", "RoomId",
-            "config.BilibiliLiveStreamSongRequest.RoomId", 0u);
-        bilibiliLiveStreamSongToken = ConfigEntry.Register("BilibiliLiveStreamSongRequest", "Token",
-            "config.BilibiliLiveStreamSongRequest.Token",
-            "");
-
-        customTitleSceneEnterSceneName = ConfigEntry.Register("General", "CustomTitleSceneEnterSceneName",
-            "config.CustomTitleSceneEnterSceneName", "");
-
-        enableCustomPlayerName =
-            ConfigEntry.Register("CustomPlayerName", "Enable", "config.CustomPlayerName.Enable", false);
-        customPlayerName = ConfigEntry.Register("CustomPlayerName", "Name", "config.CustomPlayerName.Name", "Don-chan");
-        enableInstantRelayPatch =
-            ConfigEntry.Register("General", "EnableInstantRelayPatch", "config.EnableInstantRelayPatch", true);
-
-        enableBufferedInputPatch = ConfigEntry.Register("BufferedInput", "Enable",
-            "config.BufferedInput.Enable", true);
-        maxBufferedInputCount = ConfigEntry.Register("BufferedInput", "MaxBufferedInputCount",
-            "config.BufferedInput.MaxBufferedInputCount", 5);
-
-        autoPlayRendaSpeed = ConfigEntry.Register("General", "AutoPlayRendaSpeed",
-            "config.AutoPlayRendaSpeed",
-            30f);
-
-        // 特训模式
-        enableTokkunGamePatch = ConfigEntry.Register("TokkunMode", "Enable",
-            "config.TokkunMode.Enable", false);
-        tokkunGameOnSongEndBehaviour = ConfigEntry.Register("TokkunMode", "OnSongEndBehaviour",
-            "config.TokkunMode.OnSongEndBehaviour", "ToSongStart");
-        tokkunGameOnPauseBehaviour = ConfigEntry.Register("TokkunMode", "OnPauseBehaviour",
-            "config.TokkunMode.OnPauseBehaviour", "PauseAtCurrentPosition");
-        tokkunGameSlowTimeOffset = ConfigEntry.Register("TokkunMode", "SlowTimeOffset",
-            "config.TokkunMode.SlowTimeOffset", -100.0);
-        tokkunGameFastTimeOffset = ConfigEntry.Register("TokkunMode", "FastTimeOffset",
-            "config.TokkunMode.FastTimeOffset", 0.0);
-
-        // 调试相关功能
-        debugSaveRawSaveData = ConfigEntry.Register("Debug", "SaveRawSaveData",
-            "config.Debug.SaveRawSaveData", false);
-        debugExportGameData = ConfigEntry.Register("Debug", "ExportGameData",
-            "config.Debug.ExportGameData", false);
-        debugExportMusicNames = ConfigEntry.Register("Debug", "ExportMusicNames",
-            "config.Debug.ExportMusicNames", false);
-
-        // 按键映射
-
-        p2LeftDonKey =
-            KeyBindingConfigEntry.Register("TokkunMode", "P2LeftDonKey", "config.TokkunMode.P2LeftDonKey", Key.X);
-        p2LeftKaKey =
-            KeyBindingConfigEntry.Register("TokkunMode", "P2LeftKaKey", "config.TokkunMode.P2LeftKaKey", Key.Z);
-        p2RightDonKey =
-            KeyBindingConfigEntry.Register("TokkunMode", "P2RightDonKey", "config.TokkunMode.P2RightDonKey", Key.C);
-        p2RightKaKey =
-            KeyBindingConfigEntry.Register("TokkunMode", "P2RightKaKey", "config.TokkunMode.P2RightKaKey", Key.V);
-
-        ConfigEntry.Load();
-        KeyBindingConfigEntry.Load();
-    }
-
-    private IEnumerator EmptyEnumerator()
-    {
-        yield break;
+        ModConfig.Register();
     }
 
     public void Load(HarmonyInstance harmony)
     {
-        StartCoroutine(EmptyEnumerator());
         if (!Directory.Exists(Dir))
             Directory.CreateDirectory(Dir);
         I18n.Load();
         SetupConfigs();
-        if (!enableMod.Value)
+        if (!ModConfig.EnableMod.Value)
         {
             Logger.Warn("TnTRFMod has disabled!");
             return;
@@ -260,8 +85,8 @@ public class TnTrfMod
             var msg = Marshal.PtrToStringAnsi(buffer);
             Console.Out.Write(msg);
         });
-        if (modifyMeasuresCapacity.Value > 300)
-            LibTaikoPatches.InitExpandCSyousetsu(modifyMeasuresCapacity.Value);
+        if (ModConfig.ModifyMeasuresCapacity.Value > 300)
+            LibTaikoPatches.InitExpandCSyousetsu(ModConfig.ModifyMeasuresCapacity.Value);
         _ = SongAliasTable.ReloadAliasTable();
 
         SceneManager.sceneLoaded +=
@@ -272,7 +97,7 @@ public class TnTrfMod
         SetupHarmony();
         RegisterBuiltinScenes();
 
-        if (enableHighPrecisionTimerPatch.Value) HighPrecisionTimerPatch.Apply();
+        if (ModConfig.EnableHighPrecisionTimerPatch.Value) HighPrecisionTimerPatch.Apply();
 
         // try
         // {
@@ -288,7 +113,7 @@ public class TnTrfMod
         {
             // if (enableCriWareExclusiveModePatch.Value)
             //     Logger.Info("Skipping MinimumLatencyAudioClient because CriWare exclusive mode hook is enabled.");
-            if (enableMinimumLatencyAudioClient.Value)
+            if (ModConfig.EnableMinimumLatencyAudioClient.Value)
                 _minimumLatencyAudioClient.Start();
         }
         catch (Exception e)
@@ -331,15 +156,15 @@ public class TnTrfMod
 
         // _harmony.PatchAll();
 
-        result &= PatchClass<BetterBigHitPatch>(enableBetterBigHitPatch);
+        result &= PatchClass<BetterBigHitPatch>(ModConfig.EnableBetterBigHitPatch);
         result &= PatchClass<SkipBootScreenPatch>();
-        result &= PatchClass<SkipRewardPatch>(enableSkipRewardPatch);
-        result &= PatchClass<NoShadowOnpuPatch>(enableNoShadowOnpuPatch);
-        result &= PatchClass<NearestNeighborOnpuPatch>(enableNearestNeighborOnpuPatch);
+        result &= PatchClass<SkipRewardPatch>(ModConfig.EnableSkipRewardPatch);
+        result &= PatchClass<NoShadowOnpuPatch>(ModConfig.EnableNoShadowOnpuPatch);
+        result &= PatchClass<NearestNeighborOnpuPatch>(ModConfig.EnableNearestNeighborOnpuPatch);
         result &= PatchClass<BufferedNoteInputPatch>();
-        result &= PatchClass<ForcePlayMusicPatch>(enableLouderSongPatch);
-        result &= PatchClass<CustomPlayerNamePatch>(enableCustomPlayerName);
-        result &= PatchClass<AutoDownloadSubscriptionSongs>(enableAutoDownloadSubscriptionSongs);
+        result &= PatchClass<ForcePlayMusicPatch>(ModConfig.EnableLouderSongPatch);
+        result &= PatchClass<CustomPlayerNamePatch>(ModConfig.EnableCustomPlayerName);
+        result &= PatchClass<AutoDownloadSubscriptionSongs>(ModConfig.EnableAutoDownloadSubscriptionSongs);
         result &= PatchClass<EnsoGameBasePatch>();
         result &= PatchClass<LibTaikoPatches>();
         // result &= PatchClass<SmoothEnsoGamePatch>();
@@ -347,11 +172,11 @@ public class TnTrfMod
         result &= PatchClass<FumenPostProcessingPatch>();
         result &= PatchClass<CustomTitleSceneEnterPatch>();
         // result &= PatchClass<HiResDonImagePatch>();
-        result &= PatchClass<InstantRelayPatch>(enableInstantRelayPatch);
-        result &= PatchClass<ScoreRankIconPatch>(enableScoreRankIcon);
+        result &= PatchClass<InstantRelayPatch>(ModConfig.EnableInstantRelayPatch);
+        result &= PatchClass<ScoreRankIconPatch>(ModConfig.EnableScoreRankIcon);
         // result &= PatchClass<CustomSongSaveDataPatch>(enableCustomSongs);
         // result &= PatchClass<CustomSongLoaderPatch>(enableCustomSongs);
-        result &= PatchClass<TokkunGamePatch>(enableTokkunGamePatch);
+        result &= PatchClass<TokkunGamePatch>(ModConfig.EnableTokkunGamePatch);
         // CustomSongLoaderPatch.PatchLibTaiko();
 
         Application.s_LogCallbackHandler = new Action<string, string, LogType>(UnityLogCallback);
@@ -369,53 +194,41 @@ public class TnTrfMod
 
     public void UnityLogCallback(string logLine, string exception, LogType type)
     {
-        switch (type)
+        var (label, color, isError) = type switch
         {
-            case LogType.Error:
-                Console.Out.Write("\e[1;31m");
-                Console.Out.Write("[Unity][Error]:      ");
-                break;
-            case LogType.Assert:
-                Console.Out.Write("\e[1;31m");
-                Console.Out.Write("[Unity][Assert]:    ");
-                break;
-            case LogType.Warning:
-                Console.Out.Write("\e[1;33m");
-                Console.Out.Write("[Unity][Warning]:   ");
-                break;
-            case LogType.Log:
-                Console.Out.Write("[Unity][Info]:      ");
-                break;
-            case LogType.Exception:
-                Console.Out.Write("\e[1;91m");
-                Console.Out.Write("[Unity][Exception]: ");
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(type), type, null);
-        }
+            LogType.Error => ("[Unity][Error]:      ", "\e[1;31m", true),
+            LogType.Assert => ("[Unity][Assert]:    ", "\e[1;31m", true),
+            LogType.Warning => ("[Unity][Warning]:   ", "\e[1;33m", true),
+            LogType.Log => ("[Unity][Info]:      ", null, false),
+            LogType.Exception => ("[Unity][Exception]: ", "\e[1;91m", true),
+            _ => ("[Unity][Unknown]:   ", null, false)
+        };
 
+        if (color != null) Console.Out.Write(color);
+        Console.Out.Write(label);
         Console.Out.WriteLine(logLine.Trim());
-        if (type != LogType.Log && exception.Trim().Length > 0)
+
+        if (isError && exception.Trim().Length > 0)
         {
             const string indent = "                    ";
             const string indentLayer = "                      ";
             Console.Out.Write(indent);
             Console.Out.WriteLine("Stacktrace:");
-            foreach (var line in exception.Trim().Split("\n"))
+            foreach (var line in exception.Trim().Split('\n'))
             {
                 Console.Out.Write(indentLayer);
                 Console.Out.WriteLine(line);
             }
         }
 
-        Console.Out.Write("\e[0m");
+        if (color != null) Console.Out.Write("\e[0m");
     }
 
     public readonly ConcurrentQueue<Action> RunOnMainThread = new();
 
     public void OnUpdate()
     {
-        if (!enableMod.Value) return;
+        if (!ModConfig.EnableMod.Value) return;
         if (!RunOnMainThread.IsEmpty)
             while (RunOnMainThread.TryDequeue(out var action))
                 action?.Invoke();
@@ -423,6 +236,13 @@ public class TnTrfMod
         if (!_scenes.TryGetValue(sceneName, out var scenes)) return;
 
         foreach (var scene in scenes) scene.Update();
+    }
+
+    private static void ForceCollectAllGenerations()
+    {
+        GC.Collect(0, GCCollectionMode.Forced, true, true);
+        GC.Collect(1, GCCollectionMode.Forced, true, true);
+        GC.Collect(2, GCCollectionMode.Forced, true, true);
     }
 
     private void OnSceneWasLoaded(Scene scene, LoadSceneMode mode)
@@ -446,9 +266,7 @@ public class TnTrfMod
         if (shouldInvokeLowLatencyGC)
         {
             GCSettings.LatencyMode = GCLatencyMode.LowLatency;
-            GC.Collect(0, GCCollectionMode.Forced, true, true);
-            GC.Collect(1, GCCollectionMode.Forced, true, true);
-            GC.Collect(2, GCCollectionMode.Forced, true, true);
+            ForceCollectAllGenerations();
         }
 
         Logger.Info($"OnSceneWasLoaded {sceneName} ended, took {(DateTime.Now - time).TotalMilliseconds:N0}ms");
@@ -473,9 +291,7 @@ public class TnTrfMod
         if (shouldInvokeLowLatencyGC)
         {
             GCSettings.LatencyMode = GCLatencyMode.Interactive;
-            GC.Collect(0, GCCollectionMode.Forced, true, true);
-            GC.Collect(1, GCCollectionMode.Forced, true, true);
-            GC.Collect(2, GCCollectionMode.Forced, true, true);
+            ForceCollectAllGenerations();
         }
 
         Logger.Info(

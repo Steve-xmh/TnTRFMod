@@ -1,5 +1,6 @@
 using System.Text;
 using HarmonyLib;
+using TnTRFMod.Config;
 using TnTRFMod.Ui;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -7,7 +8,6 @@ using Logger = TnTRFMod.Utils.Logger;
 
 #if BEPINEX
 using SoundLabelClass = SoundLabel.SoundLabel;
-
 #elif MELONLOADER
 using SoundLabelClass = Il2CppSoundLabel.SoundLabel;
 #endif
@@ -128,8 +128,8 @@ public class TokkunGamePatch
                                    PlaybackSpeed;
             __instance.adjustTime = playbackSpeedIndex switch
             {
-                < 6 => TnTrfMod.Instance.tokkunGameSlowTimeOffset.Value,
-                > 6 => TnTrfMod.Instance.tokkunGameFastTimeOffset.Value,
+                < 6 => ModConfig.TokkunGameSlowTimeOffset.Value,
+                > 6 => ModConfig.TokkunGameFastTimeOffset.Value,
                 _ => __instance.adjustTime
             };
 
@@ -195,20 +195,20 @@ public class TokkunGamePatch
                     break;
                 default:
                 {
-                    if (key == TnTrfMod.Instance.p2LeftKaKey.Value)
+                    if (key == ModConfig.P2LeftKaKey.Value)
                     {
                         playbackSpeedIndex = Math.Max(0, playbackSpeedIndex - 1);
                         UpdatePauseText();
                         PlaySpeedSlowSound(ref mgr);
                     }
-                    else if (key == TnTrfMod.Instance.p2RightKaKey.Value)
+                    else if (key == ModConfig.P2RightKaKey.Value)
                     {
                         playbackSpeedIndex = Math.Min(PlaybackSpeedList.Length - 1, playbackSpeedIndex + 1);
                         UpdatePauseText();
                         PlaySpeedFastSound(ref mgr);
                     }
-                    else if (key == TnTrfMod.Instance.p2LeftDonKey.Value ||
-                             key == TnTrfMod.Instance.p2RightDonKey.Value)
+                    else if (key == ModConfig.P2LeftDonKey.Value ||
+                             key == ModConfig.P2RightDonKey.Value)
                     {
                         Paused = false;
                         Resume(ref mgr);
@@ -219,10 +219,10 @@ public class TokkunGamePatch
                 }
             }
         }
-        else if (key == TnTrfMod.Instance.p2LeftKaKey.Value ||
-                 key == TnTrfMod.Instance.p2LeftDonKey.Value ||
-                 key == TnTrfMod.Instance.p2RightDonKey.Value ||
-                 key == TnTrfMod.Instance.p2RightKaKey.Value)
+        else if (key == ModConfig.P2LeftKaKey.Value ||
+                 key == ModConfig.P2LeftDonKey.Value ||
+                 key == ModConfig.P2RightDonKey.Value ||
+                 key == ModConfig.P2RightKaKey.Value)
         {
             Paused = true;
             Pause(ref mgr);
@@ -246,10 +246,10 @@ public class TokkunGamePatch
         Pause(ref __instance, true);
         Paused = true;
 
-        if (TnTrfMod.Instance.tokkunGameOnSongEndBehaviour.Value == "PauseAtLastMeasure")
+        if (ModConfig.TokkunGameOnSongEndBehaviour.Value == "PauseAtLastMeasure")
             seekSyousetsuIndex = Math.Max(0,
                 __instance.taikoCorePlayer.GetNumberOfSyousetsuByTime(0, float.MaxValue, true) - 1);
-        else if (TnTrfMod.Instance.tokkunGameOnSongEndBehaviour.Value == "ToLastResumePosition")
+        else if (ModConfig.TokkunGameOnSongEndBehaviour.Value == "ToLastResumePosition")
             seekSyousetsuIndex = lastResumeSyousetsuIndex == -1 ? 0 : lastResumeSyousetsuIndex;
         else
             seekSyousetsuIndex = 0;
@@ -338,8 +338,8 @@ public class TokkunGamePatch
         if (!isSongEnd)
         {
             Logger.Info("TnTrfMod.Instance.tokkunGameOnPauseBehaviour: " +
-                        TnTrfMod.Instance.tokkunGameOnPauseBehaviour.Value);
-            if (TnTrfMod.Instance.tokkunGameOnPauseBehaviour.Value == "ToLastPausePosition")
+                        ModConfig.TokkunGameOnPauseBehaviour.Value);
+            if (ModConfig.TokkunGameOnPauseBehaviour.Value == "ToLastPausePosition")
                 seekSyousetsuIndex = lastResumeSyousetsuIndex == -1
                     ? __instance.taikoCorePlayer.GetNumberOfSyousetsuByTime(0, (float)curSeekTime, false)
                     : lastResumeSyousetsuIndex;

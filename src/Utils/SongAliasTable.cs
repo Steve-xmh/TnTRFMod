@@ -14,7 +14,7 @@ public static class SongAliasTable
             var aliasTableFile = Path.Combine(TnTrfMod.Dir, "alias.json");
             Logger.Info($"Loading alias table from {aliasTableFile}");
             if (!File.Exists(aliasTableFile)) return;
-            var aliasTableData = await File.ReadAllTextAsync(aliasTableFile);
+            var aliasTableData = await File.ReadAllTextAsync(aliasTableFile).ConfigureAwait(false);
             var aliasTable = JsonNode.Parse(aliasTableData);
             foreach (var kv in aliasTable.AsObject())
                 if (kv.Value.AsValue().TryGetValue<string>(out var alias))

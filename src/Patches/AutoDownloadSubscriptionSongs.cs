@@ -1,5 +1,6 @@
 using HarmonyLib;
 using Il2CppInterop.Runtime;
+using TnTRFMod.Config;
 using TnTRFMod.Ui;
 using TnTRFMod.Utils;
 using UnityEngine.Events;
@@ -10,7 +11,6 @@ using Logger = TnTRFMod.Utils.Logger;
 using Cysharp.Threading.Tasks;
 using Scripts.OutGame.Common;
 using Scripts.OutGame.SongSelect;
-
 #elif MELONLOADER
 using Il2CppCysharp.Threading.Tasks;
 using Il2CppScripts.OutGame.Common;
@@ -26,7 +26,7 @@ public class AutoDownloadSubscriptionSongs
 
     public static async Task StartAutoDownloadSubscriptionSongsAsync()
     {
-        if (!TnTrfMod.Instance.enableAutoDownloadSubscriptionSongs.Value) return;
+        if (!ModConfig.EnableAutoDownloadSubscriptionSongs.Value) return;
         using var logText = LoggingScreenUi.NewThreadSafe(I18n.Get("autoDownloadSub.stepOne").Text);
         Logger.Info("Download cache directory: " + PackedSongUtility.LocalStragePath);
 
@@ -209,7 +209,7 @@ public class AutoDownloadSubscriptionSongs
     private static bool SongSelectSceneUiControllerBase_LoadSubscriptionAsync_Prefix(
         SubscriptionUtility.__c__DisplayClass29_0 __instance, ref bool __result)
     {
-        if (!TnTrfMod.Instance.enableAutoDownloadSubscriptionSongs.Value) return true;
+        if (!ModConfig.EnableAutoDownloadSubscriptionSongs.Value) return true;
 
         __result = __instance.runningCount <= 32;
 
@@ -222,7 +222,7 @@ public class AutoDownloadSubscriptionSongs
     [HarmonyPrefix]
     private static bool SongSelectSceneUiControllerBase_LoadSubscriptionAsync_Prefix(ref UniTask __result)
     {
-        if (!TnTrfMod.Instance.enableAutoDownloadSubscriptionSongs.Value) return true;
+        if (!ModConfig.EnableAutoDownloadSubscriptionSongs.Value) return true;
         // 至少执行一次订阅检查以免有疏漏，后续不在
         if (!invokedDownload)
         {

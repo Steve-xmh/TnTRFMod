@@ -1,4 +1,5 @@
 using Il2CppInterop.Runtime;
+using TnTRFMod.Config;
 using TnTRFMod.Patches;
 using TnTRFMod.Scenes.Enso;
 using TnTRFMod.Ui;
@@ -13,7 +14,6 @@ using Random = UnityEngine.Random;
 using Scripts.OutGame.SongSelect;
 using Scripts.OutGame.Common;
 using SoundLabelClass = SoundLabel.SoundLabel;
-
 #elif MELONLOADER
 using Il2CppScripts.OutGame.SongSelect;
 using Il2CppScripts.OutGame.Common;
@@ -40,7 +40,7 @@ public class SongSelectScene : IScene
 
     public void Start()
     {
-        if (TnTrfMod.Instance.enableTatakonKeyboardSongSelect.Value)
+        if (ModConfig.EnableTatakonKeyboardSongSelect.Value)
         {
             textInputDelegate =
                 DelegateSupport.ConvertDelegate<Il2CppSystem.Action<char>>(OnTextInput);
@@ -48,7 +48,7 @@ public class SongSelectScene : IScene
         }
 
         _cached = null;
-        if (TnTrfMod.Instance.enableBilibiliLiveStreamSongRequest.Value)
+        if (ModConfig.EnableBilibiliLiveStreamSongRequest.Value)
         {
             liveStreamSongRequestStatus = new TextUi
             {
@@ -73,7 +73,7 @@ public class SongSelectScene : IScene
 
     public void Update()
     {
-        if (TnTrfMod.Instance.enableBilibiliLiveStreamSongRequest.Value)
+        if (ModConfig.EnableBilibiliLiveStreamSongRequest.Value)
         {
             repeatCounter = Math.Max(0, repeatCounter - Time.deltaTime);
 

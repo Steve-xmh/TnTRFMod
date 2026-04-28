@@ -1,4 +1,5 @@
 using System.Collections;
+using TnTRFMod.Config;
 using TnTRFMod.Patches;
 using TnTRFMod.Scenes.Enso;
 using TnTRFMod.Ui;
@@ -28,28 +29,28 @@ public class EnsoScene : IScene
         LiveStreamSongSelectPanel.QueuedSongList.Remove(LiveStreamSongSelectPanel.QueuedSongList.Find(info =>
             info.SongInfo.UniqueId == CommonObjects.Instance.MyDataManager.EnsoData.ensoSettings.musicUniqueId));
 
-        if (TnTrfMod.Instance.enableNearestNeighborOnpuPatch.Value) NearestNeighborOnpuPatch.PatchLaneTarget();
-        if (TnTrfMod.Instance.enableHitStatsPanelPatch.Value) HitStatusPanel.Start();
-        if (TnTrfMod.Instance.enableHitOffset.Value) HitOffsetTip.Start();
-        if (TnTrfMod.Instance.enableTokkunGamePatch.Value) TokkunMode.Start();
+        if (ModConfig.EnableNearestNeighborOnpuPatch.Value) NearestNeighborOnpuPatch.PatchLaneTarget();
+        if (ModConfig.EnableHitStatsPanelPatch.Value) HitStatusPanel.Start();
+        if (ModConfig.EnableHitOffset.Value) HitOffsetTip.Start();
+        if (ModConfig.EnableTokkunGamePatch.Value) TokkunMode.Start();
 
-        if (TnTrfMod.Instance.enableScoreRankIcon.Value) ScoreRankIcon.Init();
-        if (TnTrfMod.Instance.enableOnpuTextRail.Value) TnTrfMod.Instance.StartCoroutine(DrawOnpuTextRail());
+        if (ModConfig.EnableScoreRankIcon.Value) ScoreRankIcon.Init();
+        if (ModConfig.EnableOnpuTextRail.Value) TnTrfMod.Instance.StartCoroutine(DrawOnpuTextRail());
 
         Common.MoveLocalCanvas("Canvas");
     }
 
     public void Destroy()
     {
-        if (TnTrfMod.Instance.enableTokkunGamePatch.Value) TokkunMode.Destroy();
+        if (ModConfig.EnableTokkunGamePatch.Value) TokkunMode.Destroy();
     }
 
     public void Update()
     {
-        if (TnTrfMod.Instance.enableHitStatsPanelPatch.Value) HitStatusPanel.Update();
-        if (TnTrfMod.Instance.enableScoreRankIcon.Value) ScoreRankIcon.Update();
-        if (TnTrfMod.Instance.enableHitOffset.Value) HitOffsetTip.Update();
-        if (TnTrfMod.Instance.enableTokkunGamePatch.Value) TokkunMode.Update();
+        if (ModConfig.EnableHitStatsPanelPatch.Value) HitStatusPanel.Update();
+        if (ModConfig.EnableScoreRankIcon.Value) ScoreRankIcon.Update();
+        if (ModConfig.EnableHitOffset.Value) HitOffsetTip.Update();
+        if (ModConfig.EnableTokkunGamePatch.Value) TokkunMode.Update();
         // debugSmoothDeltaText.SetText("调试：音频延迟：{0:00.00}ms", (float)SmoothEnsoGamePatch.SmoothDelta);
     }
 

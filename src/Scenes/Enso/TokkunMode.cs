@@ -1,3 +1,4 @@
+using TnTRFMod.Config;
 using TnTRFMod.Patches;
 using TnTRFMod.Ui.Tokkun;
 using TnTRFMod.Ui.Widgets;
@@ -6,7 +7,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 #if BEPINEX
 using TMPro;
-
 #elif MELONLOADER
 using Il2CppTMPro;
 #endif
@@ -96,13 +96,13 @@ public class TokkunMode
                 break;
             default:
             {
-                if (key == TnTrfMod.Instance.p2LeftKaKey.Value)
+                if (key == ModConfig.P2LeftKaKey.Value)
                     drumP2.InvokeLeftKatsu();
-                else if (key == TnTrfMod.Instance.p2LeftDonKey.Value)
+                else if (key == ModConfig.P2LeftDonKey.Value)
                     drumP2.InvokeDon();
-                else if (key == TnTrfMod.Instance.p2RightDonKey.Value)
+                else if (key == ModConfig.P2RightDonKey.Value)
                     drumP2.InvokeDon();
-                else if (key == TnTrfMod.Instance.p2RightKaKey.Value)
+                else if (key == ModConfig.P2RightKaKey.Value)
                     drumP2.InvokeRightKatsu();
                 break;
             }

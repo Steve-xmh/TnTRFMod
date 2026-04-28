@@ -7,7 +7,6 @@ using Image = UnityEngine.UI.Image;
 
 #if BEPINEX
 using TMPro;
-
 #elif MELONLOADER
 using Il2CppTMPro;
 #endif

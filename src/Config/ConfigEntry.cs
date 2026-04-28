@@ -102,6 +102,8 @@ public static class ConfigEntry
     public static bool IsFirstConfig = true;
 
     private static FileSystemWatcher? configFileWatcher;
+    private static DateTime _lastConfigReload;
+    private const int ConfigReloadDebounceMs = 250;
 
     public static string ConfigFilePath => Path.Combine(TnTrfMod.Dir, "config.toml");
     public static string ExampleConfigFilePath => Path.Combine(TnTrfMod.Dir, "config.example.toml");
@@ -155,6 +157,10 @@ public static class ConfigEntry
 
     private static void OnConfigFileChanged(object sender, FileSystemEventArgs e)
     {
+        var now = DateTime.UtcNow;
+        if ((now - _lastConfigReload).TotalMilliseconds < ConfigReloadDebounceMs) return;
+        _lastConfigReload = now;
+
         if (!File.Exists(ConfigFilePath)) return;
         try
         {

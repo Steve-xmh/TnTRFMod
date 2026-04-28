@@ -1,4 +1,5 @@
 using System.Text;
+using TnTRFMod.Config;
 using TnTRFMod.Scenes.Enso;
 using TnTRFMod.Ui;
 using UnityEngine;
@@ -7,7 +8,6 @@ using Logger = TnTRFMod.Utils.Logger;
 
 #if BEPINEX
 using Scripts.OutGame.Boot;
-
 #elif MELONLOADER
 using Il2CppScripts.OutGame.Boot;
 #endif
@@ -20,7 +20,7 @@ public class BootScene : IScene
 
     public void Start()
     {
-        if (TnTrfMod.Instance.enableSkipBootScreenPatch.Value)
+        if (ModConfig.EnableSkipBootScreenPatch.Value)
         {
             var blackGo = new GameObject("BlackGo");
             var transform = blackGo.AddComponent<RectTransform>();
@@ -36,11 +36,11 @@ public class BootScene : IScene
             image.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero, 1f);
         }
 
-        if (TnTrfMod.Instance.enableBilibiliLiveStreamSongRequest.Value)
+        if (ModConfig.EnableBilibiliLiveStreamSongRequest.Value)
             LiveStreamSongSelectPanel.StartLiveStreamDanmaku();
-        if (TnTrfMod.Instance.debugExportMusicNames.Value)
+        if (ModConfig.DebugExportMusicNames.Value)
             DumpMusicNames();
-        if (TnTrfMod.Instance.debugExportGameData.Value)
+        if (ModConfig.DebugExportGameData.Value)
             DumpAllAssets();
 
         // SRDebug.Init();
@@ -56,7 +56,7 @@ public class BootScene : IScene
 
     public void Update()
     {
-        if (!TnTrfMod.Instance.enableSkipBootScreenPatch.Value) return;
+        if (!ModConfig.EnableSkipBootScreenPatch.Value) return;
         var objs = TaikoSingletonMonoBehaviour<BootSceneObjects>.Instance;
         if (objs == null) return;
         if (!objs.uiController.bootImage.skipped)

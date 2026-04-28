@@ -2,7 +2,6 @@ using TnTRFMod.Ui.Widgets;
 using UnityEngine;
 #if BEPINEX
 using TMPro;
-
 #elif MELONLOADER
 using Il2CppTMPro;
 #endif
@@ -11,9 +10,14 @@ namespace TnTRFMod.Ui.Tokkun;
 
 public class DrumButton : BaseUi
 {
+    private static readonly Vector2 ActionTextLocalPos = new(0f, -60f);
+    private static readonly Vector2 ActionIconLocalPos = new(0f, -65.625f);
+    private static readonly Vector2 TopLabelLocalPos = new(100f, -35f);
+
     private readonly ImageUi buttonImage;
     private readonly TextUi buttonTopLabel;
-    private BaseUi buttonAction;
+    private TextUi? _actionText;
+    private ImageUi? _actionIcon;
 
     public DrumButton(bool isKatsu = false)
     {
@@ -22,25 +26,27 @@ public class DrumButton : BaseUi
         buttonImage =
             new ImageUi(isKatsu ? TextureManager.Textures.TokkunButtonKatsu : TextureManager.Textures.TokkunButtonDon);
         buttonTopLabel = new TextUi(true);
-        var action = new TextUi(true);
         buttonTopLabel.Text = "Label";
-        action.Text = "字";
-        action.FontSize = 140f;
-        action.Alignment = TextAlignmentOptions.Center;
-        buttonAction = action;
+
+        _actionText = new TextUi(true)
+        {
+            Text = "字",
+            FontSize = 140f,
+            Alignment = TextAlignmentOptions.Center
+        };
 
         AddChild(buttonImage);
         AddChild(buttonTopLabel);
-        AddChild(buttonAction);
+        AddChild(_actionText);
 
         buttonTopLabel._transform.pivot = new Vector2(1f, 0f);
         buttonTopLabel._transform.sizeDelta = Vector2.zero;
         buttonTopLabel.Alignment = TextAlignmentOptions.Center;
-        buttonAction._transform.pivot = new Vector2(1f, 0f);
-        buttonAction._transform.sizeDelta = Vector2.zero;
+        _actionText._transform.pivot = new Vector2(1f, 0f);
+        _actionText._transform.sizeDelta = Vector2.zero;
 
-        buttonTopLabel._transform.localPosition = new Vector2(100f, -35f);
-        buttonAction._transform.localPosition = new Vector2(0f, -60f);
+        buttonTopLabel._transform.localPosition = TopLabelLocalPos;
+        _actionText._transform.localPosition = ActionTextLocalPos;
     }
 
     public void SetLabel(string label)
@@ -50,28 +56,40 @@ public class DrumButton : BaseUi
 
     public void SetActionText(string text)
     {
-        buttonAction.Dispose();
-        var action = new TextUi(true)
+        if (_actionIcon != null) _actionIcon.Visible = false;
+        if (_actionText == null)
         {
-            Text = text,
-            Alignment = TextAlignmentOptions.Center
-        };
-        AddChild(action);
-        action.FontSize = 70f;
-        buttonAction = action;
-        buttonAction._transform.pivot = new Vector2(1f, 0f);
-        buttonAction._transform.sizeDelta = Vector2.zero;
-        buttonAction._transform.localPosition = new Vector2(0f, -60f);
+            _actionText = new TextUi(true)
+            {
+                FontSize = 70f,
+                Alignment = TextAlignmentOptions.Center
+            };
+            AddChild(_actionText);
+            _actionText._transform.pivot = new Vector2(1f, 0f);
+            _actionText._transform.sizeDelta = Vector2.zero;
+            _actionText._transform.localPosition = ActionTextLocalPos;
+        }
+
+        _actionText.Text = text;
+        _actionText.Visible = true;
     }
 
     public void SetActionIcon(Sprite sprite)
     {
-        buttonAction.Dispose();
-        var action = new ImageUi(sprite);
-        AddChild(action);
-        action._transform.pivot = new Vector2(0.5f, 0.5f);
-        action._transform.localScale = new Vector2(1f, 1f);
-        action._transform.localPosition = new Vector2(0f, -65.625f);
-        buttonAction = action;
+        if (_actionText != null) _actionText.Visible = false;
+        if (_actionIcon == null)
+        {
+            _actionIcon = new ImageUi(sprite);
+            AddChild(_actionIcon);
+            _actionIcon._transform.pivot = new Vector2(0.5f, 0.5f);
+            _actionIcon._transform.localScale = new Vector2(1f, 1f);
+            _actionIcon._transform.localPosition = ActionIconLocalPos;
+        }
+        else
+        {
+            _actionIcon.Image.sprite = sprite;
+        }
+
+        _actionIcon.Visible = true;
     }
 }
