@@ -26,6 +26,7 @@ public class EnsoGameBasePatch
     public static List<FumenReader.MaxScore> MaxScores { get; } = new(5);
     public static bool IsShinuchiMode { get; private set; }
     public static bool IsPlaying { get; private set; }
+    public static double CurrentSongTime { get; private set; }
 
     [HarmonyPatch(typeof(EnsoGameManager))]
     [HarmonyPatch(nameof(EnsoGameManager.ProcPreparing))]
@@ -39,6 +40,7 @@ public class EnsoGameBasePatch
 
         IsShinuchiMode = false;
         IsPlaying = false;
+        CurrentSongTime = 0;
 
         for (var i = 0; i < __instance.settings.ensoPlayerSettings.Count; i++)
         {
@@ -161,6 +163,7 @@ public class EnsoGameBasePatch
     private static void EnsoGameManager_ProcExecMain_Postfix(EnsoGameManager __instance)
     {
         IsPlaying = __instance.ensoSound.songPlayer.IsPlaying();
+        CurrentSongTime = __instance.ensoSound.GetSongPosition(true);
         if (ShouldSkipProcessExecMain(__instance)) return;
         var results = __instance.ensoParam.GetFrameResults();
 
