@@ -2,22 +2,22 @@ namespace TnTRFMod.Scenes;
 
 public interface IScene
 {
-    public string SceneName { get; }
-    public bool LowLatencyMode => false;
+    string SceneName { get; }
+    bool LowLatencyMode => false;
 
-    public void Init()
+    void Init()
     {
     }
 
-    public void Start()
+    void Start()
     {
     }
 
-    public void Update()
+    void Update()
     {
     }
 
-    public void Destroy()
+    void Destroy()
     {
     }
 }

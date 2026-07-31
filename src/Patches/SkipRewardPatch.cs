@@ -6,6 +6,7 @@ using HarmonyLib;
 
 #if BEPINEX
 using Cysharp.Threading.Tasks;
+
 #elif MELONLOADER
 using Il2CppCysharp.Threading.Tasks;
 #endif

@@ -48,18 +48,16 @@ internal class BufferedNoteInputPatch
         Injected = true;
     }
 
-    // TODO: Gamepad support
     private static void OnInputSystemEvent(InputEventPtr eventPtr, InputDevice device)
     {
-        if (!eventPtr.handled) return;
+        if (Disabled || device is not Gamepad gamepad) return;
+
         for (var i = 0; i < playerInputStates.Count; i++)
         {
             var inputState = playerInputStates[i];
-            var ctler = mgr.Controllers[(int)inputState.PlayerNo];
-            if (ctler.deviceId == device.deviceId)
+            var controller = mgr.Controllers[(int)inputState.PlayerNo];
+            if (controller.connected && controller.deviceId == device.deviceId)
             {
-                var gamepad = device as Gamepad;
-                // Logger.Info($"OnInputSystemEvent {inputState.PlayerNo} {ctler.deviceId}");
                 inputState.Scan(gamepad, eventPtr);
                 return;
             }
@@ -128,20 +126,18 @@ internal class BufferedNoteInputPatch
 
         public void Scan(Gamepad gamepad, InputEventPtr eventPtr)
         {
-            // mgr.controlType
-            // var typeTable = mgr.TypeTable.Cast<Il2CppArrayBase<ControllerManager.Buttons>>();
-            // mgr.GetGamepadButtonControl(ref gamepad, ControllerManager.Buttons.A)
-            // mgr.analogThreshold
-            if (mgr.GetDonKatsuDown(PlayerNo, ControllerManager.Taiko.DonL))
+            // ControllerManager 已经按当前控制方案处理按钮映射和上升沿。
+            // 在 InputSystem.onEvent 中调用它，可以把手柄击打送入缓冲队列。
+            if (mgr.GetDonKatsuDownController(PlayerNo, ControllerManager.Taiko.DonL))
                 InvokeDonL();
 
-            if (mgr.GetDonKatsuDown(PlayerNo, ControllerManager.Taiko.DonR))
+            if (mgr.GetDonKatsuDownController(PlayerNo, ControllerManager.Taiko.DonR))
                 InvokeDonR();
 
-            if (mgr.GetDonKatsuDown(PlayerNo, ControllerManager.Taiko.KatsuL))
+            if (mgr.GetDonKatsuDownController(PlayerNo, ControllerManager.Taiko.KatsuL))
                 InvokeKatsuL();
 
-            if (mgr.GetDonKatsuDown(PlayerNo, ControllerManager.Taiko.KatsuR))
+            if (mgr.GetDonKatsuDownController(PlayerNo, ControllerManager.Taiko.KatsuR))
                 InvokeKatsuR();
         }
 

@@ -101,16 +101,6 @@ public class TnTrfMod
 
         if (ModConfig.EnableHighPrecisionTimerPatch.Value) HighPrecisionTimerPatch.Apply();
 
-        // try
-        // {
-        //     if (enableCriWareExclusiveModePatch.Value) CriWareEnableExclusiveModePatch.Apply();
-        // }
-        // catch (Exception e)
-        // {
-        //     Logger.Error("Failed to apply CriWareEnableExclusiveModePatch:");
-        //     Logger.Error(e);
-        // }
-
         try
         {
             // if (enableCriWareExclusiveModePatch.Value)
@@ -127,8 +117,6 @@ public class TnTrfMod
 
     public bool Unload()
     {
-        _minimumLatencyAudioClient.Stop();
-        // CriWareEnableExclusiveModePatch.Reset();
         return false;
     }
 

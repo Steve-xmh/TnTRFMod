@@ -13,6 +13,8 @@ autoDownloadSub.networkIssue = "无法请求服务器或网络连接不可用（
 autoDownloadSub.errorOnCheck = "无法确认 Music Pass 订阅可用性，可能是网络错误。"
 autoDownloadSub.otherError = "自动歌曲下载发生错误：\n{0}"
 autoDownloadSub.hideTip = "\n文字信息将在 5 秒后消失"
+autoDownloadSub.downloading = "正在下载歌曲 {0} ({1}/{2})"
+autoDownloadSub.unknownSize = "未知大小"
 
 hitStats.hitAspectLabel = "音符命中率"
 hitStats.rendaLabel = "连打"
@@ -66,7 +68,7 @@ config.BetterBigHitSkipOnlineCheck = """在大打补丁中跳过对是否处于�
 config.EnableSkipBootScreenPatch = "启用跳过启动画面补丁"
 config.EnableSkipRewardPatch = "启用跳过奖励提示框补丁"
 config.EnableBufferedInputPatch = "是否启用缓冲输入补丁"
-config.EnableMinimumLatencyAudioClient = "启用最低延迟音频客户端（可能减少音频延迟）"
+
 config.EnableAutoDownloadSubscriptionSongs = "启用自动下载订阅歌曲（未完全测试）"
 config.EnableOnpuTextRail = "启用音符文字轨道背景"
 config.EnableHighPrecisionTimerPatch = "启用高精度计时器补丁（可能有助于音符判定）"
@@ -105,15 +107,7 @@ config.BilibiliLiveStreamSongRequest.Token = """Bilibili 站直播间 Token
 通常为名为 SESSDATA 的 Cookie
 如果不提供此项，将无法获取准确的发送者信息"""
 
-config.ExclusiveModeAudio.Enable = """启用独占模式音频（实验性）
-启用此模式可以获得足够低的音频输出延迟，且音符滚动会更加稳定
-但是此功能可能会在不同的电脑上产生诸如声音出错、游戏启动时崩溃的情况，还请多多留意"""
-config.ExclusiveModeAudio.SampleRate = """独占模式音频采样率
-应与音频输出设备的格式匹配
-设置为 0 将使用音频输出设备的混合格式采样率"""
-config.ExclusiveModeAudio.BitPerSample = "独占模式音频采样位数（通常为 16 或 24）"
-config.ExclusiveModeAudio.EnableCriWarePluginLogging = """是否启用输出 CriWare 插件日志
-这是游戏所使用的音频引擎，如果你遇到了独占音频问题，可以尝试启用这个选项来检查问题"""
+
 
 config.CustomPlayerName.Enable = "启用自定义玩家名称"
 config.CustomPlayerName.Name = "自定义玩家名称"
@@ -170,6 +164,8 @@ autoDownloadSub.networkIssue = "Failed to request server or network is unavailab
 autoDownloadSub.errorOnCheck = "Failed to confirm Music Pass subscription availability, probably due to network error."
 autoDownloadSub.otherError = "An error occurred while auto downloading songs:\n{0}"
 autoDownloadSub.hideTip = "\nText message will disappear in 5 seconds..."
+autoDownloadSub.downloading = "Downloading song {0} ({1}/{2})"
+autoDownloadSub.unknownSize = "unknown size"
 
 hitStats.hitAspectLabel = "Hit Rate"
 hitStats.rendaLabel = "Rolls"
@@ -223,7 +219,7 @@ config.BetterBigHitSkipOnlineCheck = """Skip online-mode check in Big Hit patch
 config.EnableSkipBootScreenPatch = "Enables the Skip Boot Screen Patch."
 config.EnableSkipRewardPatch = "Enables the Skip Reward Dialog Patch."
 config.EnableBufferedInputPatch = "Enables the Buffered Input Patch."
-config.EnableMinimumLatencyAudioClient = "Enables Minimum Latency Audio Client, which can reduce the audio latency if possible."
+
 config.EnableAutoDownloadSubscriptionSongs = "Enables downloading of Music Pass songs automatically. (NOT FULLY TESTED)"
 config.EnableOnpuTextRail = "Draw an arcade-like note text rail background."
 config.EnableHighPrecisionTimerPatch = "Enables the High Precision Timer Patch, which may benefits to hit time judging."
@@ -258,10 +254,7 @@ config.BilibiliLiveStreamSongRequest.Enable = "Enable Bilibili Live Stream Song 
 config.BilibiliLiveStreamSongRequest.RoomId = "Bilibili Live Stream Room ID."
 config.BilibiliLiveStreamSongRequest.Token = "Bilibili Live Stream Token. Commonly as a Cookie called 'SESSDATA'. If you don't provide this, you won't be able to get accurate sender info."
 
-config.ExclusiveModeAudio.Enable = "Enables WASAPI Exclusive audio. (Experimental)"
-config.ExclusiveModeAudio.SampleRate = "Sample rate of WASAPI Exclusive. Should match your audio output device. If set to 0, it will use the sample rate of the mix format of your audio output device."
-config.ExclusiveModeAudio.BitPerSample = "Bitsize per sample of WASAPI Exclusive. Should match your audio output device. If set to 0, it will use the bit size of the mix format of your audio output device."
-config.ExclusiveModeAudio.EnableCriWarePluginLogging = "Enable logging of CriWare Unity Plugin. If audio issues occur, this can be turned on to check for errors."
+
 
 config.CustomPlayerName.Enable = "Enable custom player name."
 config.CustomPlayerName.Name = "Custom player name."
@@ -314,6 +307,8 @@ autoDownloadSub.networkIssue = "サーバーへ接続できないか、ネット
 autoDownloadSub.errorOnCheck = "Music Pass の有効性を確認できません。ネットワーク障害の可能性があります。"
 autoDownloadSub.otherError = "自動ダウンロード中にエラーが発生しました：\n{0}"
 autoDownloadSub.hideTip = "\nこのメッセージは 5 秒後に消えます"
+autoDownloadSub.downloading = "曲 {0} をダウンロード中 ({1}/{2})"
+autoDownloadSub.unknownSize = "サイズ不明"
 
 hitStats.hitAspectLabel = "音符精度"
 hitStats.rendaLabel = "連打"
@@ -367,7 +362,7 @@ config.BetterBigHitSkipOnlineCheck = """大打パッチのオンラインチェ�
 config.EnableSkipBootScreenPatch = "起動画面スキップパッチ"
 config.EnableSkipRewardPatch = "報酬ポップアップスキップパッチ"
 config.EnableBufferedInputPatch = "入力バッファパッチ"
-config.EnableMinimumLatencyAudioClient = "低遅延オーディオモード（環境により音ズレ軽減）"
+
 config.EnableAutoDownloadSubscriptionSongs = "サブスク楽曲を自動ダウンロード（テスト中）"
 config.EnableOnpuTextRail = "オンプ文字レールの描画を有効化"
 config.EnableHighPrecisionTimerPatch = "高精度タイマーパッチ（判定安定の可能性）"
@@ -402,15 +397,7 @@ config.BilibiliLiveStreamSongRequest.Token = """Bilibili のセッショント�
 通常は SESSDATA クッキー
 未入力の場合、送信者情報を正しく取得できません"""
 
-config.ExclusiveModeAudio.Enable = """排他モード音声（実験的）
-極めて低遅延で、譜面も安定しやすい
-ただし環境によってはノイズや起動失敗が発生する場合があります"""
-config.ExclusiveModeAudio.SampleRate = """排他モード音声のサンプリングレート
-出力デバイスに合わせて設定してください
-0 ならデバイスのミックスフォーマットを使用"""
-config.ExclusiveModeAudio.BitPerSample = "排他モード音声のビット深度（通常 16 または 24）"
-config.ExclusiveModeAudio.EnableCriWarePluginLogging = """CriWare プラグインのログ出力
-排他モードの不具合調査に使用"""
+
 
 config.CustomPlayerName.Enable = "プレイヤー名をカスタム"
 config.CustomPlayerName.Name = "カスタムプレイヤー名"
@@ -463,6 +450,8 @@ autoDownloadSub.networkIssue = "Serveur inaccessible ou réseau indisponible ({0
 autoDownloadSub.errorOnCheck = "Impossible de vérifier la disponibilité du Music Pass, probablement à cause du réseau."
 autoDownloadSub.otherError = "Érreur pendant le téléchargement automatique:\n{0}"
 autoDownloadSub.hideTip = "\nCe message disparaitra dans 5 secondes"
+autoDownloadSub.downloading = "Téléchargement de la chanson {0} ({1}/{2})"
+autoDownloadSub.unknownSize = "taille inconnue"
 
 hitStats.hitAspectLabel = "Précision des coups"
 hitStats.rendaLabel = "Roul. tam."
@@ -516,7 +505,7 @@ config.BetterBigHitSkipOnlineCheck = """Ignorer la vérification online pour le 
 config.EnableSkipBootScreenPatch = "Passer l'écran de démarrage"
 config.EnableSkipRewardPatch = "Passer le pop-up de récompenses"
 config.EnableBufferedInputPatch = "Active le patch Buffered Input"
-config.EnableMinimumLatencyAudioClient = "Client audio à latence minimale (peut réduire le retard sonore)"
+
 config.EnableAutoDownloadSubscriptionSongs = "Télécharge automatiquement les chansons du Music Pass (béta)"
 config.EnableOnpuTextRail = "Rail de texte style arcade sous les notes"
 config.EnableHighPrecisionTimerPatch = "Timer haute precision (peut aider la fenêtre de jugement)"
@@ -551,15 +540,7 @@ config.BilibiliLiveStreamSongRequest.Token = """Token Bilibili Live
 Souvent le cookie SESSDATA.
 Avec aucun token, il sera impossible d'identifier correctement l'expéditeur"""
 
-config.ExclusiveModeAudio.Enable = """Mode WASAPI Exclusive (expérimental)
-Donne une latence très basse et un défilement plus stable
-Peut toutefois causer des soucis sonores ou des crashs selon la machine"""
-config.ExclusiveModeAudio.SampleRate = """Fréquence d'échantillons pour WASAPI Exclusive
-Doit correspondre au format de sortie
-0 pour utiliser le format par défaut du périphérique"""
-config.ExclusiveModeAudio.BitPerSample = "Bits par échantillon en WASAPI Exclusive (souvent 16 ou 24)"
-config.ExclusiveModeAudio.EnableCriWarePluginLogging = """Active les logs du plugin CriWare
-Utile pour diagnostiquer les soucis audio"""
+
 
 config.CustomPlayerName.Enable = "Activer le pseudo personnalisé"
 config.CustomPlayerName.Name = "Pseudo personnalisé"
@@ -612,6 +593,8 @@ autoDownloadSub.networkIssue = "Server non raggiungibile o rete assente ({0})"
 autoDownloadSub.errorOnCheck = "Impossibile verificare il Music Pass, probabilmente per un errore di rete."
 autoDownloadSub.otherError = "Errore durante il download automatico dei brani:\n{0}"
 autoDownloadSub.hideTip = "\nIl messaggio scomparira tra 5 secondi"
+autoDownloadSub.downloading = "Download del brano {0} ({1}/{2})"
+autoDownloadSub.unknownSize = "dimensione sconosciuta"
 
 hitStats.hitAspectLabel = "Precisione colpi"
 hitStats.rendaLabel = "Rullo"
@@ -665,7 +648,7 @@ config.BetterBigHitSkipOnlineCheck = """Salta il controllo online per il Big Hit
 config.EnableSkipBootScreenPatch = "Salta la schermata di avvio"
 config.EnableSkipRewardPatch = "Salta il pop-up ricompensa"
 config.EnableBufferedInputPatch = "Abilita la patch di input buffer"
-config.EnableMinimumLatencyAudioClient = "Client audio a latenza minima (riduce il lag audio se possibile)"
+
 config.EnableAutoDownloadSubscriptionSongs = "Scarica automaticamente i brani in abbonamento (beta)"
 config.EnableOnpuTextRail = "Binario di testo stile Nijiiro sotto le note"
 config.EnableHighPrecisionTimerPatch = "Timer ad alta precisione (aiuta il timing dei colpi)"
@@ -700,15 +683,7 @@ config.BilibiliLiveStreamSongRequest.Token = """Token Bilibili Live
 Di solito il cookie SESSDATA
 Senza token non si ottengono info corrette sul mittente"""
 
-config.ExclusiveModeAudio.Enable = """Audio in modalita esclusiva (sperimentale)
-Latena bassissima e scorrimento piu stabile
-Potrebbero pero verificarsi problemi audio o crash a seconda del PC"""
-config.ExclusiveModeAudio.SampleRate = """Sample rate per l'audio esclusivo
-Deve combaciare con il formato del device
-0 per usare il formato di mix del device"""
-config.ExclusiveModeAudio.BitPerSample = "Bit per campione in modalita esclusiva (di solito 16 o 24)"
-config.ExclusiveModeAudio.EnableCriWarePluginLogging = """Abilita i log del plugin CriWare
-Utile per cercare problemi audio"""
+
 
 config.CustomPlayerName.Enable = "Abilita nome giocatore personalizzato"
 config.CustomPlayerName.Name = "Nome giocatore personalizzato"
@@ -761,6 +736,8 @@ autoDownloadSub.networkIssue = "Server nicht erreichbar oder keine Netzwerkverbi
 autoDownloadSub.errorOnCheck = "Music Pass konnte nicht gepruft werden, vermutlich wegen eines Netzwerkfehlers."
 autoDownloadSub.otherError = "Fehler beim automatischen Download:\n{0}"
 autoDownloadSub.hideTip = "\nText verschwindet in 5 Sekunden"
+autoDownloadSub.downloading = "Lade Song {0} ({1}/{2})"
+autoDownloadSub.unknownSize = "unbekannte Größe"
 
 hitStats.hitAspectLabel = "Trefferquote"
 hitStats.rendaLabel = "Trommelwirbel"
@@ -814,7 +791,7 @@ config.BetterBigHitSkipOnlineCheck = """Online-Check fur Big Hit uberspringen
 config.EnableSkipBootScreenPatch = "Boot-Screen uberspringen"
 config.EnableSkipRewardPatch = "Belohnungs-Popup uberspringen"
 config.EnableBufferedInputPatch = "Input-Puffer-Patch aktivieren"
-config.EnableMinimumLatencyAudioClient = "Audio-Client mit minimaler Latenz (falls moglich)"
+
 config.EnableAutoDownloadSubscriptionSongs = "Abo-Songs automatisch laden (Beta)"
 config.EnableOnpuTextRail = "Onpu-Textschiene im Nijiiro-Stil"
 config.EnableHighPrecisionTimerPatch = "Hochpräziser Timer (stabilere Wertung)"
@@ -849,15 +826,7 @@ config.BilibiliLiveStreamSongRequest.Token = """Bilibili-Live Token
 Normalerweise das Cookie SESSDATA
 Ohne Token keine korrekten Senderinfos"""
 
-config.ExclusiveModeAudio.Enable = """Exklusivmodus-Audio (experimentell)
-Sehr geringe Latenz, stabileres Scrolling
-Kann je nach PC Klangfehler oder Absturze verursachen"""
-config.ExclusiveModeAudio.SampleRate = """Sample-Rate im Exklusivmodus
-Muss zum Ausgabegerat passen
-0 nutzt das Mischformat des Gerats"""
-config.ExclusiveModeAudio.BitPerSample = "Bit-Tiefe im Exklusivmodus (meist 16 oder 24)"
-config.ExclusiveModeAudio.EnableCriWarePluginLogging = """CriWare-Plugin-Logging aktivieren
-Hilfreich zur Fehlersuche bei Audio-Problemen"""
+
 
 config.CustomPlayerName.Enable = "Spielernamen anpassen"
 config.CustomPlayerName.Name = "Benutzerdefinierter Spielername"
@@ -910,6 +879,8 @@ autoDownloadSub.networkIssue = "No se puede contactar con el servidor o sin cone
 autoDownloadSub.errorOnCheck = "No se pudo confirmar Music Pass, probablemente por error de red."
 autoDownloadSub.otherError = "Error al descargar automaticamente:\n{0}"
 autoDownloadSub.hideTip = "\nEl mensaje desaparecera en 5 segundos"
+autoDownloadSub.downloading = "Descargando canción {0} ({1}/{2})"
+autoDownloadSub.unknownSize = "tamaño desconocido"
 
 hitStats.hitAspectLabel = "Precision de golpes"
 hitStats.rendaLabel = "Redoble"
@@ -963,7 +934,7 @@ config.BetterBigHitSkipOnlineCheck = """Saltar la comprobacion online del Big Hi
 config.EnableSkipBootScreenPatch = "Saltar pantalla de arranque"
 config.EnableSkipRewardPatch = "Saltar popup de recompensa"
 config.EnableBufferedInputPatch = "Activar patch de buffer de entrada"
-config.EnableMinimumLatencyAudioClient = "Cliente de audio de latencia minima (reduce retardo si es posible)"
+
 config.EnableAutoDownloadSubscriptionSongs = "Descargar automaticamente canciones de suscripcion (beta)"
 config.EnableOnpuTextRail = "Rail de texto estilo Nijiiro debajo de las notas"
 config.EnableHighPrecisionTimerPatch = "Temporizador de alta precision (ayuda al timing)"
@@ -998,15 +969,7 @@ config.BilibiliLiveStreamSongRequest.Token = """Token de Bilibili Live
 Normalmente la cookie SESSDATA
 Sin token no se obtiene bien la info del remitente"""
 
-config.ExclusiveModeAudio.Enable = """Audio en modo exclusivo (experimental)
-Latencia muy baja y scroll mas estable
-Segun el PC puede causar errores de sonido o cierres"""
-config.ExclusiveModeAudio.SampleRate = """Frecuencia de muestreo en modo exclusivo
-Debe coincidir con el dispositivo
-0 usa el formato de mezcla del dispositivo"""
-config.ExclusiveModeAudio.BitPerSample = "Bits por muestra en modo exclusivo (normalmente 16 o 24)"
-config.ExclusiveModeAudio.EnableCriWarePluginLogging = """Activar logs del plugin CriWare
-Util para diagnosticar problemas de audio"""
+
 
 config.CustomPlayerName.Enable = "Activar nombre de jugador personalizado"
 config.CustomPlayerName.Name = "Nombre de jugador personalizado"
@@ -1059,6 +1022,8 @@ autoDownloadSub.networkIssue = "連不上伺服器，或目前沒有網路連線
 autoDownloadSub.errorOnCheck = "無法確認 Music Pass 可用性，可能是連線問題。"
 autoDownloadSub.otherError = "下載樂曲時發生錯誤：\n{0}"
 autoDownloadSub.hideTip = "\n文字訊息將在 5 秒後消失"
+autoDownloadSub.downloading = "正在下載樂曲 {0} ({1}/{2})"
+autoDownloadSub.unknownSize = "大小未知"
 
 hitStats.hitAspectLabel = "音符命中率"
 hitStats.rendaLabel = "連打"
@@ -1112,7 +1077,7 @@ config.BetterBigHitSkipOnlineCheck = """在大打補丁中跳過線上模式檢�
 config.EnableSkipBootScreenPatch = "啟用跳過啟動畫面"
 config.EnableSkipRewardPatch = "啟用跳過獎勵提示視窗補丁"
 config.EnableBufferedInputPatch = "啟用緩衝輸入補丁"
-config.EnableMinimumLatencyAudioClient = "啟用最低延遲音訊模式（裝置支援時可降低延遲）"
+
 config.EnableAutoDownloadSubscriptionSongs = "啟用自動下載訂閱樂曲（未完全測試）"
 config.EnableOnpuTextRail = "啟用音符文字軌道底板"
 config.EnableHighPrecisionTimerPatch = "啟用高精度計時器補丁（判定更穩定的可能）"
@@ -1147,15 +1112,7 @@ config.BilibiliLiveStreamSongRequest.Token = """Bilibili 直播 Token
 通常為名為 SESSDATA 的 Cookie
 如果不提供此項，將無法取得準確的發送者資訊"""
 
-config.ExclusiveModeAudio.Enable = """啟用獨佔模式音訊（實驗性）
-延遲超低，譜面捲動更穩
-但不同電腦可能會爆音或無法啟用，請多注意"""
-config.ExclusiveModeAudio.SampleRate = """獨佔模式音訊取樣率
-應與音訊輸出裝置的格式匹配
-設為 0 將使用音訊輸出裝置的混合格式取樣率"""
-config.ExclusiveModeAudio.BitPerSample = "獨佔模式音訊位元深度（通常為 16 或 24）"
-config.ExclusiveModeAudio.EnableCriWarePluginLogging = """是否輸出 CriWare 外掛紀錄
-獨佔音訊有問題時可開啟來排查"""
+
 
 config.CustomPlayerName.Enable = "啟用自訂玩家名稱"
 config.CustomPlayerName.Name = "玩家名稱"
@@ -1212,6 +1169,8 @@ autoDownloadSub.networkIssue = "서버 요청 실패 또는 네트워크 연결 
 autoDownloadSub.errorOnCheck = "Music Pass 사용 가능 여부를 확인하지 못했습니다. 네트워크 오류일 수 있습니다."
 autoDownloadSub.otherError = "자동 다운로드 중 오류가 발생했습니다:\n{0}"
 autoDownloadSub.hideTip = "\n메시지는 5초 후 사라집니다"
+autoDownloadSub.downloading = "곡 {0} 다운로드 중 ({1}/{2})"
+autoDownloadSub.unknownSize = "크기 알 수 없음"
 
 hitStats.hitAspectLabel = "노트 명중률"
 hitStats.rendaLabel = "연타"
@@ -1265,7 +1224,7 @@ config.BetterBigHitSkipOnlineCheck = """빅히트 패치의 온라인 체크를 
 config.EnableSkipBootScreenPatch = "부팅 화면 건너뛰기 패치"
 config.EnableSkipRewardPatch = "보상 팝업 건너뛰기 패치"
 config.EnableBufferedInputPatch = "입력 버퍼 패치 활성화"
-config.EnableMinimumLatencyAudioClient = "최저 지연 오디오 클라이언트 사용 (환경에 따라 지연 감소)"
+
 config.EnableAutoDownloadSubscriptionSongs = "구독 곡 자동 다운로드 (테스트 중)"
 config.EnableOnpuTextRail = "무지개풍 온푸 텍스트 레일 표시"
 config.EnableHighPrecisionTimerPatch = "고정밀 타이머 패치 (판정 안정 가능)"
@@ -1300,15 +1259,7 @@ config.BilibiliLiveStreamSongRequest.Token = """Bilibili 라이브 토큰
 보통 SESSDATA 쿠키
 미입력 시 보낸 사람 정보를 정확히 가져올 수 없습니다"""
 
-config.ExclusiveModeAudio.Enable = """독점 모드 오디오 사용 (실험적)
-아주 낮은 지연과 더 안정된 스크롤을 제공
-하지만 PC에 따라 음향 오류나 크래시가 날 수 있음"""
-config.ExclusiveModeAudio.SampleRate = """독점 모드의 샘플레이트
-오디오 출력 기기 포맷과 맞추세요
-0 은 기기의 믹스 포맷을 사용"""
-config.ExclusiveModeAudio.BitPerSample = "독점 모드 샘플 비트수 (보통 16 또는 24)"
-config.ExclusiveModeAudio.EnableCriWarePluginLogging = """CriWare 플러그인 로그 출력
-독점 오디오 문제를 확인할 때 켜 주세요"""
+
 
 config.CustomPlayerName.Enable = "커스텀 플레이어 이름 사용"
 config.CustomPlayerName.Name = "플레이어 이름"

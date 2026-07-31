@@ -132,8 +132,9 @@ public class AutoDownloadSubscriptionSongs
                         previewFileSongUids.Where(uid => !PackedSongUtility.CheckPreviewFileExists(uid)).ToArray());
                     if (missingPreviews.Length > 0)
                     {
-                        Logger.Error($"Preview verification failed: {missingPreviews.Length}/{previewFileSongUids.Length} " +
-                                     $"files are still missing; sample UIDs={string.Join(",", missingPreviews.Take(20))}");
+                        Logger.Error(
+                            $"Preview verification failed: {missingPreviews.Length}/{previewFileSongUids.Length} " +
+                            $"files are still missing; sample UIDs={string.Join(",", missingPreviews.Take(20))}");
                         throw new InvalidDataException(
                             $"{missingPreviews.Length} preview files are still missing after download");
                     }
@@ -216,7 +217,8 @@ public class AutoDownloadSubscriptionSongs
         {
             Logger.Info("Registering a new subscription common key");
             _ = CheckResponse(await UTask.RunOnIl2Cpp(SubscriptionUtility.RegisterCommonkeyToServer));
-            Logger.Info($"Subscription common key registration completed: still required={gateway.IsCommonKeyUpdateRequired}");
+            Logger.Info(
+                $"Subscription common key registration completed: still required={gateway.IsCommonKeyUpdateRequired}");
         }
 
         var storeId = await UTask.RunOnIl2Cpp(SubscriptionUtility.UpdateUserStoreId);
@@ -277,7 +279,8 @@ public class AutoDownloadSubscriptionSongs
                         SubscriptionGateway.UrlType.Default,
                         SubscriptionGateway.PlatformType.Default);
                 }));
-                if (response.result != 1 || response.responseCode != (int)HttpStatusCode.OK || response.responseBody == null)
+                if (response.result != 1 || response.responseCode != (int)HttpStatusCode.OK ||
+                    response.responseBody == null)
                     throw new NetworkIssueException(response.result,
                         response.errorText ?? "failed to request song download URLs");
 
@@ -305,8 +308,9 @@ public class AutoDownloadSubscriptionSongs
         }
         catch
         {
-            Logger.Warn($"URL pipeline failed after queuing {downloadTasks.Count}/{requests.Count} {fileType} downloads; " +
-                        "waiting for already-started downloads");
+            Logger.Warn(
+                $"URL pipeline failed after queuing {downloadTasks.Count}/{requests.Count} {fileType} downloads; " +
+                "waiting for already-started downloads");
             await AwaitStartedDownloadsIgnoringErrorsAsync(downloadTasks);
             throw;
         }
@@ -341,14 +345,12 @@ public class AutoDownloadSubscriptionSongs
         }
 
         if (addToDownloadedSongs)
-        {
             await UTask.RunOnIl2Cpp(() =>
             {
                 foreach (var uid in urls.Select(url => url.SongUid).Distinct())
                     CommonObjects.instance.MusicData.AddDownloadedSong(uid);
                 CommonObjects.instance.SaveData.Save();
             });
-        }
     }
 
     private static async Task AwaitStartedDownloadsIgnoringErrorsAsync(IReadOnlyCollection<Task> downloadTasks)
@@ -369,7 +371,8 @@ public class AutoDownloadSubscriptionSongs
     {
         var startedAt = DateTime.UtcNow;
         var fileType = download.Type == 1 ? "song" : "preview";
-        var initialProgress = $"正在下载歌曲 {songName} (0MiB/未知大小)";
+        var initialProgress = I18n.Get("autoDownloadSub.downloading", songName, FormatMiB(0),
+            I18n.Get("autoDownloadSub.unknownSize").Text).Text;
         await using var logHandle = LoggingScreenUi.NewAsync();
         await logHandle.SetTextAsync(initialProgress);
         Logger.Info($"{initialProgress}; uid={download.SongUid}, type={fileType}");
@@ -473,8 +476,10 @@ public class AutoDownloadSubscriptionSongs
     private static string FormatDownloadProgress(string songName, long downloadedBytes, long? totalBytes)
     {
         var downloaded = FormatMiB(downloadedBytes);
-        var total = totalBytes.HasValue ? FormatMiB(totalBytes.Value) : "未知大小";
-        return $"正在下载歌曲 {songName} ({downloaded}/{total})";
+        var total = totalBytes.HasValue
+            ? FormatMiB(totalBytes.Value)
+            : I18n.Get("autoDownloadSub.unknownSize").Text;
+        return I18n.Get("autoDownloadSub.downloading", songName, downloaded, total).Text;
     }
 
     private static string FormatMiB(long bytes)
