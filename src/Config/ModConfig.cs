@@ -19,6 +19,12 @@ public enum ConfigItemType
 /// <summary>
 /// 配置项元数据，用于UI枚举和渲染
 /// </summary>
+public class ConfigItemOption
+{
+    public object Value { get; init; } = default!;
+    public string LabelKey { get; init; } = "";
+}
+
 public class ConfigItemMetadata
 {
     public string Section { get; init; } = "";
@@ -31,6 +37,12 @@ public class ConfigItemMetadata
 
     public Func<object> GetValue { get; init; } = () => default!;
     public Action<object> SetValue { get; init; } = _ => { };
+
+    /// <summary>非空时使用下拉选择器编辑，而不是自由文本输入。</summary>
+    public ConfigItemOption[] Options { get; set; } = [];
+
+    /// <summary>是否可在游戏运行期间立即应用，无需重新启动。</summary>
+    public bool HotReloadable { get; set; }
 
     public string CategoryKey => $"{Section}.{KeyName}";
 }
@@ -297,6 +309,35 @@ public static class ModConfig
         AddBool("Debug", "ExportMusicNames", Description("config.Debug.ExportMusicNames"), DebugExportMusicNames,
             "Boot");
 
+        SetOptions("General.CustomTitleSceneEnterSceneName",
+            ("", "modSettings.option.defaultMainMenu"),
+            ("SongSelect", "modSettings.option.songSelect"),
+            ("TrainingEntrance", "modSettings.option.trainingEntrance"));
+        SetOptions("TokkunMode.OnSongEndBehaviour",
+            ("ToSongStart", "modSettings.option.toSongStart"),
+            ("ToLastResumePosition", "modSettings.option.toLastResumePosition"),
+            ("PauseAtLastMeasure", "modSettings.option.pauseAtLastMeasure"));
+        SetOptions("TokkunMode.OnPauseBehaviour",
+            ("PauseAtCurrentPosition", "modSettings.option.pauseAtCurrentPosition"),
+            ("ToLastPausePosition", "modSettings.option.toLastPausePosition"));
+
+        MarkHotReloadable(
+            "General.BetterBigHitSkipOnlineCheck",
+            "General.AutoPlayRendaSpeed",
+            "HitOffset.InvertColor",
+            "HitOffset.RyoRange",
+            "CustomPlayerName.Name",
+            "BufferedInput.Enable",
+            "BufferedInput.MaxBufferedInputCount",
+            "TokkunMode.OnSongEndBehaviour",
+            "TokkunMode.OnPauseBehaviour",
+            "TokkunMode.SlowTimeOffset",
+            "TokkunMode.FastTimeOffset",
+            "TokkunMode.P2LeftDonKey",
+            "TokkunMode.P2LeftKaKey",
+            "TokkunMode.P2RightDonKey",
+            "TokkunMode.P2RightKaKey");
+
         ConfigEntry.Load();
         KeyBindingConfigEntry.Load();
     }
@@ -304,6 +345,23 @@ public static class ModConfig
     private static string Description(string key)
     {
         return key;
+    }
+
+    private static void SetOptions(string categoryKey, params (string Value, string LabelKey)[] options)
+    {
+        var item = AllItems.First(config => config.CategoryKey == categoryKey);
+        item.Options = options.Select(option => new ConfigItemOption
+        {
+            Value = option.Value,
+            LabelKey = option.LabelKey
+        }).ToArray();
+    }
+
+    private static void MarkHotReloadable(params string[] categoryKeys)
+    {
+        var keys = categoryKeys.ToHashSet(StringComparer.Ordinal);
+        foreach (var item in AllItems)
+            item.HotReloadable = keys.Contains(item.CategoryKey);
     }
 
     private static void AddBool(string section, string key, string desc, ConfigEntry<bool> entry,
@@ -314,10 +372,7 @@ public static class ModConfig
             Section = section, KeyName = key, DescriptionKey = desc, Type = ConfigItemType.Bool,
             RelevantScenes = scenes,
             GetValue = () => entry.Value,
-            SetValue = v =>
-            {
-                /* TOML write TBD */
-            }
+            SetValue = v => entry.Value = Convert.ToBoolean(v)
         });
     }
 
@@ -328,10 +383,7 @@ public static class ModConfig
             Section = section, KeyName = key, DescriptionKey = desc, Type = ConfigItemType.Int,
             RelevantScenes = scenes,
             GetValue = () => entry.Value,
-            SetValue = v =>
-            {
-                /* TOML write TBD */
-            }
+            SetValue = v => entry.Value = Convert.ToInt32(v)
         });
     }
 
@@ -343,10 +395,7 @@ public static class ModConfig
             Section = section, KeyName = key, DescriptionKey = desc, Type = ConfigItemType.Float,
             RelevantScenes = scenes,
             GetValue = () => entry.Value,
-            SetValue = v =>
-            {
-                /* TOML write TBD */
-            }
+            SetValue = v => entry.Value = Convert.ToSingle(v)
         });
     }
 
@@ -358,10 +407,7 @@ public static class ModConfig
             Section = section, KeyName = key, DescriptionKey = desc, Type = ConfigItemType.Double,
             RelevantScenes = scenes,
             GetValue = () => entry.Value,
-            SetValue = v =>
-            {
-                /* TOML write TBD */
-            }
+            SetValue = v => entry.Value = Convert.ToDouble(v)
         });
     }
 
@@ -373,10 +419,7 @@ public static class ModConfig
             Section = section, KeyName = key, DescriptionKey = desc, Type = ConfigItemType.String,
             RelevantScenes = scenes,
             GetValue = () => entry.Value,
-            SetValue = v =>
-            {
-                /* TOML write TBD */
-            }
+            SetValue = v => entry.Value = Convert.ToString(v) ?? string.Empty
         });
     }
 
@@ -388,10 +431,7 @@ public static class ModConfig
             Section = section, KeyName = key, DescriptionKey = desc, Type = ConfigItemType.UInt,
             RelevantScenes = scenes,
             GetValue = () => entry.Value,
-            SetValue = v =>
-            {
-                /* TOML write TBD */
-            }
+            SetValue = v => entry.Value = Convert.ToUInt32(v)
         });
     }
 
@@ -403,10 +443,7 @@ public static class ModConfig
             Section = section, KeyName = key, DescriptionKey = desc, Type = ConfigItemType.KeyBinding,
             RelevantScenes = scenes,
             GetValue = () => entry.Value,
-            SetValue = v =>
-            {
-                /* TOML write TBD */
-            }
+            SetValue = v => entry.Value = (Key)v
         });
     }
 }

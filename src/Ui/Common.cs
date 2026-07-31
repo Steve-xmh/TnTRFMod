@@ -22,17 +22,21 @@ public class Common
         if (_drawCanvasForSceneNoDestroy != null) return;
         _drawCanvasForSceneNoDestroy = new GameObject("CanvasForTnTRFModNoDestroy");
         var transform = _drawCanvasForSceneNoDestroy.AddComponent<RectTransform>();
+        NormalizeCanvasRect(transform);
         Object.DontDestroyOnLoad(_drawCanvasForSceneNoDestroy);
         _drawCanvasForSceneNoDestroyCanvasGroup = _drawCanvasForSceneNoDestroy.AddComponent<CanvasGroup>();
         _drawCanvasForSceneNoDestroy.hideFlags = HideFlags.HideAndDontSave;
 
         var canvas = _drawCanvasForSceneNoDestroy.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.overrideSorting = true;
+        canvas.sortingOrder = short.MaxValue;
 
         var scaler = _drawCanvasForSceneNoDestroy.AddComponent<CanvasScaler>();
         scaler.referenceResolution = new Vector2(ScreenWidth, ScreenHeight);
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
+        scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+        scaler.matchWidthOrHeight = 0.5f;
         _drawCanvasForSceneNoDestroy.AddComponent<GraphicRaycaster>();
         _drawCanvasForSceneNoDestroy.layer = LayerMask.NameToLayer("UI");
         _drawCanvasForSceneNoDestroy.SetActive(true);
@@ -43,16 +47,29 @@ public class Common
         if (_drawCanvasForScene != null) return;
         _drawCanvasForScene = new GameObject("CanvasForTnTRFMod");
         var transform = _drawCanvasForScene.AddComponent<RectTransform>();
+        NormalizeCanvasRect(transform);
         var canvas = _drawCanvasForScene.AddComponent<Canvas>();
         _drawCanvasForSceneCanvasGroup = _drawCanvasForScene.AddComponent<CanvasGroup>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = 5;
+        canvas.overrideSorting = true;
+        canvas.sortingOrder = 1000;
         var scaler = _drawCanvasForScene.AddComponent<CanvasScaler>();
         scaler.referenceResolution = new Vector2(ScreenWidth, ScreenHeight);
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
+        scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+        scaler.matchWidthOrHeight = 0.5f;
         _drawCanvasForScene.AddComponent<GraphicRaycaster>();
         _drawCanvasForScene.layer = LayerMask.NameToLayer("UI");
+    }
+
+    private static void NormalizeCanvasRect(RectTransform transform)
+    {
+        transform.anchorMin = Vector2.zero;
+        transform.anchorMax = Vector2.one;
+        transform.pivot = new Vector2(0.5f, 0.5f);
+        transform.anchoredPosition = Vector2.zero;
+        transform.sizeDelta = Vector2.zero;
+        transform.localScale = Vector3.one;
     }
 
     public static void MoveLocalCanvas(string goName)

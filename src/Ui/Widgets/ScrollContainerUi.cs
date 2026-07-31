@@ -26,7 +26,7 @@ public class ScrollContainerUi : BaseUi
         _image.pixelsPerUnitMultiplier = 100;
 
         _viewport = new GameObject("Viewport");
-        _viewport.transform.SetParent(_go.transform);
+        _viewport.transform.SetParent(_go.transform, false);
         _viewportRect = _viewport.AddComponent<RectTransform>();
         _viewportRect.anchorMin = Vector2.zero;
         _viewportRect.anchorMax = Vector2.one;
@@ -41,14 +41,15 @@ public class ScrollContainerUi : BaseUi
         viewportImage.maskable = true;
 
         _container = new GameObject("Container");
-        _container.transform.SetParent(_viewport.transform);
+        _container.transform.SetParent(_viewport.transform, false);
         _containerRect = _container.AddComponent<RectTransform>();
-        _containerRect.anchorMin = Vector2.zero;
-        _containerRect.anchorMax = Vector2.one;
+        _containerRect.anchorMin = new Vector2(0f, 1f);
+        _containerRect.anchorMax = new Vector2(1f, 1f);
+        _containerRect.pivot = new Vector2(0.5f, 1f);
         _scrollRect.content = _containerRect;
         var layoutGroup = _container.AddComponent<VerticalLayoutGroup>();
         layoutGroup.childControlWidth = true;
-        layoutGroup.childControlHeight = false;
+        layoutGroup.childControlHeight = true;
         layoutGroup.childForceExpandWidth = false;
         layoutGroup.childForceExpandHeight = false;
         layoutGroup.spacing = 4;
@@ -62,13 +63,8 @@ public class ScrollContainerUi : BaseUi
 
     public new Vector2 Position
     {
-        get
-        {
-            var pos = _transform.anchoredPosition;
-            return new Vector2(pos.x + Common.ScreenWidth / 2f, Common.ScreenHeight / 2f - pos.y);
-        }
-        set => _transform.anchoredPosition =
-            new Vector2(value.x - Common.ScreenWidth / 2f, Common.ScreenHeight / 2f - value.y);
+        get => new(_transform.anchoredPosition.x, -_transform.anchoredPosition.y);
+        set => _transform.anchoredPosition = new Vector2(value.x, -value.y);
     }
 
     public new Vector2 Size
@@ -77,8 +73,7 @@ public class ScrollContainerUi : BaseUi
         set
         {
             _transform.sizeDelta = value;
-            _containerRect.sizeDelta =
-                new Vector2(_viewportRect.sizeDelta.x - _viewportRect.offsetMin.x + _viewportRect.offsetMax.x, 0);
+            _containerRect.sizeDelta = new Vector2(0f, _containerRect.sizeDelta.y);
         }
     }
 
@@ -90,17 +85,16 @@ public class ScrollContainerUi : BaseUi
 
     public new void AddChild(GameObject child)
     {
-        child.transform.SetParent(_container.transform);
+        child.transform.SetParent(_container.transform, false);
     }
 
     public new void AddChild(BaseUi child)
     {
-        child._transform.SetParent(_container.transform);
+        child._transform.SetParent(_container.transform, false);
+        var element = child._go.GetComponent<LayoutElement>() ?? child._go.AddComponent<LayoutElement>();
+        element.preferredHeight = child.Size.y;
+        element.minHeight = child.Size.y;
 
-        var fitter = _container.GetComponent<ContentSizeFitter>();
-        fitter.enabled = false;
-        fitter.enabled = true;
-        _containerRect.offsetMin = Vector2.zero;
-        _containerRect.offsetMax = Vector2.zero;
+        LayoutRebuilder.MarkLayoutForRebuild(_containerRect);
     }
 }

@@ -248,10 +248,10 @@ public class TnTrfMod
         Common.Init();
         Common.InitLocal();
 
-        if (!_settingsUiInitialized)
+        if (!_settingsUiInitialized && sceneName == "Title")
         {
-            _settingsUiInitialized = true;
             ModSettingsScreenUi.Init();
+            _settingsUiInitialized = true;
         }
 
         if (!_scenes.TryGetValue(sceneName!, out var scenes)) return;

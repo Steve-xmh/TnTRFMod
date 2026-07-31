@@ -27,7 +27,9 @@ public class TextUi : BaseUi
     {
         _textTMP = _go.AddComponent<TextMeshProUGUI>();
         _textTMP.enableWordWrapping = false;
+        _textTMP.overflowMode = TextOverflowModes.Overflow;
         _textTMP.extraPadding = true;
+        _textTMP.raycastTarget = false;
         _uitext = _go.AddComponent<UiText>();
         _uitext.tmpro = _textTMP;
         _uitext.SetUseRawText(true);
@@ -111,7 +113,13 @@ public class TextUi : BaseUi
 
     public Vector2 GetPreferredSize()
     {
-        return _textTMP.GetPreferredValues(Size.x, 0f);
+        var width = WordWrap && Size.x > 0f ? Size.x : float.PositiveInfinity;
+        return _textTMP.GetPreferredValues(_textTMP.text, width, float.PositiveInfinity);
+    }
+
+    public Vector2 GetPreferredSize(float availableWidth)
+    {
+        return _textTMP.GetPreferredValues(_textTMP.text, availableWidth, float.PositiveInfinity);
     }
 
     public void SetText(I18n.I18nResult format)

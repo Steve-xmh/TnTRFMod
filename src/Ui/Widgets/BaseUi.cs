@@ -23,13 +23,14 @@ public class BaseUi : IDisposable
 
         _go = new GameObject(GetType().Name);
         _transform = _go.AddComponent<RectTransform>();
-        _transform.SetParent(Common.GetDrawCanvasForScene());
+        _transform.SetParent(Common.GetDrawCanvasForScene(), false);
         _transform.pivot = new Vector2(0, 1);
         _transform.anchorMin = new Vector2(0, 1);
         _transform.anchorMax = new Vector2(0, 1);
         _go.layer = LayerMask.NameToLayer("UI");
-        _transform.transform.position =
-            new Vector3(_transform.transform.position.x, _transform.transform.position.y, 90f);
+        _transform.localScale = Vector3.one;
+        _transform.localRotation = Quaternion.identity;
+        _transform.anchoredPosition3D = Vector3.zero;
     }
 
     private bool IsChildOfCanvas => _transform.parent == Common.GetDrawCanvasForScene() ||
@@ -80,27 +81,36 @@ public class BaseUi : IDisposable
         _go.SetActive(active);
     }
 
+    /// <summary>
+    /// 使用游戏自带的 MouseOverable，在悬停期间切换为游戏的手型光标。
+    /// </summary>
+    protected void EnableGamePointerCursor()
+    {
+        if (_go.GetComponent<MouseOverable>() == null)
+            _go.AddComponent<MouseOverable>();
+    }
+
     public void MoveToNoDestroyCanvas()
     {
         var originalPos = Position;
-        _transform.SetParent(Common.GetDrawCanvasNoDestroyForScene(), true);
+        _transform.SetParent(Common.GetDrawCanvasNoDestroyForScene(), false);
         _transform.localScale = Vector3.one;
         Position = originalPos;
     }
 
     public void SetParent(GameObject parent)
     {
-        _transform.SetParent(parent.transform, true);
+        _transform.SetParent(parent.transform, false);
     }
 
     public void AddChild(GameObject child)
     {
-        child.transform.SetParent(_transform, true);
+        child.transform.SetParent(_transform, false);
     }
 
     public void AddChild(BaseUi child)
     {
-        child._transform.SetParent(_transform, true);
+        child._transform.SetParent(_transform, false);
     }
 
     private class TempDisableInputComponent : MonoBehaviour

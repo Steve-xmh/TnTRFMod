@@ -52,6 +52,7 @@ public class TextFieldUi : BaseUi
         _placeHolderText.Rect.offsetMax = new Vector2(-15, -15);
 
         inputField = _go.AddComponent<TMP_InputField>();
+        EnableGamePointerCursor();
         inputField.customCaretColor = true;
         inputField.caretColor = Color.black;
         inputField.textComponent = _text._go.GetComponent<TextMeshProUGUI>();

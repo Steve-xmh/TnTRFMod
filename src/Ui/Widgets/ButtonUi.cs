@@ -30,6 +30,7 @@ public class ButtonUi : BaseUi
         _image.pixelsPerUnitMultiplier = 100;
 
         _button = _go.AddComponent<Button>();
+        EnableGamePointerCursor();
 
         Size = new Vector2(160, 28 + 6);
 

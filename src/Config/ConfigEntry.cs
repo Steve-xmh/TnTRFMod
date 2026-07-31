@@ -58,6 +58,7 @@ public class ConfigEntry<T>
                 };
             }
         }
+        set => ConfigEntry.SetValue(section, key, value);
     }
 
     public static ConfigEntry<TT> Register<TT>(string section, string key, string description = "",
@@ -104,6 +105,7 @@ public static class ConfigEntry
 
     private static FileSystemWatcher? configFileWatcher;
     private static DateTime _lastConfigReload;
+    private static readonly object ConfigLock = new();
 
     public static string ConfigFilePath => Path.Combine(TnTrfMod.Dir, "config.toml");
     public static string ExampleConfigFilePath => Path.Combine(TnTrfMod.Dir, "config.example.toml");
@@ -112,6 +114,51 @@ public static class ConfigEntry
         T defaultValue = default)
     {
         return ConfigEntry<T>.Register(section, key, description, defaultValue);
+    }
+
+    internal static void SetValue<T>(string section, string key, T value)
+    {
+        lock (ConfigLock)
+        {
+            if (!loadedConfig.HasKey(section) || loadedConfig[section] is not TomlTable)
+                loadedConfig[section] = new TomlTable();
+
+            loadedConfig[section][key] = ToTomlNode(value);
+            SaveLocked();
+            IsFirstConfig = false;
+        }
+    }
+
+    private static TomlNode ToTomlNode<T>(T value)
+    {
+        return value switch
+        {
+            string text => new TomlString { Value = text },
+            bool boolean => new TomlBoolean { Value = boolean },
+            short number => new TomlInteger { Value = number },
+            ushort number => new TomlInteger { Value = number },
+            int number => new TomlInteger { Value = number },
+            uint number => new TomlInteger { Value = number },
+            long number => new TomlInteger { Value = number },
+            ulong number when number <= long.MaxValue => new TomlInteger { Value = (long)number },
+            float number => new TomlFloat { Value = number },
+            double number => new TomlFloat { Value = number },
+            _ => throw new ArgumentException($"Unsupported config value type {typeof(T)}")
+        };
+    }
+
+    private static void SaveLocked()
+    {
+        configFileWatcher!.EnableRaisingEvents = false;
+        try
+        {
+            using var writer = new StreamWriter(ConfigFilePath);
+            loadedConfig.WriteTo(writer);
+        }
+        finally
+        {
+            configFileWatcher.EnableRaisingEvents = true;
+        }
     }
 
     public static void Load()
@@ -145,8 +192,9 @@ public static class ConfigEntry
             return;
         }
 
+        loadedConfig = defaultConfig;
         using var writer = new StreamWriter(ConfigFilePath);
-        defaultConfig.WriteTo(writer);
+        loadedConfig.WriteTo(writer);
     }
 
     private static void ExportDefaultConfig()

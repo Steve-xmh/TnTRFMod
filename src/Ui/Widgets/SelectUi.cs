@@ -8,6 +8,7 @@ public class SelectUi<T> : ButtonUi
     private readonly ScrollContainerUi _dropDownContainer;
     private readonly List<SelectItem> _items = [];
     private readonly List<BaseUi> _itemUis = [];
+    private Action<T>? _onValueChanged;
 
     public SelectUi(T defaultValue)
     {
@@ -16,15 +17,23 @@ public class SelectUi<T> : ButtonUi
         {
             Visible = false
         };
+        _dropDownContainer.MoveToNoDestroyCanvas();
         UpdateDropDownContainerRect();
         AddListener(() =>
         {
-            _dropDownContainer.Visible = !_dropDownContainer.Visible;
+            var visible = !_dropDownContainer.Visible;
+            if (visible)
+            {
+                UpdateDropDownContainerRect();
+                _dropDownContainer._transform.SetAsLastSibling();
+            }
+
+            _dropDownContainer.Visible = visible;
             _dropDownContainer.Color = ButtonColor;
         });
     }
 
-    public T Value { get; set; }
+    public T Value { get; private set; }
 
     public new Vector2 Size
     {
@@ -69,10 +78,32 @@ public class SelectUi<T> : ButtonUi
         }
     }
 
+    public void AddOnValueChangedListener(Action<T> action)
+    {
+        _onValueChanged += action;
+    }
+
+    public void SetValue(T value)
+    {
+        Value = value;
+        var selectedItem = _items.FirstOrDefault(item => EqualityComparer<T>.Default.Equals(item.Value, value));
+        if (selectedItem.Text.Text != null)
+        {
+            I18nText = selectedItem.Text;
+            ButtonColor = selectedItem.ButtonColor ?? Color.white;
+        }
+    }
+
+    public void CloseDropDown()
+    {
+        _dropDownContainer.Visible = false;
+    }
+
     private void UpdateDropDownContainerRect()
     {
-        _dropDownContainer._transform.position = _transform.position;
-        _dropDownContainer.Size = new Vector2(Size.x, Size.y * 5f);
+        _dropDownContainer._transform.position = _transform.TransformPoint(new Vector3(0f, -Size.y, 0f));
+        var visibleItemCount = Math.Min(5, Math.Max(1, _items.Count));
+        _dropDownContainer.Size = new Vector2(Size.x, Size.y * visibleItemCount);
     }
 
     private void RebuildDropDown()
@@ -95,6 +126,7 @@ public class SelectUi<T> : ButtonUi
                 I18nText = item.Text;
                 ButtonColor = item.ButtonColor ?? Color.white;
                 _dropDownContainer.Visible = false;
+                _onValueChanged?.Invoke(Value);
             });
         }
     }

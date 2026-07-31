@@ -74,6 +74,27 @@ public class KeyBindingConfigEntry
                 }
             }
         }
+        set => SetValue(value);
+    }
+
+    private void SetValue(Key value)
+    {
+        if (!loadedConfig.HasKey(section) || loadedConfig[section] is not TomlTable)
+            loadedConfig[section] = new TomlTable();
+
+        loadedConfig[section][key] = new TomlString { Value = value.ToString() };
+        configFileWatcher!.EnableRaisingEvents = false;
+        try
+        {
+            using var writer = new StreamWriter(ConfigFilePath);
+            loadedConfig.WriteTo(writer);
+        }
+        finally
+        {
+            configFileWatcher.EnableRaisingEvents = true;
+        }
+
+        IsFirstConfig = false;
     }
 
     public static string ConfigFilePath => Path.Combine(TnTrfMod.Dir, "keybindings.toml");
@@ -146,8 +167,9 @@ public class KeyBindingConfigEntry
             return;
         }
 
+        loadedConfig = defaultConfig;
         using var writer = new StreamWriter(ConfigFilePath);
-        defaultConfig.WriteTo(writer);
+        loadedConfig.WriteTo(writer);
     }
 
     private static void ExportDefaultConfig()
