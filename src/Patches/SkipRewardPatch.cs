@@ -5,9 +5,9 @@
 using HarmonyLib;
 
 #if BEPINEX
-
+using Cysharp.Threading.Tasks;
 #elif MELONLOADER
-using Il2CppScripts.CrownPoint;
+using Il2CppCysharp.Threading.Tasks;
 #endif
 
 namespace TnTRFMod.Patches;
@@ -15,13 +15,16 @@ namespace TnTRFMod.Patches;
 [HarmonyPatch]
 internal class SkipRewardPatch
 {
-    [HarmonyPatch(typeof(ResultPlayer._ShowDonCoinAndRewardAsync_d__164))]
-    [HarmonyPatch(nameof(ResultPlayer._ShowDonCoinAndRewardAsync_d__164.MoveNext))]
+    [HarmonyPatch(typeof(ResultCoinExp))]
+    [HarmonyPatch(nameof(ResultCoinExp.Activate))]
     [HarmonyPatch(MethodType.Normal)]
     [HarmonyPrefix]
-    public static void ResultPlayer__ShowDonCoinAndRewardAsync_d__164_MoveNext_Prefix(
-        ResultPlayer._ShowDonCoinAndRewardAsync_d__164 __instance)
+    private static bool ResultCoinExp_Activate_Prefix(ResultCoinExp __instance, ref UniTask __result)
     {
-        __instance.__1__state = 2;
+        __instance.m_state = ResultCoinExp.State.Done;
+        __instance.Hide();
+
+        __result = UniTask.CompletedTask;
+        return false;
     }
 }
