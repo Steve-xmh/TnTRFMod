@@ -247,6 +247,7 @@ public class TnTrfMod
 
         Common.Init();
         Common.InitLocal();
+        // Common.SetRelayOverlayActive(sceneName == "Relay");
 
         if (!_settingsUiInitialized && sceneName == "Title")
         {

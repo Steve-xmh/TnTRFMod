@@ -30,19 +30,20 @@
     </PropertyGroup>
 
     <Target Name="UserFile" AfterTargets="PreBuildEvent">
-        <Copy Condition="!Exists('.\$(MSBuildProjectDir)\$(ModName).csproj.user')" SourceFiles="$(MSBuildProjectDir)src\Resources\Template.csproj.user" DestinationFiles=".\$(MSBuildProjectDir)\$(ModName).csproj.user"/>
-        <Error Condition="$(GameDir)==''" Text="Set the GameDir variable in $(ModName).csproj.user file to your Rhythm Festival executable directory."/>
+        <Copy Condition="!Exists('.\$(MSBuildProjectDir)\$(ModName).csproj.user')" SourceFiles="$(MSBuildProjectDir)src\Resources\Template.csproj.user" DestinationFiles=".\$(MSBuildProjectDir)\$(ModName).csproj.user" />
+        <Error Condition="$(GameDir)==''" Text="Set the GameDir variable in $(ModName).csproj.user file to your Rhythm Festival executable directory." />
     </Target>
 
     <!-- Common Libraries -->
     <ItemGroup>
-        <PackageReference Include="Tommy" Version="3.1.2"/>
+        <PackageReference Include="Tomlyn" Version="2.10.1" />
+        <PackageReference Include="Tommy" Version="3.1.2" />
     </ItemGroup>
 
     <!-- BepInEx -->
     <ItemGroup Condition="'$(Configuration)' == 'BepInEx'">
-        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile"/>
-        <Reference Include="$(GameDir)\BepInEx\interop\*.dll" Private="false"/>
+        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
+        <Reference Include="$(GameDir)\BepInEx\interop\*.dll" Private="false" />
     </ItemGroup>
     <PropertyGroup Condition="'$(Configuration)' == 'BepInEx'">
         <DefineConstants>$(DefineConstants);BEPINEX</DefineConstants>
@@ -53,9 +54,9 @@
 
     <!-- MelonLoader -->
     <ItemGroup Condition="'$(Configuration)' == 'MelonLoader'">
-        <Reference Include="$(GameDir)\MelonLoader\net6\*.dll" Private="false"/>
-        <Reference Include="$(GameDir)\MelonLoader\Il2CppAssemblies\*.dll" Private="false"/>
-        <Using Include="Il2Cpp"/>
+        <Reference Include="$(GameDir)\MelonLoader\net6\*.dll" Private="false" />
+        <Reference Include="$(GameDir)\MelonLoader\Il2CppAssemblies\*.dll" Private="false" />
+        <Using Include="Il2Cpp" />
     </ItemGroup>
     <PropertyGroup Condition="'$(Configuration)' == 'MelonLoader'">
         <DefineConstants>$(DefineConstants);MELONLOADER</DefineConstants>
@@ -63,21 +64,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ModLibraryFiles Include="$(TargetDir)*.dll"/>
+        <ModLibraryFiles Include="$(TargetDir)*.dll" />
     </ItemGroup>
 
-    <Target Name="PostBuildCopyModLibraryBepInEx" AfterTargets="PostBuildEvent"
-            Condition="$(CopyOutputFiles) == true And '$(Configuration)' == 'BepInEx'">
-        <Copy SourceFiles="@(ModLibraryFiles)"
-              DestinationFolder="$(GameDir)\BepInEx\plugins\$(AssemblyName)"
-              SkipUnchangedFiles="true"/>
+    <Target Name="PostBuildCopyModLibraryBepInEx" AfterTargets="PostBuildEvent" Condition="$(CopyOutputFiles) == true And '$(Configuration)' == 'BepInEx'">
+        <Copy SourceFiles="@(ModLibraryFiles)" DestinationFolder="$(GameDir)\BepInEx\plugins\$(AssemblyName)" SkipUnchangedFiles="true" />
     </Target>
 
-    <Target Name="PostBuildCopyModLibraryMelonLoader" AfterTargets="PostBuildEvent"
-            Condition="$(CopyOutputFiles) == true And '$(Configuration)' == 'MelonLoader'">
-        <Copy SourceFiles="@(ModLibraryFiles)"
-              DestinationFolder="$(GameDir)\Mods\$(AssemblyName)"
-              SkipUnchangedFiles="true"/>
+    <Target Name="PostBuildCopyModLibraryMelonLoader" AfterTargets="PostBuildEvent" Condition="$(CopyOutputFiles) == true And '$(Configuration)' == 'MelonLoader'">
+        <Copy SourceFiles="@(ModLibraryFiles)" DestinationFolder="$(GameDir)\Mods\$(AssemblyName)" SkipUnchangedFiles="true" />
     </Target>
 
     <ItemGroup>
@@ -96,22 +91,21 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="src\Resources\Template.csproj.user"/>
+        <Content Include="src\Resources\Template.csproj.user" />
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="src\Resources\Tokkun\"/>
+        <Folder Include="src\Resources\Tokkun\" />
     </ItemGroup>
 
     <ItemGroup>
-        <ResXRefFiles Include="src\Resources\*.png"/>
-        <ResXRefFiles Include="src\Resources\Locales.toml"/>
-        <ResXRefFiles Include="src\Resources\Tokkun\*"/>
+        <ResXRefFiles Include="src\Resources\*.png" />
+        <ResXRefFiles Include="src\Resources\Locales.toml" />
+        <ResXRefFiles Include="src\Resources\Tokkun\*" />
     </ItemGroup>
 
-    <Target Name="UpdateResxOnRefChange" BeforeTargets="CoreResGen"
-            Inputs="@(ResXRefFiles)" Outputs="$(IntermediateOutputPath)resxref.cache">
-        <Touch Files="src\Resources.resx"/>
-        <Touch Files="$(IntermediateOutputPath)resxref.cache" AlwaysCreate="true"/>
+    <Target Name="UpdateResxOnRefChange" BeforeTargets="CoreResGen" Inputs="@(ResXRefFiles)" Outputs="$(IntermediateOutputPath)resxref.cache">
+        <Touch Files="src\Resources.resx" />
+        <Touch Files="$(IntermediateOutputPath)resxref.cache" AlwaysCreate="true" />
     </Target>
 </Project>

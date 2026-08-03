@@ -36,8 +36,6 @@ public class EnsoScene : IScene
 
         if (ModConfig.EnableScoreRankIcon.Value) ScoreRankIcon.Init();
         if (ModConfig.EnableOnpuTextRail.Value) TnTrfMod.Instance.StartCoroutine(DrawOnpuTextRail());
-
-        Common.MoveLocalCanvas("Canvas");
     }
 
     public void Destroy()

@@ -9,13 +9,14 @@ public class Common
     // 游戏的设计屏幕分辨率
     public const int ScreenWidth = 1920;
     public const int ScreenHeight = 1080;
+    private const int PersistentCanvasSortingOrder = short.MaxValue;
     private static FontTMPManager? _fontMgr;
     private static GameObject? _drawCanvasForScene;
     private static CanvasGroup? _drawCanvasForSceneCanvasGroup;
     private static GameObject? _drawCanvasForSceneNoDestroy;
     private static CanvasGroup? _drawCanvasForSceneNoDestroyCanvasGroup;
     private static ControllerManager? _controllerManager;
-    private static bool inited;
+
 
     public static void Init()
     {
@@ -30,7 +31,7 @@ public class Common
         var canvas = _drawCanvasForSceneNoDestroy.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         canvas.overrideSorting = true;
-        canvas.sortingOrder = short.MaxValue;
+        canvas.sortingOrder = PersistentCanvasSortingOrder;
 
         var scaler = _drawCanvasForSceneNoDestroy.AddComponent<CanvasScaler>();
         scaler.referenceResolution = new Vector2(ScreenWidth, ScreenHeight);
@@ -44,15 +45,25 @@ public class Common
 
     public static void InitLocal()
     {
-        if (_drawCanvasForScene != null) return;
+        if (_drawCanvasForScene != null)
+        {
+            var existingTransform = _drawCanvasForScene.GetComponent<RectTransform>();
+            existingTransform.SetParent(null, false);
+            NormalizeCanvasRect(existingTransform);
+            UpdateLocalCanvas(_drawCanvasForScene);
+            return;
+        }
+
         _drawCanvasForScene = new GameObject("CanvasForTnTRFMod");
         var transform = _drawCanvasForScene.AddComponent<RectTransform>();
         NormalizeCanvasRect(transform);
         var canvas = _drawCanvasForScene.AddComponent<Canvas>();
+
         _drawCanvasForSceneCanvasGroup = _drawCanvasForScene.AddComponent<CanvasGroup>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.overrideSorting = true;
-        canvas.sortingOrder = 1000;
+        canvas.sortingOrder = 19;
+        UpdateLocalCanvas(_drawCanvasForScene);
+
         var scaler = _drawCanvasForScene.AddComponent<CanvasScaler>();
         scaler.referenceResolution = new Vector2(ScreenWidth, ScreenHeight);
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
@@ -60,6 +71,20 @@ public class Common
         scaler.matchWidthOrHeight = 0.5f;
         _drawCanvasForScene.AddComponent<GraphicRaycaster>();
         _drawCanvasForScene.layer = LayerMask.NameToLayer("UI");
+    }
+
+    private static void UpdateLocalCanvas(GameObject canvasGo)
+    {
+        var fg = GameObject.Find("CanvasFg");
+        if (fg != null)
+        {
+            var t = canvasGo.GetComponent<RectTransform>();
+            t.SetParent(fg.transform, false);
+            t.anchoredPosition = Vector2.zero;
+            t.sizeDelta = Vector2.zero;
+            t.anchorMin = Vector2.zero;
+            t.anchorMax = Vector2.one;
+        }
     }
 
     private static void NormalizeCanvasRect(RectTransform transform)
@@ -76,8 +101,9 @@ public class Common
     {
         if (goName == "")
         {
-            _drawCanvasForScene!.GetComponent<RectTransform>().SetParent(null, false);
-            _drawCanvasForScene.transform.localPosition = Vector3.zero;
+            var transform = _drawCanvasForScene!.GetComponent<RectTransform>();
+            transform.SetParent(null, false);
+            NormalizeCanvasRect(transform);
         }
         else
         {

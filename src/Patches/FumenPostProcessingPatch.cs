@@ -3,6 +3,7 @@ using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using TnTRFMod.Ui;
 using TnTRFMod.Ui.Widgets;
 using TnTRFMod.Utils.Fumen;
+using Logger = TnTRFMod.Utils.Logger;
 using UnityEngine;
 
 namespace TnTRFMod.Patches;
@@ -27,6 +28,10 @@ public class FumenPostProcessingPatch
     private static void FumenLoader_PlayerData_WriteFumenBuffer_Prefix(ref Il2CppStructArray<byte> data)
     {
         var reader = new FumenReader(data);
+
+        Logger.Info($"Fumen HP per good: {reader.HpPerGood}");
+        Logger.Info($"Fumen MaxCombo: {reader.MaxCombo}");
+        Logger.Info($"Fumen MaxScore: {reader.HpPerGood * reader.MaxCombo}");
 
         if (EnableEqualScrollSpeed)
             reader.MakeScrollSpeedEqual();

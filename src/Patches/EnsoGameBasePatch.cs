@@ -223,17 +223,17 @@ public class EnsoGameBasePatch
                 case TaikoCoreTypes.OnpuTypes.GekiRenda:
                 case TaikoCoreTypes.OnpuTypes.DaiRenda:
                 case TaikoCoreTypes.OnpuTypes.Renda:
-                {
-                    switch (hitResult)
                     {
-                        case TaikoCoreTypes.HitResultTypes.Ryo:
-                        case TaikoCoreTypes.HitResultTypes.Ka:
-                            OnRendaHit(hit.player);
-                            break;
-                    }
+                        switch (hitResult)
+                        {
+                            case TaikoCoreTypes.HitResultTypes.Ryo:
+                            case TaikoCoreTypes.HitResultTypes.Ka:
+                                OnRendaHit(hit.player);
+                                break;
+                        }
 
-                    break;
-                }
+                        break;
+                    }
             }
         }
     }

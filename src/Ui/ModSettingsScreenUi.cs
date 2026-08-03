@@ -60,7 +60,6 @@ public static class ModSettingsScreenUi
         RefreshRows();
         _visible = true;
         _panel!.Visible = true;
-        SetGameInputEnabled(false);
     }
 
     public static void CloseSettings()
@@ -69,7 +68,6 @@ public static class ModSettingsScreenUi
         CancelKeyCapture();
         CloseAllDropDowns();
         if (_panel != null) _panel.Visible = false;
-        SetGameInputEnabled(true);
     }
 
     public static void ToggleSettings()
@@ -391,18 +389,6 @@ public static class ModSettingsScreenUi
 
         _waitingForKey = null;
         _waitingKeyButton = null;
-    }
-
-    private static void SetGameInputEnabled(bool enabled)
-    {
-        try
-        {
-            Common.GetControllerManager().SetActiveSafe(enabled);
-        }
-        catch (Exception exception)
-        {
-            Logger.Warn($"[ModSettings] 无法切换游戏输入状态: {exception.Message}");
-        }
     }
 
     private static TextUi CreateText(string text, float fontSize, Color color, bool wordWrap)

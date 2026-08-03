@@ -1,31 +1,60 @@
+using System.Buffers.Binary;
 using System.Runtime.InteropServices;
 using Il2CppInterop.Runtime;
 
 namespace TnTRFMod.Utils.Fumen;
 
-public record FumenReader(byte[] fumenData)
+public sealed class FumenReader
 {
-    public uint measureNum => BitConverter.ToUInt32(fumenData, 0x200);
+    private const int JudgeTimingCount = 36;
+    private const int JudgeTimingSize = 12;
+    private const int HeaderSize = 0x208;
+    private const int MeasuresOffset = HeaderSize;
 
-    public FumenMeasure[] measures
+    internal readonly byte[] fumenData;
+    private readonly FumenMeasure[] parsedMeasures;
+
+    public FumenReader(byte[] fumenData)
     {
-        get
+        ArgumentNullException.ThrowIfNull(fumenData);
+        EnsureRange(fumenData, 0, HeaderSize, "Fumen V2 header");
+
+        this.fumenData = fumenData;
+        var count = checked((int)MeasureCount);
+        parsedMeasures = new FumenMeasure[count];
+
+        var readPosition = MeasuresOffset;
+        for (var i = 0; i < count; i++)
         {
-            var measureNum = this.measureNum;
-            var measures = new FumenMeasure[measureNum];
-
-            var readPos = 0x208;
-            for (var i = 0; i < measureNum; i++)
+            try
             {
-                measures[i] = new FumenMeasure(fumenData, readPos);
-                readPos += measures[i].dataSize;
+                var measure = new FumenMeasure(fumenData, readPosition);
+                parsedMeasures[i] = measure;
+                readPosition = checked(readPosition + measure.DataSize);
             }
-
-            return measures;
+            catch (Exception exception) when (exception is ArgumentException or OverflowException)
+            {
+                throw new ArgumentException($"Invalid Fumen V2 measure {i} at offset 0x{readPosition:X}.",
+                    nameof(fumenData), exception);
+            }
         }
     }
 
-    public bool hasDivision => BitConverter.ToInt32(fumenData, 0x1B0) == 1;
+    public uint MeasureCount => ReadUInt32(fumenData, 0x200);
+    public bool HasDivergentPaths => ReadUInt32(fumenData, 0x1B0) != 0;
+    public uint MaxHp => ReadUInt32(fumenData, 0x1B4);
+    public uint ClearHp => ReadUInt32(fumenData, 0x1B8);
+    public int HpPerGood => ReadInt32(fumenData, 0x1BC);
+    public int HpPerOk => ReadInt32(fumenData, 0x1C0);
+    public int HpPerBad => ReadInt32(fumenData, 0x1C4);
+    public uint MaxCombo => ReadUInt32(fumenData, 0x1C8);
+    public uint MaxScoreValue => ReadUInt32(fumenData, 0x1FC);
+    public IReadOnlyList<FumenMeasure> Measures => parsedMeasures;
+
+    // 兼容现有调用方。
+    public uint measureNum => MeasureCount;
+    public bool hasDivision => HasDivergentPaths;
+    public FumenMeasure[] measures => parsedMeasures;
 
     public void ResetJudgeTiming(EnsoData.EnsoLevelType level)
     {
@@ -33,12 +62,12 @@ public record FumenReader(byte[] fumenData)
         {
             case EnsoData.EnsoLevelType.Easy:
             case EnsoData.EnsoLevelType.Normal:
-                ResetJudgeTiming(41.7083358764648f, 108.441665649414f, 125.125000000000f);
+                ResetJudgeTiming(41.7083358764648f, 108.441665649414f, 125.125f);
                 break;
             case EnsoData.EnsoLevelType.Hard:
             case EnsoData.EnsoLevelType.Mania:
             case EnsoData.EnsoLevelType.Ura:
-                ResetJudgeTiming(25.0250015258789f, 075.075004577637f, 108.441665649414f);
+                ResetJudgeTiming(25.0250015258789f, 75.075004577637f, 108.441665649414f);
                 break;
             case EnsoData.EnsoLevelType.Num:
                 break;
@@ -49,198 +78,97 @@ public record FumenReader(byte[] fumenData)
 
     public void ResetJudgeTiming(float good, float ok, float bad)
     {
-        var goodBytes = BitConverter.GetBytes(good);
-        var okBytes = BitConverter.GetBytes(ok);
-        var badBytes = BitConverter.GetBytes(bad);
-        for (var i = 0; i < 36; i++)
+        for (var i = 0; i < JudgeTimingCount; i++)
         {
-            goodBytes.CopyTo(fumenData, i * 4 * 3);
-            okBytes.CopyTo(fumenData, i * 4 * 3 + 4);
-            badBytes.CopyTo(fumenData, i * 4 * 3 + 8);
+            var offset = i * JudgeTimingSize;
+            WriteSingle(fumenData, offset, good);
+            WriteSingle(fumenData, offset + 4, ok);
+            WriteSingle(fumenData, offset + 8, bad);
         }
     }
 
     public void MakeScrollSpeedEqual()
     {
-        var bpm = measures[0].bpm;
-        foreach (var readerMeasure in measures)
+        if (parsedMeasures.Length == 0) return;
+
+        var baseBpm = parsedMeasures[0].Bpm;
+        foreach (var measure in parsedMeasures)
         {
-            var bpmAspect = bpm / readerMeasure.bpm;
-            readerMeasure.normalNoteData.scrollSpeed = bpmAspect;
-            readerMeasure.hardNoteData.scrollSpeed = bpmAspect;
-            readerMeasure.advanceNoteData.scrollSpeed = bpmAspect;
+            var scrollSpeed = baseBpm / measure.Bpm;
+            measure.SetAllBranchScrollSpeeds(scrollSpeed);
         }
     }
 
     public void MakeScrollSpeedRandom()
     {
-        foreach (var readerMeasure in measures)
-        {
-            var multiplier = Random.Shared.NextSingle() * 1.8f + 0.2f;
-            readerMeasure.normalNoteData.scrollSpeed = multiplier;
-            readerMeasure.hardNoteData.scrollSpeed = multiplier;
-            readerMeasure.advanceNoteData.scrollSpeed = multiplier;
-        }
+        foreach (var measure in parsedMeasures)
+            measure.SetAllBranchScrollSpeeds(Random.Shared.NextSingle() * 1.8f + 0.2f);
     }
 
     public void MakeScrollSpeedReverse()
     {
-        foreach (var readerMeasure in measures)
+        foreach (var measure in parsedMeasures)
         {
-            readerMeasure.normalNoteData.scrollSpeed = -readerMeasure.normalNoteData.scrollSpeed;
-            readerMeasure.hardNoteData.scrollSpeed = -readerMeasure.hardNoteData.scrollSpeed;
-            readerMeasure.advanceNoteData.scrollSpeed = -readerMeasure.advanceNoteData.scrollSpeed;
+            measure.NormalBranch.ScrollSpeed = -measure.NormalBranch.ScrollSpeed;
+            measure.AdvancedBranch.ScrollSpeed = -measure.AdvancedBranch.ScrollSpeed;
+            measure.MasterBranch.ScrollSpeed = -measure.MasterBranch.ScrollSpeed;
         }
     }
 
     public void MakeScrollSpeedSuperSlow()
     {
-        var maxMultiplier = 5f;
-        // var shouldReduce = true;
-        // const float minScrollSpeed = float.Epsilon;
-        // while (shouldReduce)
-        // {
-        //     shouldReduce = measures.Any(readerMeasure =>
-        //         readerMeasure.normalNoteData.scrollSpeed / maxMultiplier < minScrollSpeed ||
-        //         readerMeasure.hardNoteData.scrollSpeed / maxMultiplier < minScrollSpeed ||
-        //         readerMeasure.advanceNoteData.scrollSpeed / maxMultiplier < minScrollSpeed);
-        //     if (shouldReduce) maxMultiplier -= 1f;
-        // }
-        //
-        // Logger.Info("maxMultiplier: " + maxMultiplier);
-
-        foreach (var readerMeasure in measures)
+        const float divisor = 5f;
+        foreach (var measure in parsedMeasures)
         {
-            readerMeasure.normalNoteData.scrollSpeed /= maxMultiplier;
-            readerMeasure.hardNoteData.scrollSpeed /= maxMultiplier;
-            readerMeasure.advanceNoteData.scrollSpeed /= maxMultiplier;
+            measure.NormalBranch.ScrollSpeed /= divisor;
+            measure.AdvancedBranch.ScrollSpeed /= divisor;
+            measure.MasterBranch.ScrollSpeed /= divisor;
         }
     }
 
     public MaxScore CalculateMaxScore()
     {
-        var balloonAmount = 0;
-        var balloonHitAmount = 0;
-        var simpleNoteAmount = 0;
-        var bigNoteAmount = 0;
-        var rendaTotalSmallLength = 0f;
-        var rendaTotalBigLength = 0f;
-        var rendaTotalSmallHitCount = 0;
-        var rendaTotalBigHitCount = 0;
-        var rendaNoteAmount = 0;
-        var simpleInitScore = 0;
+        var simpleNoteCount = 0;
+        var bigNoteCount = 0;
 
-        foreach (var measure in measures)
+        foreach (var measure in parsedMeasures)
         {
-            var notes = hasDivision ? measure.hardNoteData : measure.normalNoteData;
-            foreach (var note in notes.notes)
-                switch (note.noteType)
-                {
-                    case Note.Type.Don:
-                    case Note.Type.Do:
-                    case Note.Type.Ko:
-                    case Note.Type.Katsu:
-                    case Note.Type.Ka:
-                        simpleNoteAmount++;
-                        simpleInitScore += note.initialScoreValue;
-                        break;
-                    case Note.Type.BigDon:
-                    case Note.Type.BigKatsu:
-                        simpleNoteAmount++;
-                        bigNoteAmount++;
-                        simpleInitScore += note.initialScoreValue * 2;
-                        // Logger.Info($"SimpleNoteScore {note.initialScoreValue} {note.scoreDifference}");
-                        break;
-                    case Note.Type.Renda:
-                        rendaNoteAmount++;
-                        rendaTotalSmallLength += (int)note.rendaLength;
-                        rendaTotalSmallHitCount += note.randaHitsCount;
-                        break;
-                    case Note.Type.BigRenda:
-                        rendaNoteAmount++;
-                        rendaTotalBigLength += (int)note.rendaLength;
-                        rendaTotalBigHitCount += note.randaHitsCount;
-                        break;
-                    case Note.Type.Balloon:
-                    case Note.Type.Bell:
-                        balloonAmount++;
-                        rendaNoteAmount++;
-                        balloonHitAmount += note.balloonCount;
-                        rendaTotalSmallHitCount += note.randaHitsCount;
-                        rendaTotalSmallLength += (int)note.rendaLength;
-                        break;
-                }
+            var branch = HasDivergentPaths ? measure.MasterBranch : measure.NormalBranch;
+            foreach (var note in branch.Notes)
+            {
+                if (!note.IsSimpleNote) continue;
+                simpleNoteCount++;
+                if (note.NoteType is Note.Type.BigDon or Note.Type.BigKatsu) bigNoteCount++;
+            }
         }
 
-        var noteScore = 0;
+        if (simpleNoteCount == 0) return default;
 
-        if (simpleNoteAmount == 0)
-            return new MaxScore
-            {
-                maxScore = 0,
-                noteScore = 0,
-                bigNoteAmount = 0,
-                simpleNoteAmount = 0
-            };
-
-        while (noteScore * simpleNoteAmount <= 100_000) noteScore += 1;
-
-        var result = 10 * noteScore * simpleNoteAmount;
-
-        // Console.Out.WriteLine(
-        //     $"simpleNoteAmount: {simpleNoteAmount} " +
-        //     $"rendaTotalSmallLength: {rendaTotalSmallLength} " +
-        //     $"rendaTotalBigLength: {rendaTotalBigLength} " +
-        //     $"rendaTotalSmallHitCount: {rendaTotalSmallHitCount} " +
-        //     $"rendaTotalBigHitCount: {rendaTotalBigHitCount} " +
-        //     $"noteScore: {noteScore} " +
-        //     $"simpleInitScore: {simpleInitScore} " +
-        //     $"balloonHitAmount: {balloonHitAmount} ");
-
-        // Logger.Message(
-        //     $"FumenReader.CalculateMaxScore: {result}");
-
-        // if (result < 100_0000)
-        //     Logger.Warn($"Warning: Fumen score is less than 1000000: {result}");
+        // 保持原算法：取满足 score * noteCount > 100000 的最小整数，再以 10 为单位计分。
+        var scoreUnits = 100_000 / simpleNoteCount + 1;
+        var noteScore = checked(scoreUnits * 10);
 
         return new MaxScore
         {
-            maxScore = result,
-            noteScore = noteScore * 10,
-            bigNoteAmount = bigNoteAmount,
-            simpleNoteAmount = simpleNoteAmount
+            maxScore = checked(noteScore * simpleNoteCount),
+            noteScore = noteScore,
+            bigNoteAmount = bigNoteCount,
+            simpleNoteAmount = simpleNoteCount
         };
-    }
-
-    public static void FumenTest()
-    {
-        string[] testList =
-        [
-            "C:/Program Files (x86)/Steam/steamapps/common/Taiko no Tatsujin Rhythm Festival/TnTRFMod/twcfsp_m.bin",
-            "C:/Program Files (x86)/Steam/steamapps/common/Taiko no Tatsujin Rhythm Festival/TnTRFMod/gunsln_m.bin",
-            "C:/Program Files (x86)/Steam/steamapps/common/Taiko no Tatsujin Rhythm Festival/TnTRFMod/crkvic_m.bin",
-            "C:/Program Files (x86)/Steam/steamapps/common/Taiko no Tatsujin Rhythm Festival/TnTRFMod/tdm_x.bin"
-        ];
-
-        foreach (var testFile in testList)
-        {
-            if (!File.Exists(testFile))
-            {
-                Console.Out.WriteLine($"Test file not found: {testFile}");
-                continue;
-            }
-
-            var fumenData = File.ReadAllBytes(testFile);
-            var reader = new FumenReader(fumenData);
-            Console.Out.WriteLine($"Fumen Test: {testFile} - Measure Count: {reader.measureNum}");
-            Console.Out.WriteLine($"Max Score: {reader.CalculateMaxScore()}");
-        }
     }
 
     public int GetTotalNotes()
     {
-        return measures.Select(measure => hasDivision ? measure.hardNoteData : measure.normalNoteData)
-            .Select(notes => notes.notes.Count(n => n.isSimpleNote)).Sum();
+        var count = 0;
+        foreach (var measure in parsedMeasures)
+        {
+            var branch = HasDivergentPaths ? measure.MasterBranch : measure.NormalBranch;
+            foreach (var note in branch.Notes)
+                if (note.IsSimpleNote)
+                    count++;
+        }
+
+        return count;
     }
 
     public struct MaxScore
@@ -251,79 +179,141 @@ public record FumenReader(byte[] fumenData)
         public int maxScore;
     }
 
-    public record FumenMeasure(byte[] fumenData, int measureDataIndex)
+    public sealed class FumenMeasure
     {
-        public float bpm
+        private const int MeasureDataSize = 40;
+        private readonly byte[] data;
+        private readonly int index;
+
+        internal FumenMeasure(byte[] data, int index)
         {
-            get => BitConverter.ToSingle(fumenData, measureDataIndex);
-            set => BitConverter.GetBytes(value).CopyTo(fumenData, measureDataIndex);
+            EnsureRange(data, index, MeasureDataSize, "measure data");
+            this.data = data;
+            this.index = index;
+
+            NormalBranch = new NoteData(data, index + MeasureDataSize);
+            AdvancedBranch = new NoteData(data, checked(NormalBranch.Index + NormalBranch.DataSize));
+            MasterBranch = new NoteData(data, checked(AdvancedBranch.Index + AdvancedBranch.DataSize));
+            DataSize = checked(MeasureDataSize + NormalBranch.DataSize + AdvancedBranch.DataSize +
+                               MasterBranch.DataSize);
         }
 
-        public float offset
+        public float Bpm
         {
-            get => BitConverter.ToSingle(fumenData, measureDataIndex + 4);
-            set => BitConverter.GetBytes(value).CopyTo(fumenData, measureDataIndex + 4);
+            get => ReadSingle(data, index);
+            set => WriteSingle(data, index, value);
         }
 
-        public bool isGoGoTime
+        public float Offset
         {
-            get => BitConverter.ToBoolean(fumenData, measureDataIndex + 8);
-            set => BitConverter.GetBytes(value).CopyTo(fumenData, measureDataIndex + 8);
+            get => ReadSingle(data, index + 4);
+            set => WriteSingle(data, index + 4, value);
         }
 
-        public bool isBarLineVisible
+        public bool IsGogoTime
         {
-            get => BitConverter.ToBoolean(fumenData, measureDataIndex + 9);
-            set => BitConverter.GetBytes(value).CopyTo(fumenData, measureDataIndex + 9);
+            get => data[index + 8] != 0;
+            set => data[index + 8] = value ? (byte)1 : (byte)0;
         }
 
-        public NoteData normalNoteData => new(fumenData, measureDataIndex + 40);
-        public NoteData advanceNoteData => new(fumenData, measureDataIndex + 40 + normalNoteData.dataSize);
+        public bool IsBarLineVisible
+        {
+            get => data[index + 9] != 0;
+            set => data[index + 9] = value ? (byte)1 : (byte)0;
+        }
 
-        public NoteData hardNoteData => new(fumenData,
-            measureDataIndex + 40 + normalNoteData.dataSize + advanceNoteData.dataSize);
+        public uint NormalToAdvancedDivergePointRequirement => ReadUInt32(data, index + 0x0C);
+        public uint NormalToMasterDivergePointRequirement => ReadUInt32(data, index + 0x10);
+        public uint AdvancedToMasterDivergePointRequirement => ReadUInt32(data, index + 0x14);
+        public uint AdvancedKeepAdvancedDivergePointRequirement => ReadUInt32(data, index + 0x18);
+        public uint MasterToAdvancedDivergePointRequirement => ReadUInt32(data, index + 0x1C);
+        public uint MasterKeepMasterDivergePointRequirement => ReadUInt32(data, index + 0x20);
 
-        public int dataSize => 40 + normalNoteData.dataSize + advanceNoteData.dataSize + hardNoteData.dataSize;
+        public NoteData NormalBranch { get; }
+        public NoteData AdvancedBranch { get; }
+        public NoteData MasterBranch { get; }
+        public int DataSize { get; }
+
+        // 兼容现有调用方。
+        public float bpm { get => Bpm; set => Bpm = value; }
+        public float offset { get => Offset; set => Offset = value; }
+        public bool isGoGoTime { get => IsGogoTime; set => IsGogoTime = value; }
+        public bool isBarLineVisible { get => IsBarLineVisible; set => IsBarLineVisible = value; }
+        public NoteData normalNoteData => NormalBranch;
+        public NoteData advanceNoteData => AdvancedBranch;
+        public NoteData hardNoteData => MasterBranch;
+        public int dataSize => DataSize;
+
+        internal void SetAllBranchScrollSpeeds(float value)
+        {
+            NormalBranch.ScrollSpeed = value;
+            AdvancedBranch.ScrollSpeed = value;
+            MasterBranch.ScrollSpeed = value;
+        }
     }
 
-    public record NoteData(byte[] fumenData, int noteDataIndex)
+    public sealed class NoteData
     {
-        public ushort noteNum
-        {
-            get => BitConverter.ToUInt16(fumenData, noteDataIndex);
-            set => BitConverter.GetBytes(value).CopyTo(fumenData, noteDataIndex);
-        }
+        private const int HeaderSize = 8;
+        private readonly byte[] data;
+        private readonly Note[] parsedNotes;
 
-        public float scrollSpeed
+        internal NoteData(byte[] data, int index)
         {
-            get => BitConverter.ToSingle(fumenData, noteDataIndex + 4);
-            set => BitConverter.GetBytes(value).CopyTo(fumenData, noteDataIndex + 4);
-        }
+            EnsureRange(data, index, HeaderSize, "measure branch data");
+            this.data = data;
+            Index = index;
 
-        public Note[] notes
-        {
-            get
+            var count = NoteCount;
+            parsedNotes = new Note[count];
+            var readPosition = checked(index + HeaderSize);
+            for (var i = 0; i < count; i++)
             {
-                var noteNum = this.noteNum;
-                var notes = new Note[noteNum];
-
-                var readPos = noteDataIndex + 8;
-                for (var i = 0; i < noteNum; i++)
-                {
-                    notes[i] = new Note(fumenData, readPos);
-                    readPos += notes[i].dataSize;
-                }
-
-                return notes;
+                var note = new Note(data, readPosition);
+                parsedNotes[i] = note;
+                readPosition = checked(readPosition + note.DataSize);
             }
+
+            DataSize = checked(readPosition - index);
         }
 
-        public int dataSize => 8 + notes.Sum(n => n.dataSize);
+        internal int Index { get; }
+
+        public ushort NoteCount => ReadUInt16(data, Index);
+
+        public float ScrollSpeed
+        {
+            get => ReadSingle(data, Index + 4);
+            set => WriteSingle(data, Index + 4, value);
+        }
+
+        public IReadOnlyList<Note> Notes => parsedNotes;
+        public int DataSize { get; }
+
+        // 兼容现有调用方。修改 NoteCount 会改变变长结构布局，因此不再提供不安全的 setter。
+        public ushort noteNum => NoteCount;
+        public float scrollSpeed { get => ScrollSpeed; set => ScrollSpeed = value; }
+        public Note[] notes => parsedNotes;
+        public int dataSize => DataSize;
     }
 
-    public record Note(byte[] fumenData, int noteIndex)
+    public sealed class Note
     {
-        public enum Type
+        private const int BaseSize = 24;
+        private const int RendaSize = 32;
+        private readonly byte[] data;
+        private readonly int index;
+
+        internal Note(byte[] data, int index)
+        {
+            EnsureRange(data, index, BaseSize, "note data");
+            this.data = data;
+            this.index = index;
+            DataSize = GetDataSize(NoteType);
+            EnsureRange(data, index, DataSize, "note data");
+        }
+
+        public enum Type : uint
         {
             Don = 1,
             Do = 2,
@@ -338,49 +328,98 @@ public record FumenReader(byte[] fumenData)
             Bell = 12
         }
 
-        public Type noteType
+        public Type NoteType
         {
-            get => (Type)BitConverter.ToInt32(fumenData, noteIndex);
-            set => BitConverter.GetBytes((int)value).CopyTo(fumenData, noteIndex);
+            get => (Type)ReadUInt32(data, index);
+            set
+            {
+                if (GetDataSize(value) != DataSize)
+                    throw new InvalidOperationException("Changing between fixed-size and renda notes requires resizing the chart.");
+                WriteUInt32(data, index, (uint)value);
+            }
         }
 
-        public float noteOffset
+        public float NoteOffset
         {
-            get => BitConverter.ToSingle(fumenData, noteIndex + 4);
-            set => BitConverter.GetBytes(value).CopyTo(fumenData, noteIndex + 4);
+            get => ReadSingle(data, index + 4);
+            set => WriteSingle(data, index + 4, value);
         }
 
-        public int randaHitsCount => initialScoreValue;
-
-        public int initialScoreValue
+        // fumenv2.hexpat: InitialScoreValue 位于 +0x0C，+0x10 是 padding。
+        public ushort InitialScoreValue
         {
-            get => BitConverter.ToUInt16(fumenData, noteIndex + 0x10);
-            set => BitConverter.GetBytes((ushort)value).CopyTo(fumenData, noteIndex + 0x10);
+            get => ReadUInt16(data, index + 0x0C);
+            set => WriteUInt16(data, index + 0x0C, value);
         }
 
-        public int scoreDifference
+        public ushort ScoreDifferenceTimes4
         {
-            get => BitConverter.ToUInt16(fumenData, noteIndex + 0x12) / 4;
-            set => BitConverter.GetBytes((ushort)(value * 4)).CopyTo(fumenData, noteIndex + 0x12);
+            get => ReadUInt16(data, index + 0x0E);
+            set => WriteUInt16(data, index + 0x0E, value);
         }
 
-        public float rendaLength
+        public int ScoreDifference
         {
-            get => BitConverter.ToSingle(fumenData, noteIndex + 20);
-            set => BitConverter.GetBytes(value).CopyTo(fumenData, noteIndex + 20);
+            get => ScoreDifferenceTimes4 / 4;
+            set => ScoreDifferenceTimes4 = checked((ushort)(value * 4));
         }
 
-        public ushort balloonCount
+        public float Length
         {
-            get => BitConverter.ToUInt16(fumenData, noteIndex + 24);
-            set => BitConverter.GetBytes(value).CopyTo(fumenData, noteIndex + 24);
+            get => ReadSingle(data, index + 0x14);
+            set => WriteSingle(data, index + 0x14, value);
         }
 
-        public int dataSize => noteType is Type.Renda or Type.BigRenda ? 32 : 24;
+        public int DataSize { get; }
 
-        public bool isSimpleNote =>
-            noteType is Type.Don or Type.Do or Type.Ko or Type.Katsu or Type.Ka or Type.BigDon or Type.BigKatsu;
+        public bool IsSimpleNote => NoteType is Type.Don or Type.Do or Type.Ko or Type.Katsu or Type.Ka or
+            Type.BigDon or Type.BigKatsu;
+
+        // 气球/铃铛次数与连打相关值复用格式中的 InitialScoreValue，并不存在 +0x18 的额外字段。
+        public int RendaHitCount => InitialScoreValue;
+        public ushort BalloonCount => InitialScoreValue;
+
+        // 兼容现有调用方。
+        public Type noteType { get => NoteType; set => NoteType = value; }
+        public float noteOffset { get => NoteOffset; set => NoteOffset = value; }
+        public int randaHitsCount => RendaHitCount;
+        public int initialScoreValue { get => InitialScoreValue; set => InitialScoreValue = checked((ushort)value); }
+        public int scoreDifference { get => ScoreDifference; set => ScoreDifference = value; }
+        public float rendaLength { get => Length; set => Length = value; }
+        public ushort balloonCount { get => BalloonCount; set => InitialScoreValue = value; }
+        public int dataSize => DataSize;
+        public bool isSimpleNote => IsSimpleNote;
+
+        private static int GetDataSize(Type type) => type is Type.Renda or Type.BigRenda ? RendaSize : BaseSize;
     }
+
+    private static void EnsureRange(byte[] data, int offset, int length, string structureName)
+    {
+        if (offset < 0 || length < 0 || offset > data.Length - length)
+            throw new ArgumentException(
+                $"The {structureName} at 0x{offset:X} extends beyond the {data.Length}-byte buffer.");
+    }
+
+    private static ushort ReadUInt16(byte[] data, int offset) =>
+        BinaryPrimitives.ReadUInt16LittleEndian(data.AsSpan(offset, sizeof(ushort)));
+
+    private static uint ReadUInt32(byte[] data, int offset) =>
+        BinaryPrimitives.ReadUInt32LittleEndian(data.AsSpan(offset, sizeof(uint)));
+
+    private static int ReadInt32(byte[] data, int offset) =>
+        BinaryPrimitives.ReadInt32LittleEndian(data.AsSpan(offset, sizeof(int)));
+
+    private static float ReadSingle(byte[] data, int offset) =>
+        BitConverter.Int32BitsToSingle(ReadInt32(data, offset));
+
+    private static void WriteUInt16(byte[] data, int offset, ushort value) =>
+        BinaryPrimitives.WriteUInt16LittleEndian(data.AsSpan(offset, sizeof(ushort)), value);
+
+    private static void WriteUInt32(byte[] data, int offset, uint value) =>
+        BinaryPrimitives.WriteUInt32LittleEndian(data.AsSpan(offset, sizeof(uint)), value);
+
+    private static void WriteSingle(byte[] data, int offset, float value) =>
+        BinaryPrimitives.WriteInt32LittleEndian(data.AsSpan(offset, sizeof(float)), BitConverter.SingleToInt32Bits(value));
 }
 
 internal static class FumenDataPlayerData
@@ -393,7 +432,7 @@ internal static class FumenDataPlayerData
             IL2CPP.GetIl2CppField(Il2CppClassPointerStore<FumenLoader.PlayerData>.NativeClassPtr, "fumenData");
     }
 
-    // Il2cppInterop 生成的获取铺面数据指针的方法有误，这里手动实现一个
+    // Il2CppInterop 生成的获取谱面数据指针的方法有误，这里手动实现一个。
     public static byte[] GetFumenDataAsBytes(this FumenLoader.PlayerData playerData)
     {
         if (!playerData.isReadSucceed) throw new FumenNoLoadedException();
