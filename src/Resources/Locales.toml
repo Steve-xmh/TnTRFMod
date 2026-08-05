@@ -130,6 +130,9 @@ config.HitOffset.Enable = "启用音符敲击时差指示器"
 config.HitOffset.InvertColor = "反转快/慢音符偏移文本颜色"
 config.HitOffset.RyoRange = "音符的良判范围（单位正负毫秒），设置为 -1f 可跟随所选歌曲难度"
 
+config.JudgementBar.Enable = "启用判定误差条（在演奏画面底部显示击打时差分布图）"
+config.JudgementBar.TimeRange = "判定误差条的最大显示范围（单位正负毫秒）"
+
 config.BilibiliLiveStreamSongRequest.Enable = "启用 Bilibili 直播点歌功能"
 config.BilibiliLiveStreamSongRequest.RoomId = "Bilibili 站直播间 ID"
 config.BilibiliLiveStreamSongRequest.Token = """Bilibili 站直播间 Token
@@ -307,6 +310,9 @@ config.HitOffset.Enable = "Enable hit offset during play."
 config.HitOffset.InvertColor = "Invert color of fast/late hit offset text."
 config.HitOffset.RyoRange = "Define the GOOD judgement range of note in positive ms, set to -1f to follow the difficulty of selected song course."
 
+config.JudgementBar.Enable = "Enable the judgement error bar overlay (displays hit timing distribution at the bottom of the play screen)."
+config.JudgementBar.TimeRange = "Maximum display range of the judgement bar in positive ms."
+
 config.BilibiliLiveStreamSongRequest.Enable = "Enable Bilibili Live Stream Song Request."
 config.BilibiliLiveStreamSongRequest.RoomId = "Bilibili Live Stream Room ID."
 config.BilibiliLiveStreamSongRequest.Token = "Bilibili Live Stream Token. Commonly as a Cookie called 'SESSDATA'. If you don't provide this, you won't be able to get accurate sender info."
@@ -475,6 +481,9 @@ config.Debug.ExportMusicNames = "内蔵曲名リストを書き出す（デバ�
 config.HitOffset.Enable = "演奏中にタイミングのズレを表示"
 config.HitOffset.InvertColor = "早/遅の色を反転"
 config.HitOffset.RyoRange = "良判定の許容幅（ms）。-1f で難易度依存。"
+
+config.JudgementBar.Enable = "判定誤差バーを有効化（演奏画面下部にタイミング分布を表示）"
+config.JudgementBar.TimeRange = "判定誤差バーの最大表示範囲（ms）"
 
 config.BilibiliLiveStreamSongRequest.Enable = "Bilibili 生放送のリクエスト機能"
 config.BilibiliLiveStreamSongRequest.RoomId = "Bilibili 生放送のルーム ID"
@@ -646,6 +655,9 @@ config.Debug.ExportMusicNames = "Exporter la liste interne des chansons (débug)
 config.HitOffset.Enable = "Afficher l'indicateur d'avance/retard"
 config.HitOffset.InvertColor = "Inverser les couleurs rapide/lent"
 config.HitOffset.RyoRange = "Fenetre de BONs en ms (+/-). -1f pour suivre la difficulté."
+
+config.JudgementBar.Enable = "Afficher la barre de timing (distribution de la precision des frappes en bas de l'ecran de jeu)."
+config.JudgementBar.TimeRange = "Plage d'affichage maximale de la barre de timing en ms."
 
 config.BilibiliLiveStreamSongRequest.Enable = "Activer les requêtes de morceaux Bilibili Live"
 config.BilibiliLiveStreamSongRequest.RoomId = "ID de salon Bilibili Live"

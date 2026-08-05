@@ -89,6 +89,12 @@ public static class ModConfig
     public static ConfigEntry<float> HitOffsetRyoRange { get; private set; } = ConfigEntry<float>.Noop;
 
     // =========================================================================
+    // JudgementBar 节
+    // =========================================================================
+    public static ConfigEntry<bool> EnableJudgementBar { get; private set; } = ConfigEntry<bool>.Noop;
+    public static ConfigEntry<float> JudgementBarTimeRange { get; private set; } = ConfigEntry<float>.Noop;
+
+    // =========================================================================
     // BilibiliLiveStreamSongRequest 节
     // =========================================================================
     public static ConfigEntry<bool> EnableBilibiliLiveStreamSongRequest { get; private set; } = ConfigEntry<bool>.Noop;
@@ -172,6 +178,12 @@ public static class ModConfig
             EnableHitOffset = s.Bool("Enable", "config.HitOffset.Enable", false);
             HitOffsetInvertColor = s.Bool("InvertColor", "config.HitOffset.InvertColor", false);
             HitOffsetRyoRange = s.Float("RyoRange", "config.HitOffset.RyoRange", -1f);
+        });
+
+        ConfigSectionBuilder.Section("JudgementBar", s =>
+        {
+            EnableJudgementBar = s.Bool("Enable", "config.JudgementBar.Enable", false);
+            JudgementBarTimeRange = s.Float("TimeRange", "config.JudgementBar.TimeRange", 150f);
         });
 
         ConfigSectionBuilder.Section("BilibiliLiveStreamSongRequest", s =>
@@ -267,6 +279,12 @@ public static class ModConfig
         AddFloat("HitOffset", "RyoRange", Description("config.HitOffset.RyoRange"), HitOffsetRyoRange, "Enso",
             "EnsoTest");
 
+        // JudgementBar
+        AddBool("JudgementBar", "Enable", Description("config.JudgementBar.Enable"), EnableJudgementBar, "Enso",
+            "EnsoTest");
+        AddFloat("JudgementBar", "TimeRange", Description("config.JudgementBar.TimeRange"), JudgementBarTimeRange,
+            "Enso", "EnsoTest");
+
         // BilibiliLiveStreamSongRequest
         AddBool("BilibiliLiveStreamSongRequest", "Enable", Description("config.BilibiliLiveStreamSongRequest.Enable"),
             EnableBilibiliLiveStreamSongRequest, "Boot", "SongSelect", "Enso");
@@ -326,6 +344,7 @@ public static class ModConfig
             "General.AutoPlayRendaSpeed",
             "HitOffset.InvertColor",
             "HitOffset.RyoRange",
+            "JudgementBar.TimeRange",
             "CustomPlayerName.Name",
             "BufferedInput.Enable",
             "BufferedInput.MaxBufferedInputCount",

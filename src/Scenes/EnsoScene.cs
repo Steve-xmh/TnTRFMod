@@ -12,6 +12,7 @@ public class EnsoScene : IScene
 {
     private readonly HitOffsetTip HitOffsetTip = new();
     private readonly HitStatusPanel HitStatusPanel = new();
+    private readonly JudgementBarOverlay JudgementBarOverlay = new();
     private readonly ScoreRankIcon ScoreRankIcon = new();
 
     private readonly TokkunMode TokkunMode = new();
@@ -32,6 +33,7 @@ public class EnsoScene : IScene
         if (ModConfig.EnableNearestNeighborOnpuPatch.Value) NearestNeighborOnpuPatch.PatchLaneTarget();
         if (ModConfig.EnableHitStatsPanelPatch.Value) HitStatusPanel.Start();
         if (ModConfig.EnableHitOffset.Value) HitOffsetTip.Start();
+        if (ModConfig.EnableJudgementBar.Value) JudgementBarOverlay.Start();
         if (ModConfig.EnableTokkunGamePatch.Value) TokkunMode.Start();
 
         if (ModConfig.EnableScoreRankIcon.Value) ScoreRankIcon.Init();
@@ -40,6 +42,7 @@ public class EnsoScene : IScene
 
     public void Destroy()
     {
+        if (ModConfig.EnableJudgementBar.Value) JudgementBarOverlay.Destroy();
         if (ModConfig.EnableTokkunGamePatch.Value) TokkunMode.Destroy();
     }
 
@@ -48,6 +51,7 @@ public class EnsoScene : IScene
         if (ModConfig.EnableHitStatsPanelPatch.Value) HitStatusPanel.Update();
         if (ModConfig.EnableScoreRankIcon.Value) ScoreRankIcon.Update();
         if (ModConfig.EnableHitOffset.Value) HitOffsetTip.Update();
+        if (ModConfig.EnableJudgementBar.Value) JudgementBarOverlay.Update();
         if (ModConfig.EnableTokkunGamePatch.Value) TokkunMode.Update();
         // debugSmoothDeltaText.SetText("调试：音频延迟：{0:00.00}ms", (float)SmoothEnsoGamePatch.SmoothDelta);
     }
