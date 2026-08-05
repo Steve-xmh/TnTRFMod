@@ -134,6 +134,8 @@ public class EnsoGameBasePatch
     private static void OnSimpleHit(int playerNum, TaikoCoreTypes.HitResultTypes hitResult, float onpuJustTime)
     {
         PlayerStates[playerNum].RecordHit(hitResult, onpuJustTime);
+        if (playerNum == 0 && ModConfig.EnableJudgementBar.Value)
+            TnTRFMod.Scenes.Enso.JudgementBarOverlay.PushHitOffsetFromPatch(onpuJustTime);
     }
 
     private static void OnRendaHit(int playerNum)
