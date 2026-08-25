@@ -180,6 +180,10 @@ config.TokkunMode.P2LeftDonKey = "P2 左侧鼓面键位"
 config.TokkunMode.P2LeftKaKey = "P2 左侧鼓边键位"
 config.TokkunMode.P2RightDonKey = "P2 右侧鼓面键位"
 config.TokkunMode.P2RightKaKey = "P2 右侧鼓边键位"
+config.CoopP2Keyboard.P2OkKey = "P2 确定键"
+config.CoopP2Keyboard.P2CancelKey = "P2 取消键"
+config.CoopP2Keyboard.Enable = "允许 P2 使用键盘游玩双人模式"
+
 
 [en]
 modSettings.title = "TnTRFMod Settings"
@@ -353,6 +357,10 @@ config.TokkunMode.P2LeftDonKey = "P2 Left Don key"
 config.TokkunMode.P2LeftKaKey = "P2 Left Ka key"
 config.TokkunMode.P2RightDonKey = "P2 Right Don key"
 config.TokkunMode.P2RightKaKey = "P2 Right Ka key"
+config.CoopP2Keyboard.P2OkKey = "P2 OK key"
+config.CoopP2Keyboard.P2CancelKey = "P2 Cancel key"
+config.CoopP2Keyboard.Enable = "Allow P2 to play 2P mode with keyboard"
+
 
 [jp]
 modSettings.title = "TnTRFMod 設定"
@@ -528,6 +536,10 @@ config.TokkunMode.P2LeftDonKey = "P2 左ドンのキー"
 config.TokkunMode.P2LeftKaKey = "P2 左カのキー"
 config.TokkunMode.P2RightDonKey = "P2 右ドンのキー"
 config.TokkunMode.P2RightKaKey = "P2 右カのキー"
+config.CoopP2Keyboard.P2OkKey = "P2 OKキー"
+config.CoopP2Keyboard.P2CancelKey = "P2 キャンセルキー"
+config.CoopP2Keyboard.Enable = "P2 がキーボードで2人モードをプレイできるようにする"
+
 
 [fr]
 modSettings.title = "Paramètres TnTRFMod"
@@ -702,6 +714,10 @@ config.TokkunMode.P2LeftDonKey = "Touche Don gauche P2"
 config.TokkunMode.P2LeftKaKey = "Touche Ka gauche P2"
 config.TokkunMode.P2RightDonKey = "Touche Don droite P2"
 config.TokkunMode.P2RightKaKey = "Touche Ka droite P2"
+config.CoopP2Keyboard.P2OkKey = "Touche OK P2"
+config.CoopP2Keyboard.P2CancelKey = "Touche Annuler P2"
+config.CoopP2Keyboard.Enable = "Permettre au P2 de jouer en 2P au clavier"
+
 
 [it]
 modSettings.title = "Impostazioni TnTRFMod"
@@ -873,6 +889,10 @@ config.TokkunMode.P2LeftDonKey = "Tasto Don sinistro P2"
 config.TokkunMode.P2LeftKaKey = "Tasto Ka sinistro P2"
 config.TokkunMode.P2RightDonKey = "Tasto Don destro P2"
 config.TokkunMode.P2RightKaKey = "Tasto Ka destro P2"
+config.CoopP2Keyboard.P2OkKey = "Tasto OK P2"
+config.CoopP2Keyboard.P2CancelKey = "Tasto Annulla P2"
+config.CoopP2Keyboard.Enable = "Consenti al P2 di giocare in 2P con la tastiera"
+
 
 [ge]
 modSettings.title = "TnTRFMod-Einstellungen"
@@ -1044,6 +1064,10 @@ config.TokkunMode.P2LeftDonKey = "P2 linker Don-Taste"
 config.TokkunMode.P2LeftKaKey = "P2 linker Ka-Taste"
 config.TokkunMode.P2RightDonKey = "P2 rechter Don-Taste"
 config.TokkunMode.P2RightKaKey = "P2 rechter Ka-Taste"
+config.CoopP2Keyboard.P2OkKey = "P2 OK-Taste"
+config.CoopP2Keyboard.P2CancelKey = "P2 Abbrechen-Taste"
+config.CoopP2Keyboard.Enable = "P2 im 2P-Modus mit Tastatur spielen lassen"
+
 
 [sp]
 modSettings.title = "Ajustes de TnTRFMod"
@@ -1215,6 +1239,10 @@ config.TokkunMode.P2LeftDonKey = "Tecla Don izquierda P2"
 config.TokkunMode.P2LeftKaKey = "Tecla Ka izquierda P2"
 config.TokkunMode.P2RightDonKey = "Tecla Don derecha P2"
 config.TokkunMode.P2RightKaKey = "Tecla Ka derecha P2"
+config.CoopP2Keyboard.P2OkKey = "Tecla OK P2"
+config.CoopP2Keyboard.P2CancelKey = "Tecla Cancelar P2"
+config.CoopP2Keyboard.Enable = "Permitir que el P2 juegue en 2P con teclado"
+
 
 [zht]
 modSettings.title = "TnTRFMod 設定"
@@ -1390,6 +1418,10 @@ config.TokkunMode.P2LeftDonKey = "P2 左側鼓面鍵位"
 config.TokkunMode.P2LeftKaKey = "P2 左側鼓邊鍵位"
 config.TokkunMode.P2RightDonKey = "P2 右側鼓面鍵位"
 config.TokkunMode.P2RightKaKey = "P2 右側鼓邊鍵位"
+config.CoopP2Keyboard.P2OkKey = "P2 確定鍵"
+config.CoopP2Keyboard.P2CancelKey = "P2 取消鍵"
+config.CoopP2Keyboard.Enable = "允許 P2 使用鍵盤進行雙人模式"
+
 
 [ko]
 modSettings.title = "TnTRFMod 설정"
@@ -1560,3 +1592,7 @@ config.TokkunMode.P2LeftDonKey = "P2 왼쪽 돈 키"
 config.TokkunMode.P2LeftKaKey = "P2 왼쪽 카 키"
 config.TokkunMode.P2RightDonKey = "P2 오른쪽 돈 키"
 config.TokkunMode.P2RightKaKey = "P2 오른쪽 카 키"
+config.CoopP2Keyboard.P2OkKey = "P2 확인 키"
+config.CoopP2Keyboard.P2CancelKey = "P2 취소 키"
+config.CoopP2Keyboard.Enable = "P2가 키보드로 2인 모드를 플레이하도록 허용"
+

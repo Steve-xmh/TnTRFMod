@@ -27,6 +27,8 @@ public class EnsoGameBasePatch
     public static bool IsShinuchiMode { get; private set; }
     public static bool IsPlaying { get; private set; }
     public static double CurrentSongTime { get; private set; }
+    public static event Action<int, TaikoCoreTypes.HitResultTypes, float> OnSimpleHitEvent = delegate { };
+    public static event Action<int> OnRendaHitEvent = delegate { };
 
     [HarmonyPatch(typeof(EnsoGameManager))]
     [HarmonyPatch(nameof(EnsoGameManager.ProcPreparing))]
@@ -136,11 +138,13 @@ public class EnsoGameBasePatch
         PlayerStates[playerNum].RecordHit(hitResult, onpuJustTime);
         if (playerNum == 0 && ModConfig.EnableJudgementBar.Value)
             TnTRFMod.Scenes.Enso.JudgementBarOverlay.PushHitOffsetFromPatch(onpuJustTime);
+        OnSimpleHitEvent(playerNum, hitResult, onpuJustTime);
     }
 
     private static void OnRendaHit(int playerNum)
     {
         PlayerStates[playerNum].RecordRendaHit();
+        OnRendaHitEvent(playerNum);
     }
 
     private static bool ShouldSkipProcessExecMain(EnsoGameManager __instance)

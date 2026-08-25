@@ -69,25 +69,4 @@ public static class BilibiliWbiSign
         subUrl = subUrl.Split("/")[^1].Split(".")[0];
         return (imgUrl, subUrl);
     }
-
-
-    public static async Task Main()
-    {
-        var (imgKey, subKey) = await GetWbiKeys();
-
-        var signedParams = EncWbi(
-            new Dictionary<string, string>
-            {
-                { "foo", "114" },
-                { "bar", "514" },
-                { "baz", "1919810" }
-            },
-            imgKey,
-            subKey
-        );
-
-        var query = await new FormUrlEncodedContent(signedParams).ReadAsStringAsync();
-
-        Console.WriteLine(query);
-    }
 }

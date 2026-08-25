@@ -10,7 +10,6 @@ using TnTRFMod.Ui;
 using TnTRFMod.Utils;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using Exception = System.Exception;
 using Logger = TnTRFMod.Utils.Logger;
@@ -152,6 +151,7 @@ public class TnTrfMod
         result &= PatchClass<NoShadowOnpuPatch>(ModConfig.EnableNoShadowOnpuPatch);
         result &= PatchClass<NearestNeighborOnpuPatch>(ModConfig.EnableNearestNeighborOnpuPatch);
         result &= PatchClass<BufferedNoteInputPatch>();
+        result &= PatchClass<CoopPlayerKeyboardPatch>(ModConfig.EnableCoopP2Keyboard);
         result &= PatchClass<ForcePlayMusicPatch>(ModConfig.EnableLouderSongPatch);
         result &= PatchClass<CustomPlayerNamePatch>(ModConfig.EnableCustomPlayerName);
         result &= PatchClass<AutoDownloadSubscriptionSongs>(ModConfig.EnableAutoDownloadSubscriptionSongs);
@@ -164,10 +164,7 @@ public class TnTrfMod
         // result &= PatchClass<HiResDonImagePatch>();
         result &= PatchClass<InstantRelayPatch>(ModConfig.EnableInstantRelayPatch);
         result &= PatchClass<ScoreRankIconPatch>(ModConfig.EnableScoreRankIcon);
-        // result &= PatchClass<CustomSongSaveDataPatch>(enableCustomSongs);
-        // result &= PatchClass<CustomSongLoaderPatch>(enableCustomSongs);
         result &= PatchClass<TokkunGamePatch>(ModConfig.EnableTokkunGamePatch);
-        // CustomSongLoaderPatch.PatchLibTaiko();
 
         Application.s_LogCallbackHandler = new Action<string, string, LogType>(UnityLogCallback);
 

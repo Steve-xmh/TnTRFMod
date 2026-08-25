@@ -38,6 +38,10 @@ public static class ModSettingsScreenUi
     private static TextUi? _statusText;
     private static ButtonUi? _tabSceneButton;
     private static ButtonUi? _tabAllButton;
+    private static readonly List<ModSettingsPage> ExtensionPages = [];
+    private static readonly List<ButtonUi> ExtensionTabButtons = [];
+    private static readonly Dictionary<string, FrameUi> ExtensionRoots = [];
+    private static ModSettingsPage? _activeExtensionPage;
     private static ScrollContainerUi? _scrollContainer;
     private static readonly List<SettingRow> Rows = [];
     private static bool _visible;
@@ -46,6 +50,31 @@ public static class ModSettingsScreenUi
     private static ButtonUi? _waitingKeyButton;
 
     public static bool Visible => _visible;
+
+    public sealed class ModSettingsPage
+    {
+        public string Id { get; init; } = string.Empty;
+        public string Title { get; init; } = string.Empty;
+        public Action<FrameUi> Build { get; init; } = _ => { };
+        public Action? Refresh { get; init; }
+        public Action? Hide { get; init; }
+    }
+
+    /// <summary>
+    /// 供独立插件向设置页面注册自己的标签，核心项目不需要引用插件程序集。
+    /// </summary>
+    public static void RegisterPage(ModSettingsPage page)
+    {
+        if (ExtensionPages.Any(existing => existing.Id == page.Id)) return;
+        ExtensionPages.Add(page);
+        if (_panel == null || _scrollContainer == null) return;
+        AddExtensionTab(page, 24f + 192f * (ExtensionPages.Count + 1));
+        var root = CreateExtensionRoot(page);
+        page.Build(root);
+        page.Refresh?.Invoke();
+        root.Visible = false;
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_panel._transform);
+    }
 
     public static void Init()
     {
@@ -57,7 +86,15 @@ public static class ModSettingsScreenUi
     public static void OpenSettings()
     {
         if (_panel == null) return;
-        RefreshRows();
+        if (_activeExtensionPage != null)
+        {
+            RefreshRowsVisibility(false);
+            _activeExtensionPage.Refresh?.Invoke();
+        }
+        else
+        {
+            RefreshRows();
+        }
         _visible = true;
         _panel!.Visible = true;
     }
@@ -67,6 +104,7 @@ public static class ModSettingsScreenUi
         _visible = false;
         CancelKeyCapture();
         CloseAllDropDowns();
+        _activeExtensionPage?.Hide?.Invoke();
         if (_panel != null) _panel.Visible = false;
     }
 
@@ -151,6 +189,8 @@ public static class ModSettingsScreenUi
         _panel.AddChild(_tabAllButton);
         _tabAllButton.Position = new Vector2(216f, 104f);
         _tabAllButton.AddListener((Action)(() => SwitchTab(false)));
+        for (var i = 0; i < ExtensionPages.Count; i++)
+            AddExtensionTab(ExtensionPages[i], 408f + 192f * i);
 
         _statusText = CreateText(I18n.Get("modSettings.legend").Text, 18f,
             new Color(0.72f, 0.78f, 0.86f), false);
@@ -168,6 +208,11 @@ public static class ModSettingsScreenUi
         _scrollContainer.Position = new Vector2(24f, 198f);
 
         BuildRows();
+        foreach (var page in ExtensionPages)
+        {
+            var root = CreateExtensionRoot(page);
+            page.Build(root);
+        }
         SwitchTab(true);
         LayoutRebuilder.ForceRebuildLayoutImmediate(_panel._transform);
     }
@@ -314,12 +359,59 @@ public static class ModSettingsScreenUi
         }
     }
 
+    private static FrameUi CreateExtensionRoot(ModSettingsPage page)
+    {
+        var root = new FrameUi { Name = $"SettingsPage_{page.Id}", Size = new Vector2(RowWidth, PanelHeight - 230f), FrameColor = Color.clear };
+        _scrollContainer!.AddChild(root);
+        ExtensionRoots[page.Id] = root;
+        return root;
+    }
+
+    private static void AddExtensionTab(ModSettingsPage page, float x)
+    {
+        var button = new ButtonUi { Text = page.Title, Size = new Vector2(180f, 46f), ButtonColor = InactiveColor };
+        _panel!.AddChild(button);
+        button.Position = new Vector2(x, 104f);
+        button.AddListener((Action)(() => SwitchExtensionPage(page)));
+        ExtensionTabButtons.Add(button);
+    }
+
+    private static void SwitchExtensionPage(ModSettingsPage page)
+    {
+        _activeExtensionPage?.Hide?.Invoke();
+        _activeExtensionPage = page;
+        _showSceneItems = false;
+        _tabSceneButton!.ButtonColor = InactiveColor;
+        _tabAllButton!.ButtonColor = InactiveColor;
+        for (var i = 0; i < ExtensionPages.Count; i++)
+            ExtensionTabButtons[i].ButtonColor = ExtensionPages[i] == page ? ActiveColor : InactiveColor;
+        _scrollContainer!.Visible = true;
+        foreach (var root in ExtensionRoots.Values) root.Visible = false;
+        ExtensionRoots[page.Id].Visible = true;
+        page.Refresh?.Invoke();
+        RefreshRowsVisibility(false);
+    }
+
     private static void SwitchTab(bool sceneItems)
     {
+        _activeExtensionPage?.Hide?.Invoke();
+        _activeExtensionPage = null;
         _showSceneItems = sceneItems;
         _tabSceneButton!.ButtonColor = sceneItems ? ActiveColor : InactiveColor;
         _tabAllButton!.ButtonColor = sceneItems ? InactiveColor : ActiveColor;
-        RefreshRows();
+        foreach (var button in ExtensionTabButtons) button.ButtonColor = InactiveColor;
+        _scrollContainer!.Visible = true;
+        foreach (var root in ExtensionRoots.Values) root.Visible = false;
+        RefreshRowsVisibility(true);
+    }
+
+    private static void RefreshRowsVisibility(bool showRows)
+    {
+        foreach (var row in Rows)
+            row.Container.Visible = showRows && (!_showSceneItems || row.Metadata.RelevantScenes.Length == 0 ||
+                row.Metadata.RelevantScenes.Contains(TnTrfMod.Instance?.GetSceneName() ?? string.Empty, StringComparer.Ordinal));
+        if (_activeExtensionPage == null) RefreshRows();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_scrollContainer!._transform);
     }
 
     private static void RefreshRows()

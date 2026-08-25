@@ -31,6 +31,7 @@ public class EnsoTestScene : IScene
     public void Destroy()
     {
         if (ModConfig.EnableJudgementBar.Value) JudgementBarOverlay.Destroy();
+        if (ModConfig.EnableHitStatsPanelPatch.Value) HitStatusPanel.Destroy();
     }
 
     public void Update()

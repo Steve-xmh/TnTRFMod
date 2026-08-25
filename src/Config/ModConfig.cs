@@ -114,6 +114,12 @@ public static class ModConfig
     public static ConfigEntry<int> MaxBufferedInputCount { get; private set; } = ConfigEntry<int>.Noop;
 
     // =========================================================================
+    // 双人键盘（CoopPlayerKeyboard）节
+    // =========================================================================
+    // 允许第二个玩家仅用键盘游玩二人模式（含配对确认时的键盘“确定/取消”）。
+    public static ConfigEntry<bool> EnableCoopP2Keyboard { get; private set; } = ConfigEntry<bool>.Noop;
+
+    // =========================================================================
     // TokkunMode 节
     // =========================================================================
     public static ConfigEntry<bool> EnableTokkunGamePatch { get; private set; } = ConfigEntry<bool>.Noop;
@@ -125,6 +131,9 @@ public static class ModConfig
     public static KeyBindingConfigEntry P2LeftKaKey { get; private set; } = KeyBindingConfigEntry.Noop;
     public static KeyBindingConfigEntry P2RightDonKey { get; private set; } = KeyBindingConfigEntry.Noop;
     public static KeyBindingConfigEntry P2RightKaKey { get; private set; } = KeyBindingConfigEntry.Noop;
+    // 双人键盘：P2 在“选择游玩人数/连接手柄确认”界面用来“确定”进入的独立键盘键。
+    public static KeyBindingConfigEntry P2OkKey { get; private set; } = KeyBindingConfigEntry.Noop;
+    public static KeyBindingConfigEntry P2CancelKey { get; private set; } = KeyBindingConfigEntry.Noop;
 
     // =========================================================================
     // Debug 节
@@ -204,6 +213,15 @@ public static class ModConfig
         {
             EnableBufferedInputPatch = s.Bool("Enable", "config.BufferedInput.Enable", true);
             MaxBufferedInputCount = s.Int("MaxBufferedInputCount", "config.BufferedInput.MaxBufferedInputCount", 5);
+        });
+
+        ConfigSectionBuilder.Section("CoopP2Keyboard", s =>
+        {
+            // 允许第二个玩家仅用键盘游玩二人模式。
+            EnableCoopP2Keyboard = s.Bool("Enable", "config.CoopP2Keyboard.Enable", true);
+            // 配对确认界面的 P2 键盘按键
+            P2OkKey = s.KeyBinding("P2OkKey", "config.CoopP2Keyboard.P2OkKey", Key.Enter);
+            P2CancelKey = s.KeyBinding("P2CancelKey", "config.CoopP2Keyboard.P2CancelKey", Key.Escape);
         });
 
         ConfigSectionBuilder.Section("TokkunMode", s =>
@@ -321,6 +339,14 @@ public static class ModConfig
         AddKeyBinding("TokkunMode", "P2RightKaKey", Description("config.TokkunMode.P2RightKaKey"), P2RightKaKey, "Enso",
             "EnsoTest");
 
+        // 双人键盘
+        AddBool("CoopP2Keyboard", "Enable", Description("config.CoopP2Keyboard.Enable"), EnableCoopP2Keyboard, "SongSelect",
+            "Enso", "EnsoTest");
+        AddKeyBinding("CoopP2Keyboard", "P2OkKey", Description("config.CoopP2Keyboard.P2OkKey"), P2OkKey, "SongSelect",
+            "Enso", "EnsoTest");
+        AddKeyBinding("CoopP2Keyboard", "P2CancelKey", Description("config.CoopP2Keyboard.P2CancelKey"), P2CancelKey,
+            "SongSelect", "Enso", "EnsoTest");
+
         // Debug
         AddBool("Debug", "SaveRawSaveData", Description("config.Debug.SaveRawSaveData"), DebugSaveRawSaveData);
         AddBool("Debug", "ExportGameData", Description("config.Debug.ExportGameData"), DebugExportGameData);
@@ -355,7 +381,10 @@ public static class ModConfig
             "TokkunMode.P2LeftDonKey",
             "TokkunMode.P2LeftKaKey",
             "TokkunMode.P2RightDonKey",
-            "TokkunMode.P2RightKaKey");
+            "TokkunMode.P2RightKaKey",
+            "CoopP2Keyboard.Enable",
+            "CoopP2Keyboard.P2OkKey",
+            "CoopP2Keyboard.P2CancelKey");
 
         ConfigEntry.Load();
         KeyBindingConfigEntry.Load();

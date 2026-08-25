@@ -160,6 +160,25 @@ public class HitStatusPanel
         };
         trainCounterUi.AddChild(rendaCounter);
         rendaCounter.Position = new Vector2(CounterAlignX, 333);
+
+        EnsoGameBasePatch.OnSimpleHitEvent += OnSimpleHit;
+        EnsoGameBasePatch.OnRendaHitEvent += OnRendaHit;
+    }
+
+    public void Destroy()
+    {
+        EnsoGameBasePatch.OnSimpleHitEvent -= OnSimpleHit;
+        EnsoGameBasePatch.OnRendaHitEvent -= OnRendaHit;
+    }
+
+    private void OnSimpleHit(int playerNum, TaikoCoreTypes.HitResultTypes hitResult, float onpuJustTime)
+    {
+        UpdatePanel();
+    }
+
+    private void OnRendaHit(int playerNum)
+    {
+        UpdatePanel();
     }
 
     private void UpdatePanel()

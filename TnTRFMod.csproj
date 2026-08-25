@@ -36,7 +36,6 @@
 
     <!-- Common Libraries -->
     <ItemGroup>
-        <PackageReference Include="Tomlyn" Version="2.10.1" />
         <PackageReference Include="Tommy" Version="3.1.2" />
     </ItemGroup>
 

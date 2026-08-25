@@ -147,17 +147,55 @@ public static class ConfigEntry
         };
     }
 
+    /// <summary>
+    /// 在配置锁内修改一个 TOML 节，并以临时文件替换方式写盘。
+    /// 复合配置（例如曲目源数组）应使用此方法，避免并发写入互相覆盖。
+    /// </summary>
+    public static void UpdateSection(string section, Action<TomlTable> update)
+    {
+        lock (ConfigLock)
+        {
+            if (!loadedConfig.HasKey(section) || loadedConfig[section] is not TomlTable)
+                loadedConfig[section] = new TomlTable();
+
+            update((TomlTable)loadedConfig[section]);
+            SaveLocked();
+            IsFirstConfig = false;
+        }
+    }
+
     private static void SaveLocked()
     {
-        configFileWatcher!.EnableRaisingEvents = false;
+        var tempPath = ConfigFilePath + ".tmp";
+        var watcher = configFileWatcher;
+        if (watcher != null) watcher.EnableRaisingEvents = false;
         try
         {
-            using var writer = new StreamWriter(ConfigFilePath);
-            loadedConfig.WriteTo(writer);
+            using (var stream = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.Read))
+            using (var writer = new StreamWriter(stream))
+            {
+                loadedConfig.WriteTo(writer);
+                writer.Flush();
+                stream.Flush(true);
+            }
+
+            try
+            {
+                if (File.Exists(ConfigFilePath))
+                    File.Replace(tempPath, ConfigFilePath, null, true);
+                else
+                    File.Move(tempPath, ConfigFilePath);
+            }
+            catch (IOException)
+            {
+                // 某些 Windows 文件系统/杀毒软件不允许 Replace；覆盖移动仍保证不会留下半个 TOML。
+                File.Move(tempPath, ConfigFilePath, true);
+            }
         }
         finally
         {
-            configFileWatcher.EnableRaisingEvents = true;
+            if (File.Exists(tempPath)) File.Delete(tempPath);
+            if (watcher != null) watcher.EnableRaisingEvents = true;
         }
     }
 

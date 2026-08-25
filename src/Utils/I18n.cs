@@ -73,18 +73,18 @@ public static class I18n
         };
     }
 
-    private static void WalkAndAdd(string localeCode, string path, TomlNode node)
+    private static void WalkAndAdd(Dictionary<string, string> target, string path, TomlNode node)
     {
         switch (node)
         {
             case TomlTable table:
             {
-                foreach (var kvp in table.RawTable) WalkAndAdd(localeCode, $"{path}{kvp.Key}.", kvp.Value);
+                foreach (var kvp in table.RawTable) WalkAndAdd(target, $"{path}{kvp.Key}.", kvp.Value);
                 break;
             }
             case TomlString str:
             {
-                _i18nData[localeCode][path.TrimEnd('.')] = str.Value;
+                target[path.TrimEnd('.')] = str.Value;
                 break;
             }
         }
@@ -92,14 +92,28 @@ public static class I18n
 
     public static void Load()
     {
-        var data = Encoding.UTF8.GetString(Resources.Locale);
-        using var reader = new StringReader(data);
-        var i18nTable = TOML.Parse(reader);
         _i18nData = new I18nData();
+        LoadMixin(Encoding.UTF8.GetString(Resources.Locale));
+    }
+
+    /// <summary>
+    /// 加载额外的语言资源（mixin）。供子模组携带各自的 Locales.toml 使用，
+    /// 会与主语言表按语言代码合并；相同 key 时，后加载的覆盖先加载的。
+    /// </summary>
+    /// <param name="tomlText">TOML 格式的语言资源文本，顶层为语言代码节（如 [zhs]、[en]）。</param>
+    public static void LoadMixin(string tomlText)
+    {
+        using var reader = new StringReader(tomlText);
+        var i18nTable = TOML.Parse(reader);
         foreach (var locale in i18nTable.RawTable)
         {
-            _i18nData[locale.Key] = new Dictionary<string, string>();
-            WalkAndAdd(locale.Key, "", locale.Value);
+            if (!_i18nData.TryGetValue(locale.Key, out var dict))
+            {
+                dict = new Dictionary<string, string>();
+                _i18nData[locale.Key] = dict;
+            }
+
+            WalkAndAdd(dict, "", locale.Value);
         }
     }
 
@@ -130,7 +144,7 @@ public static class I18n
         public readonly string Key;
         public readonly string Text;
 
-        internal I18nResult(DataConst.LanguageType languageType, string key, string text)
+        public I18nResult(DataConst.LanguageType languageType, string key, string text)
         {
             LanguageType = languageType;
             Key = key;
